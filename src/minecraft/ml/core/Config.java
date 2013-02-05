@@ -32,8 +32,8 @@ public abstract class Config {
 					Class type = fld.getType();
 					String propName = ann.inFileName().isEmpty() ? fld.getName() : ann.inFileName();
 					Property cProp = null;
-					if (type == Boolean.class){
-						Boolean def = fld.getBoolean(this);
+					if (type == boolean.class){
+						boolean def = fld.getBoolean(this);
 						cProp = cfg.get(ann.category(), propName, def);
 						fld.set(this, cProp.getBoolean(def));
 						
