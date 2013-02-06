@@ -41,7 +41,7 @@ public abstract class MLPacket {
 		player = pl;
 		dataOutRaw = new ByteArrayOutputStream();
 		dataOut = new DataOutputStream(dataOutRaw);
-		packetID = MLPacketHandler.findPacketId(this.getClass());
+		packetID = PacketHandler.findPacketId(this.getClass());
 		writeInt(packetID);
 	}
 	

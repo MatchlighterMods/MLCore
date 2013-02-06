@@ -21,7 +21,7 @@ import cpw.mods.fml.common.network.Player;
  * @author Matchlighter
  *
  */
-public class MLPacketHandler implements IPacketHandler {
+public class PacketHandler implements IPacketHandler {
 		
 	protected static BiMap<Integer, Class<? extends MLPacket>> PacketTypes = HashBiMap.create();
 	
