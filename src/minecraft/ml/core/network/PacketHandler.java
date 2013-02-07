@@ -21,7 +21,7 @@ import cpw.mods.fml.common.network.Player;
  * @author Matchlighter
  *
  */
-public class PacketHandler implements IPacketHandler {
+public abstract class PacketHandler implements IPacketHandler {
 		
 	protected static BiMap<Integer, Class<? extends MLPacket>> PacketTypes = HashBiMap.create();
 	
@@ -37,7 +37,7 @@ public class PacketHandler implements IPacketHandler {
 		if (mlPkt != null){
 			try {
 				
-				if (FMLCommonHandler.instance().getSide().isServer()){
+				if (FMLCommonHandler.instance().getEffectiveSide().isServer()){
 					mlPkt.handleServerSide();
 				} else {
 					mlPkt.handleClientSide();
@@ -45,9 +45,13 @@ public class PacketHandler implements IPacketHandler {
 				
 			} catch (IOException e) {
 				// "UNPOSSIBLE?" -cpw
+			} catch (Exception e) {
+				onError(e, mlPkt);
 			}
 		}
 	}
+	
+	protected abstract void onError(Throwable e, MLPacket mlPkt);
 
 	private static MLPacket tryCastPacket(Packet250CustomPayload pkt, Player pl){
 		ByteArrayDataInput dat = ByteStreams.newDataInput(pkt.data);
