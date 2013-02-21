@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="MLCore" default="build">
+	<description>MLCore</description>
+	<target name="writeversion" depends="buildenvsetup">
+		<exec executable="${python.exe}" dir="${build.env}" failonerror="true">
+			<arg value="${build.env}/getversion.py" />
+			<arg value="${mcp.home}" />
+		</exec>
+		<propertyfile file="version.properties">
+			<entry key="MLCore.build.number" type="int" value="${version.build}"/>
+			<entry key="MLCore.version" type="string" value="${version}"/>
+		</propertyfile>
+	</target>
+
+	<target name="buildenvsetup">
+		<tstamp>
+			<format pattern="yyMMddHHmmss" property="timestamp" />
+		</tstamp>
+		<property environment="env" />
+		<property file="build.properties" />
+		<property name="modname" value="MLCore" />
+		
+		<condition property="build.env" value="${env.WORKSPACE}" else="${default}">
+			<isset property="env.WORKSPACE" />
+		</condition>
+		
+		<property name="ext" location="${build.env}/../../../userContent" />
+		<property name="forge.src" location="${ext}/forge" />
+		
+		<property name="forge.home" location="${build.env}/forge" />
+		<property name="mcp.home" location="${forge.home}/mcp" />
+		
+		<condition property="python.exe" value="${mcp.home}/runtime/bin/python/python_mcp" else="python">
+			<os family="Windows" />
+		</condition>
+		
+		<property name="mcp.obfoutput" location="${mcp.home}/reobf" />
+		<property name="mcp.obfoutput.classes" location="${mcp.obfoutput}/minecraft" />
+		<property name="mcp.srcdir" location="${mcp.home}/src" />
+		
+		<property name="code.src.dir" location="${build.env}/src" />
+		<property name="build.dest" location="${build.env}/build" />
+		
+		<!--<property name="resource.dir" location="${build.env}/resources" />-->
+		<condition property="version.build" value="${env.BUILD_NUMBER}" else="1">
+			<isset property="env.BUILD_NUMBER" />
+		</condition>
+	</target>
+
+	<target name="init" depends="buildenvsetup">
+		<antcall target="writeversion" />
+		<property file="version.properties" />
+		<property name="build.number" value="${MLCore.build.major.number}.${MLCore.build.minor.number}.${MLCore.build.revision.number}" />
+		<!--<property name="version.minecraft" value="${MLCore.build.mcversion}" />-->
+		<property name="version.major" value="${MLCore.build.major.number}" />
+		<property name="version.minor" value="${MLCore.build.minor.number}" />
+		<property name="version.rev" value="${MLCore.build.revision.number}" />
+		<property name="version" value="${version.major}.${version.minor}.${version.rev}.${version.build}" />
+		<antcall target="writeversion" />
+	</target>
+
+	<target name="clean" depends="buildenvsetup">
+		<mkdir dir="${build.dest}" />
+		<delete includeemptydirs="true">
+			<fileset dir="${build.dest}"/>
+		</delete>
+		<delete includeemptydirs="true">
+			<fileset dir="${forge.home}"/>
+		</delete>
+	</target>
+	
+	<target name="loadForge" depends="init">
+		<copy todir="${forge.home}" overwrite="true">
+			<fileset dir="${forge.src}" includes="**/*" />
+		</copy>
+	</target>
+	
+	<target name="merge" depends="init">
+		<copy todir="${mcp.srcdir}" overwrite="true" verbose="true">
+			<fileset dir="${code.src.dir}" includes="**/*.java" />
+		</copy>
+	</target>
+	
+	<target name="recompile" depends="init">
+		<exec executable="${python.exe}" dir="${mcp.home}" failonerror="true">
+			<arg value="${mcp.home}/runtime/recompile.py" />
+		</exec>
+	</target>
+
+	<target name="reobfuscate" depends="init">
+		<exec executable="${python.exe}" dir="${mcp.home}">
+			<arg value="${mcp.home}/runtime/reobfuscate.py" />
+		</exec>
+	</target>
+
+	<target name="build" depends="init,clean,loadForge,merge,recompile,reobfuscate">
+		<antcall target="writeversion" />
+		<antcall target="extract-built-jar"/>
+	</target>
+
+	<target name="extract-built-jar">
+		<property name="jarname" value="${modname}-universal-${version}" /> <!---${version.minecraft}-->
+		<mkdir dir="${build.dest}" />
+		<jar destfile="${build.dest}/${jarname}.zip">
+			<fileset dir="${mcp.obfoutput.classes}" includes="**/ml/core/**/*.class" />
+			<fileset dir="${code.src.dir}/minecraft" includes="**/ml/core/res/**/*" erroronmissingdir="false"/>
+			
+			<zipfileset dir="${build.env}" includes="version.properties"/>
+			<mappedresources>
+				<concat>
+					<fileset dir="${build.env}" includes="mcmod.info" />
+					<filterchain>
+						<replacetokens>
+							<token key="VERSION" value="${version}" />
+						</replacetokens>
+					</filterchain>
+				</concat>
+				<mergemapper to="mcmod.info" />
+			</mappedresources>
+		</jar>
+	</target>
+</project>
