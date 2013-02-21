@@ -9,7 +9,6 @@ import java.util.logging.Level;
 
 import cpw.mods.fml.common.FMLLog;
 
-import ml.boxes.BoxesConfig;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 
