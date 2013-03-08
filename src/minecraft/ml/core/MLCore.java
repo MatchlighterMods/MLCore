@@ -7,5 +7,5 @@ import cpw.mods.fml.common.Mod.Instance;
 public class MLCore {
 	
 	@Instance("MLCore")
-	public MLCore instance;
+	public static MLCore instance;
 }
