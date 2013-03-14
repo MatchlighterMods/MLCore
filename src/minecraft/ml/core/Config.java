@@ -44,7 +44,7 @@ public abstract class Config {
 					} else if (type == String.class){
 						String def = (String)fld.get(this);
 						cProp = cfg.get(ann.category(), propName, def);
-						fld.set(this, cProp.value);
+						fld.set(this, cProp.getString());
 						
 					} else if (type == double.class){
 						double def = fld.getDouble(this);
@@ -65,7 +65,7 @@ public abstract class Config {
 					} else if (type == String[].class){
 						String[] def = (String[])fld.get(this);
 						cProp = cfg.get(ann.category(), propName, def);
-						fld.set(this, cProp.valueList);
+						fld.set(this, cProp.getStringList());
 						
 					} else if (type == double[].class){
 						double[] def = (double[])fld.get(this);
