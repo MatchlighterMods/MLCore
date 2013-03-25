@@ -48,7 +48,7 @@
 		</condition>
 	</target>
 
-	<target name="init" depends="buildenvsetup">
+	<target name="initVersion" depends="buildenvsetup">
 		<antcall target="writeversion" />
 		<property file="version.properties" />
 		<property name="build.number" value="${MLCore.build.major.number}.${MLCore.build.minor.number}.${MLCore.build.revision.number}" />
@@ -70,31 +70,31 @@
 		</delete>
 	</target>
 	
-	<target name="loadForge" depends="init">
+	<target name="loadForge">
 		<copy todir="${forge.home}" overwrite="true">
 			<fileset dir="${forge.src}" includes="**/*" />
 		</copy>
 	</target>
 	
-	<target name="merge" depends="init">
+	<target name="merge" depends="initVersion">
 		<copy todir="${mcp.srcdir}" overwrite="true" verbose="true">
 			<fileset dir="${code.src.dir}" includes="**/*.java" />
 		</copy>
 	</target>
 	
-	<target name="recompile" depends="init">
+	<target name="recompile" depends="initVersion">
 		<exec executable="${python.exe}" dir="${mcp.home}" failonerror="true">
 			<arg value="${mcp.home}/runtime/recompile.py" />
 		</exec>
 	</target>
 
-	<target name="reobfuscate" depends="init">
+	<target name="reobfuscate" depends="initVersion">
 		<exec executable="${python.exe}" dir="${mcp.home}">
 			<arg value="${mcp.home}/runtime/reobfuscate.py" />
 		</exec>
 	</target>
 
-	<target name="build" depends="init,clean,loadForge,merge,recompile,reobfuscate">
+	<target name="build" depends="clean,loadForge,initVersion,merge,recompile,reobfuscate">
 		<antcall target="writeversion" />
 		<antcall target="extract-built-jar"/>
 	</target>
