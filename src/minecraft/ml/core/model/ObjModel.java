@@ -16,6 +16,7 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+import ml.core.Vector3;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
@@ -132,8 +133,6 @@ public class ObjModel {
 				if (st.ttype != st.TT_NUMBER)
 					throw new IOException("Failed to parse int");
 				
-				System.out.println(st.nval);
-				
 				int vref = (int)st.nval-1;
 				if (st.nextToken() != '/')
 					throw new IOException("Failed to parse face");
@@ -164,7 +163,6 @@ public class ObjModel {
 			st.parseNumbers();
 
 			while (st.nextToken() != st.TT_EOF){
-				System.out.println(st.sval);
 				if (st.ttype == st.TT_EOL){
 					continue;
 				} else if (st.ttype != st.TT_WORD) {
