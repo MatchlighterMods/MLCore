@@ -36,7 +36,7 @@ public abstract class Config {
 						cProp = cfg.get(ann.category(), propName, def);
 						fld.set(this, cProp.getBoolean(def));
 						
-					} else if (type == Integer.class){
+					} else if (type == int.class){
 						Integer def = (Integer)fld.get(this);
 						cProp = cfg.get(ann.category(), propName, def);
 						fld.set(this, cProp.getInt(def));

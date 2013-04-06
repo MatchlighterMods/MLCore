@@ -1,5 +1,9 @@
 package ml.core.lib;
 
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ml.core.Vector3;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
@@ -13,6 +17,7 @@ public class BlockLib {
 	/**
 	 * Gets the y-axis rotation for a {@link ForgeDirection}
 	 * Useful for {@link TileEntitySpecialRenderer}s when your block has a rotation
+	 * Set so that a model's Z- will be facing the input direction. i.e. Z- is the front 
 	 * 
 	 * @param fd Input {@link ForgeDirection}
 	 * @return Angle in degrees for the {@link ForgeDirection}
@@ -29,6 +34,26 @@ public class BlockLib {
 			return -90F;
 		}
 		return 0F;
+	}
+	
+	/**
+	 * Rotates the current glMatrix so that Z- faces the specified {@link ForgeDirection}
+	 * @param fd The {@link ForgeDirection} Z- should face
+	 */
+	@SideOnly(Side.CLIENT)
+	public static void glRotateForFaceDir(ForgeDirection fd){
+		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+		switch (fd){
+		case UP:
+			GL11.glRotatef(90F, 1.0F, 0F, 0F);
+			break;
+		case DOWN:
+			GL11.glRotatef(-90F, 1.0F, 0F, 0F);
+			break;
+		default:
+			GL11.glRotatef(BlockLib.getRotationFromDirection(fd), 0F, 1.0F, 0F);
+		}
+		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
 	}
 	
 	/**

@@ -21,6 +21,15 @@ import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
 
+/**
+ * Parses Wavefront OBJs so they can be rendered.
+ * <ul>
+ * <li>In Blender, Y+ is North, X+ East, Z+ Up. Models should be modeled in the X+,Y-,Z+ Octant</li>
+ * </ul>
+ * 
+ * @author Matchlighter
+ *
+ */
 public class ObjModel {
 
 	private Map<String, List<uvVertex[]>> groups = new HashMap<String, List<uvVertex[]>>();
