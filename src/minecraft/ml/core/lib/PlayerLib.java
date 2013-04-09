@@ -1,6 +1,7 @@
 package ml.core.lib;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 
 public class PlayerLib {
 
@@ -11,4 +12,10 @@ public class PlayerLib {
 		return false;
 	}
 
+	public static void syncClientInventory(EntityPlayer pl){
+		if (pl instanceof EntityPlayerMP){
+			((EntityPlayerMP)pl).sendContainerToPlayer(pl.inventoryContainer);
+		}
+	}
+	
 }
