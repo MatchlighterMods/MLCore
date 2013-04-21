@@ -1,4 +1,4 @@
-package ml.core.lib;
+package ml.core.lib.render;
 
 import org.lwjgl.opengl.GL11;
 
@@ -6,11 +6,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderEngine;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 
-public class RenderLib {
+public class GuiRenderLib {
 
-	public static RenderItem itemRenderer = new RenderItem();
+	public static RenderItem renderItem = new RenderItem();
 	public static int zLevel = 0;
 
 	public static void drawTexturedModalRect(int x, int y, int u, int v, int width, int height)
@@ -58,8 +60,8 @@ public class RenderLib {
 
 	public static void drawStackAt(Minecraft mc, int x, int y, ItemStack is){
 		GL11.glEnable(GL11.GL_LIGHTING);
-		itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, is, x, y);
-		itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, is, x, y);
+		renderItem.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, is, x, y);
+		renderItem.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, is, x, y);
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 
@@ -67,8 +69,8 @@ public class RenderLib {
 		GL11.glEnable(GL11.GL_LIGHTING);
 		ItemStack tis = is.copy();
 		tis.stackSize = 1;
-		itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, tis, x, y);
-		itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, tis, x, y);
+		renderItem.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, tis, x, y);
+		renderItem.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, tis, x, y);
 
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
@@ -84,72 +86,5 @@ public class RenderLib {
 		drawTexturedModalRect(x+lBord, y, uBase+uW-(w-lBord), vBase, w-lBord, h-bBord);
 		drawTexturedModalRect(x+lBord, y+tBord, uBase+uW-(w-lBord), vBase+uH-(h-tBord), w-lBord, h-tBord);
 		drawTexturedModalRect(x, y+tBord, uBase, vBase+uH-(h-tBord), w-rBord, h-tBord);
-	}
-
-	public static void renderItemIn2D(Tessellator tes, float umin, float vmin, float umax, float vmax, int szX, int szY, float thickness) { //Terribly Slow (WIP)
-		tes.startDrawingQuads();
-		tes.setNormal(0.0F, 0.0F, 1.0F);
-		tes.addVertexWithUV(0.0D, 0.0D, 0.0D, (double)umin, (double)vmax);
-		tes.addVertexWithUV(1.0D, 0.0D, 0.0D, (double)umax, (double)vmax);
-		tes.addVertexWithUV(1.0D, 1.0D, 0.0D, (double)umax, (double)vmin);
-		tes.addVertexWithUV(0.0D, 1.0D, 0.0D, (double)umin, (double)vmin);
-		tes.draw();
-
-		tes.startDrawingQuads();
-		tes.setNormal(0.0F, 0.0F, -1.0F);
-		tes.addVertexWithUV(0.0D, 1.0D, (double)(0.0F - thickness), (double)umin, (double)vmin);
-		tes.addVertexWithUV(1.0D, 1.0D, (double)(0.0F - thickness), (double)umax, (double)vmin);
-		tes.addVertexWithUV(1.0D, 0.0D, (double)(0.0F - thickness), (double)umax, (double)vmax);
-		tes.addVertexWithUV(0.0D, 0.0D, (double)(0.0F - thickness), (double)umin, (double)vmax);
-		tes.draw();
-
-		GL11.glPushMatrix();
-		GL11.glTranslatef(0, 0, -thickness);
-
-		float fx = 1/(float)szX;
-		float fy = 1/(float)szY;
-		GL11.glScalef(fx, fy, 1F);
-
-		for (float x=0; x<szX; x++){
-			float u = umin + (umax-umin) * (x/(float)szX);
-			for (float y=0; y<szY; y++){
-				float v = vmin + (vmax-vmin) * (y/(float)szY);
-				float ay = szY-y;
-				
-				tes.startDrawingQuads();
-				tes.setNormal(-1.0F, 0.0F, 0.0F);
-				tes.addVertexWithUV(x+1, ay, 0, u, v);
-				tes.addVertexWithUV(x+1, ay, thickness, u, v+fy);
-				tes.addVertexWithUV(x+1, ay-1, thickness, u+fx, v+fy);
-				tes.addVertexWithUV(x+1, ay-1, 0, u+fx, v);
-				tes.draw();
-				
-				tes.startDrawingQuads();
-				tes.setNormal(1.0F, 0F, 0.0F);
-				tes.addVertexWithUV(x, ay, 0, u, v);
-				tes.addVertexWithUV(x, ay-1, 0, u+fx, v);
-				tes.addVertexWithUV(x, ay-1, thickness, u+fx, v+fy);
-				tes.addVertexWithUV(x, ay, thickness, u, v+fy);
-				tes.draw();
-
-				tes.startDrawingQuads();
-				tes.setNormal(0.0F, 1.0F, 0.0F);
-				tes.addVertexWithUV(x, ay, 0, u, v);
-				tes.addVertexWithUV(x, ay, thickness, u, v+fy);
-				tes.addVertexWithUV(x+1, ay, thickness, u+fx, v+fy);
-				tes.addVertexWithUV(x+1, ay, 0, u+fx, v);
-				tes.draw();
-
-				tes.startDrawingQuads();
-				tes.setNormal(0.0F, -1.0F, 0.0F);
-				tes.addVertexWithUV(x, ay-1, 0, u, v);
-				tes.addVertexWithUV(x+1, ay-1, 0, u+fx, v);
-				tes.addVertexWithUV(x+1, ay-1, thickness, u+fx, v+fy);
-				tes.addVertexWithUV(x, ay-1, thickness, u, v+fy);
-				tes.draw();
-			}
-		}
-
-		GL11.glPopMatrix();
 	}
 }

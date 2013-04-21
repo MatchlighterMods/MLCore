@@ -16,7 +16,7 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-import ml.core.Vector3;
+import ml.core.geo.Vector3;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
