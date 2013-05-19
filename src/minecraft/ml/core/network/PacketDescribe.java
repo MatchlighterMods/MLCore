@@ -18,8 +18,8 @@ public abstract class PacketDescribe extends MLPacket {
 	public int z;
 	public ForgeDirection facing;
 
-	public PacketDescribe(TileEntity te) {
-		super(null);
+	public PacketDescribe(TileEntity te, String ch) {
+		super(null, ch);
 
 		x = te.xCoord;
 		y = te.yCoord;

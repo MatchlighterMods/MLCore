@@ -37,16 +37,17 @@ public abstract class MLPacket {
 	protected boolean chunkDataPacket = true;
 	protected String channel;
 	
-	public MLPacket(Player pl) {
+	public MLPacket(Player pl, String ch) {
 		player = pl;
 		dataOutRaw = new ByteArrayOutputStream();
 		dataOut = new DataOutputStream(dataOutRaw);
 		packetID = PacketHandler.findPacketId(this.getClass());
+		channel = ch;
 		writeInt(packetID);
 	}
 	
 	public Packet250CustomPayload convertToPkt250(){
-		Packet250CustomPayload mcPkt = new Packet250CustomPayload("Boxes", dataOutRaw.toByteArray());
+		Packet250CustomPayload mcPkt = new Packet250CustomPayload(channel, dataOutRaw.toByteArray());
 		mcPkt.isChunkDataPacket = chunkDataPacket;
 		return mcPkt;
 	}

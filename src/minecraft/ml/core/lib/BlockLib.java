@@ -19,6 +19,8 @@ public class BlockLib {
 	 * Useful for {@link TileEntitySpecialRenderer}s when your block has a rotation
 	 * Set so that a model's Z- will be facing the input direction. i.e. Z- is the front 
 	 * 
+	 * Note: In a default blender setup, Z- is Y(Grn)+
+	 * 
 	 * @param fd Input {@link ForgeDirection}
 	 * @return Angle in degrees for the {@link ForgeDirection}
 	 */
@@ -38,6 +40,9 @@ public class BlockLib {
 	
 	/**
 	 * Rotates the current glMatrix so that Z- faces the specified {@link ForgeDirection}
+	 * 
+	 * Note: In a default blender setup, Z- is Y(Grn)+
+	 * 
 	 * @param fd The {@link ForgeDirection} Z- should face
 	 */
 	@SideOnly(Side.CLIENT)
