@@ -1,9 +1,9 @@
-package ml.core.lib;
+package ml.core;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
-public class PlayerLib {
+public class PlayerUtils {
 
 	public static boolean isRealPlayer(EntityPlayer pl){
 		Package pkg = pl.getClass().getPackage();

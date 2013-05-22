@@ -1,4 +1,4 @@
-package ml.core.lib.render;
+package ml.core.render;
 
 import org.lwjgl.opengl.GL11;
 

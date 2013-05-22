@@ -1,4 +1,4 @@
-package ml.core.lib;
+package ml.core.block;
 
 import org.lwjgl.opengl.GL11;
 
@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.ForgeDirection;
 
-public class BlockLib {
+public class BlockUtils {
 
 	public static int[] atCCW = new int[]{4,5,4,5,3,2, 6};
 	public static int[] atCW = new int[]{5,4,5,4,2,3, 6};
@@ -56,7 +56,7 @@ public class BlockLib {
 			GL11.glRotatef(-90F, 1.0F, 0F, 0F);
 			break;
 		default:
-			GL11.glRotatef(BlockLib.getRotationFromDirection(fd), 0F, 1.0F, 0F);
+			GL11.glRotatef(BlockUtils.getRotationFromDirection(fd), 0F, 1.0F, 0F);
 		}
 		GL11.glTranslatef(-0.5F, -0.5F, -0.5F);
 	}

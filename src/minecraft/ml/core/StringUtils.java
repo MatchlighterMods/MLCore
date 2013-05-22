@@ -1,6 +1,6 @@
-package ml.core.lib;
+package ml.core;
 
-public class StringLib {
+public class StringUtils {
 
 	private static String[] suffixes = {"k", "M", "G", "T", "P"};
 	public static String toGroupedString(float in, int precision){

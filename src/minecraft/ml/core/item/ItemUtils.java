@@ -1,10 +1,10 @@
-package ml.core.lib;
+package ml.core.item;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class ItemLib {
+public class ItemUtils {
 
 	/**
 	 * Drops an {@link EntityItem} of the specified {@link ItemStack} in the specified {@link World} at the specified coordinates.
