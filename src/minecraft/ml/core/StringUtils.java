@@ -17,5 +17,28 @@ public class StringUtils {
 		return ""+(ns.replaceAll("\\.?[0]*$", ""))+suffix;
 	}
 	
+	public static String join(Object[] itms, String sep) {
+		String out = "";
+
+		for (int i=0; i<itms.length; i++){
+			out += itms[i].toString();
+			if (i<itms.length-1)
+				out += sep;
+			
+		}
+		return out;
+	}
+	
+	public static String join(int[] itms, String sep) {
+		String out = "";
+
+		for (int i=0; i<itms.length; i++){
+			out += itms[i];
+			if (i<itms.length-1)
+				out += sep;
+			
+		}
+		return out;
+	}
 	
 }

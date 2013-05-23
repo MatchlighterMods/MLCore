@@ -149,32 +149,16 @@ public abstract class RecipeMixed implements IRecipe {
 						target = input[subX + subY * width];
 					}
 				}
-
 				ItemStack slot = inv.getStackInRowAndColumn(x, y);
 
 				if (target != null) {
 					if (!checkItemEquals(target, slot)) return false;
-//					if (target instanceof ItemStack) {
-//						if (!checkItemEquals((ItemStack)target, slot)) return false;
-//					} else if (target instanceof ArrayList) {
-//						boolean matched = false;
-//
-//						for (ItemStack item : (ArrayList<ItemStack>)target) {
-//							matched = matched || checkItemEquals(item, slot);
-//						}
-//
-//						if (!matched) {
-//							return false;
-//						}
-//					}
 				} else if (slot!=null) {
 					shapelessStacks.add(slot);
-				} else {
-					return false;
 				}
 			}
 		}
-
+		
 		if (shapelessStacks.size() > 0 && !shapelessItemsValid(inv, shapelessStacks))
 			return false;
 
