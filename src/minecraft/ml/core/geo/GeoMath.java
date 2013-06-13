@@ -1,4 +1,4 @@
-package ml.core;
+package ml.core.geo;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -6,24 +6,9 @@ import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.input.Mouse;
 
 import cpw.mods.fml.client.FMLClientHandler;
-import ml.core.Geometry.XYPair;
-import ml.core.Geometry.rectangle;
+import ml.core.geo.GeoMath.XYPair;
 
-public class Geometry {
-
-	public static class rectangle {
-		public int xCoord;
-		public int yCoord;
-		public int width;
-		public int height;
-		
-		public rectangle(int x, int y, int width, int height) {
-			this.xCoord = x;
-			this.yCoord = y;
-			this.width = width;
-			this.height = height;
-		}
-	}
+public class GeoMath {
 
 	public static class XYPair {
 		public int X;
@@ -44,16 +29,12 @@ public class Geometry {
 		return (pntX >= rectX && pntY >= rectY && pntX <= rectX+rectW && pntY <= rectY + rectH);
 	}
 
-	public static boolean pointInRect(int pntX, int pntY, Geometry.rectangle r){
-		return pointInRect(pntX, pntY, r.xCoord, r.yCoord, r.width, r.height);
-	}
-
 	public static XYPair determineSquarestGrid(int elements){
 		if (elements == 0)
-			return new Geometry.XYPair(0, 0);
+			return new GeoMath.XYPair(0, 0);
 		int a = (int)Math.round(Math.sqrt(elements));
 		int b = (int)Math.ceil(((float)elements)/a);
-		return a>b ? new Geometry.XYPair(a, b) : new Geometry.XYPair(b, a);
+		return a>b ? new GeoMath.XYPair(a, b) : new GeoMath.XYPair(b, a);
 	}
 
 	public static XYPair getScaledMouse(){
@@ -64,7 +45,7 @@ public class Geometry {
 		int adjMouseX = Mouse.getX() * var14 / mc.displayWidth;
 		int adjMouseY = var15 - Mouse.getY() * var15 / mc.displayHeight - 1;
 		
-		return new Geometry.XYPair(adjMouseX, adjMouseY);
+		return new GeoMath.XYPair(adjMouseX, adjMouseY);
 	}
 
 }

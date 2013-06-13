@@ -10,6 +10,10 @@ import com.google.common.io.ByteArrayDataInput;
 
 import cpw.mods.fml.common.network.Player;
 
+/**
+ * Can be extended or left untouched.
+ * You do not need to add this to your PacketHandler unless you extend it; MLCore features a minimal PacketHandler.
+ */
 public class PacketDescribeConnectable extends PacketDescribe {
 
 	ForgeDirection linkDir;

@@ -30,6 +30,7 @@ import net.minecraft.client.renderer.Tessellator;
  * @author Matchlighter
  *
  */
+@Deprecated() //Forge added an equivalent. Only keeping for posterity ;)
 public class ObjModel {
 
 	private Map<String, List<uvVertex[]>> groups = new HashMap<String, List<uvVertex[]>>();

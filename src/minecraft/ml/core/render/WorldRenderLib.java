@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.ForgeHooksClient;
 
@@ -37,7 +38,8 @@ public class WorldRenderLib {
 		renderEnt.hoverStart = 0F;
 	}
 	
-	public static void renderItemIntoWorld(ItemStack is, boolean renderIn3D){
+	public static void renderItemIntoWorldCenteredAt(ItemStack is, boolean renderIn3D){
+		boolean isBlock = is.getItem() instanceof ItemBlock;
 		if (!renderIn3D){
 			GL11.glPushMatrix();
 			GL11.glScalef(0.03125F, 0.03125F, -0.0004F);
@@ -50,6 +52,12 @@ public class WorldRenderLib {
 			}
 			GL11.glPopMatrix();
 		} else {
+			if (isBlock){
+				GL11.glScalef(1.2F, 1.2F, 1.2F);
+				GL11.glRotatef(90F, 0, 1F, 0);
+			} else {
+				GL11.glTranslatef(0F, -0.125F, 0F);
+			}
 			renderEnt.setEntityItemStack(is);
 			renderItem.doRenderItem(renderEnt, 0, 0, 0, 0, 0);
 		}

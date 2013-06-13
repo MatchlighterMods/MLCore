@@ -17,7 +17,6 @@ public class ReflectionUtils {
 	        for (final Method method : allMethods) {
 	            if (annotation == null || method.isAnnotationPresent(annotation)) {
 	                Annotation annotInstance = method.getAnnotation(annotation);
-	                // TODO process annotInstance
 	                methods.add(method);
 	            }
 	        }
@@ -26,4 +25,5 @@ public class ReflectionUtils {
 	    }
 	    return methods;
 	}
+	
 }
