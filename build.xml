@@ -103,7 +103,7 @@
 	<target name="extract-built-jar">
 		<property name="jarname" value="${modname}-${version.minecraft}-${version}" /> 
 		<mkdir dir="${build.dest}" />
-		<jar destfile="${build.dest}/${jarname}.zip">
+		<jar destfile="${build.dest}/${jarname}.jar">
 			<fileset dir="${mcp.obfoutput.classes}" includes="**/ml/core/**/*.class" />
 			<fileset dir="${code.src.dir}/minecraft" includes="**/ml/core/res/**/*" erroronmissingdir="false"/>
 			

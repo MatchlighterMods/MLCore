@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
 import ml.core.internal.PacketHandler;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -26,12 +27,7 @@ public class MLCore implements IFMLLoadingPlugin {
 	
 	@Init
 	public void init(FMLInitializationEvent evt) {
-		try {
-			Field f = GuiScreen.class.getField("mc");
-			System.out.println(Modifier.isPublic(f.getModifiers()));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
 	}
 	
 	@Override
