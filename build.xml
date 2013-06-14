@@ -108,6 +108,7 @@
 			<fileset dir="${code.src.dir}/minecraft" includes="**/ml/core/res/**/*" erroronmissingdir="false"/>
 			
 			<zipfileset dir="${build.env}" includes="version.properties"/>
+			<zipfileset dir="${build.env}" includes="mlcore_at.cfg"/>
 			<mappedresources>
 				<concat>
 					<fileset dir="${build.env}" includes="mcmod.info" />

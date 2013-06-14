@@ -1,6 +1,9 @@
-package ml.core.render;
+package ml.core.gui;
 
 import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderEngine;
@@ -10,7 +13,8 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 
-public class GuiRenderLib {
+@SideOnly(Side.CLIENT)
+public class GuiRenderUtils {
 
 	public static RenderItem renderItem = new RenderItem();
 	public static int zLevel = 0;

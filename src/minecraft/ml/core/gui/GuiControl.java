@@ -1,8 +1,11 @@
 package ml.core.gui;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import ml.core.geo.GeoMath;
 import net.minecraft.client.gui.Gui;
 
+@SideOnly(Side.CLIENT)
 public abstract class GuiControl extends GuiComponent {
 
 	public int X;
@@ -13,7 +16,8 @@ public abstract class GuiControl extends GuiComponent {
 	
 	public boolean enabled = true;
 	
-	public GuiControl(int xPos, int yPos, int w, int h) {
+	public GuiControl(GuiContainerControl assocGui, int xPos, int yPos, int w, int h) {
+		super(assocGui);
 		X=xPos;
 		Y=yPos;
 		width=w;
