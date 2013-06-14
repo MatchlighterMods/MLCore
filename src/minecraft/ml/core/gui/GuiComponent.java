@@ -24,6 +24,6 @@ public abstract class GuiComponent extends Gui {
 	public void onHoverKeyPress(int key) {}
 	
 	public void bindTexture(String t) {
-		guiContainer.
+		guiContainer.mc.renderEngine.bindTexture(t);
 	}
 }
