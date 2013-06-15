@@ -14,23 +14,15 @@ import ml.core.gui.GuiSide;
 
 public class ControlTabManager extends GuiControl {
 
-	public static class GuiTab extends GuiPositionedControl {
+	public abstract static class GuiTab {
 		
 		public ControlTabManager TabManager;
 		
-		public GuiTab(ControlTabManager ctm, int xPos, int yPos, int w,
-				int h) {
-			super(ctm.guiContainer, xPos, yPos, w, h);
-			
+		public GuiTab(ControlTabManager ctm) {
 			TabManager = ctm;
 		}
 
-		@Override
-		public void performRender(Minecraft mc, int mouseX, int mouseY) {
-			// TODO Auto-generated method stub
-			
-		}
-		
+		public abstract void renderContents(Minecraft mc, int mX, int mY);
 	}
 	
 	public GuiSide side;

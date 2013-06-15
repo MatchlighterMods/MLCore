@@ -10,14 +10,12 @@ import net.minecraft.client.gui.Gui;
 public abstract class GuiControl extends Gui {
 	
 	protected GuiContainerControl guiContainer;
+	public boolean enabled = true;
 	
 	public GuiControl(GuiContainerControl gcc) {
 		guiContainer = gcc;
 	}
 
-	/**
-	 * Must return true to receive events
-	 */
 	public abstract boolean isPointIn(int pX, int pY);
 	
 	public abstract void performRender(Minecraft mc, int mouseX, int mouseY);
@@ -26,7 +24,9 @@ public abstract class GuiControl extends Gui {
 		return false;
 	}
 	
-	public void onMouseMovedOrUp() {}
+	public void onMouseMovedOrUp(int mX, int mY, int act) {}
 	
-	public void onHoverKeyPress(int key) {}
+	public boolean onKeyPress(char chr, int key) {
+		return false;
+	}
 }

@@ -11,8 +11,6 @@ public abstract class GuiPositionedControl extends GuiControl {
 
 	public Rectangle bounds = new Rectangle(0, 0, 0, 0);
 	
-	public boolean enabled = true;
-	
 	public GuiPositionedControl(GuiContainerControl assocGui, int xPos, int yPos, int w, int h) {
 		super(assocGui);
 		
