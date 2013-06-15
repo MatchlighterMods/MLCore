@@ -3,9 +3,10 @@ package ml.core.gui.controls;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import ml.core.gui.GuiContainerControl;
-import ml.core.gui.GuiControl;
+import ml.core.gui.GuiPositionedControl;
+import ml.core.gui.GuiRenderUtils;
 
-public class ControlButton extends GuiControl {
+public class ControlButton extends GuiPositionedControl {
 	
 	public String text;
 	
@@ -16,7 +17,8 @@ public class ControlButton extends GuiControl {
 
 	@Override
 	public void performRender(Minecraft mc, int mouseX, int mouseY) {
-		
+		mc.renderEngine.bindTexture("/gui/gui.png");
+		GuiRenderUtils.drawSlicedRect(bounds.xCoord, bounds.yCoord, bounds.width, bounds.height, 0, enabled ? isPointIn(mouseX, mouseY) ? 86 : 66 : 46, 200, 20, 2, 2, 2, 2);
 	}
 
 }

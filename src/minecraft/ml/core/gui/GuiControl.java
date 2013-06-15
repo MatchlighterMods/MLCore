@@ -2,31 +2,31 @@ package ml.core.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ml.core.geo.GeoMath;
+import ml.core.geo.GeoMath.XYPair;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
 @SideOnly(Side.CLIENT)
-public abstract class GuiControl extends GuiComponent {
+public abstract class GuiControl extends Gui {
+	
+	protected GuiContainerControl guiContainer;
+	
+	public GuiControl(GuiContainerControl gcc) {
+		guiContainer = gcc;
+	}
 
-	public int X;
-	public int Y;
+	/**
+	 * Must return true to receive events
+	 */
+	public abstract boolean isPointIn(int pX, int pY);
 	
-	public int width;
-	public int height;
+	public abstract void performRender(Minecraft mc, int mouseX, int mouseY);
 	
-	public boolean enabled = true;
-	
-	public GuiControl(GuiContainerControl assocGui, int xPos, int yPos, int w, int h) {
-		super(assocGui);
-		X=xPos;
-		Y=yPos;
-		width=w;
-		height=h;
-
+	public boolean onMouseClicked(int mouseX, int mouseY, MouseButton button) {
+		return false;
 	}
 	
-	@Override
-	public boolean pointIn(int pX, int pY) {
-		return GeoMath.pointInRect(pX, pY, X, Y, width, height);
-	}
+	public void onMouseMovedOrUp() {}
+	
+	public void onHoverKeyPress(int key) {}
 }

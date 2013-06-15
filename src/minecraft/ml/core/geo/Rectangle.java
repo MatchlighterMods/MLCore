@@ -13,6 +13,13 @@ public class Rectangle {
 		this.height = height;
 	}
 	
+	public Rectangle(Rectangle crect) {
+		this.xCoord = crect.xCoord;
+		this.yCoord = crect.yCoord;
+		this.width = crect.width;
+		this.height = crect.height;
+	}
+	
 	public boolean isPointInside(int pntX, int pntY) {
 		return GeoMath.pointInRect(pntX, pntY, this.xCoord, this.yCoord, this.width, this.height);
 	}
