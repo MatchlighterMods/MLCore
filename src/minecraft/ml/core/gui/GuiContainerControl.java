@@ -3,9 +3,13 @@ package ml.core.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 
+@SideOnly(Side.CLIENT)
 public abstract class GuiContainerControl extends GuiContainer {
 	
 	protected List<GuiControl> controls = new ArrayList<GuiControl>();
@@ -15,6 +19,9 @@ public abstract class GuiContainerControl extends GuiContainer {
 		// TODO Auto-generated constructor stub
 	}
 
+	public int getWinWidth() {return xSize;}
+	public int getWinHeight() {return ySize;}
+	
 	protected abstract void initControls();
 	
 	protected GuiControl getControlAt(int x, int y) {
@@ -27,6 +34,14 @@ public abstract class GuiContainerControl extends GuiContainer {
 			}
 		}
 		return ret;
+	}
+	
+	@Override
+	public void updateScreen() {
+		super.updateScreen();
+		for (GuiControl gc : controls) {
+			gc.update();
+		}
 	}
 	
 	@Override
@@ -43,8 +58,8 @@ public abstract class GuiContainerControl extends GuiContainer {
 	
 	@Override
 	protected void mouseClicked(int mX, int mY, int btn) {
-		GuiControl gc = getControlAt(mX, mY);
-		if (gc != null && gc.enabled && gc.onMouseClicked(mX, mY, MouseButton.get(btn))) {
+		GuiControl gc = getControlAt(mX-guiLeft, mY-guiTop);
+		if (gc != null && gc.enabled && gc.onMouseClicked(mX-guiLeft, mY-guiTop, MouseButton.get(btn))) {
 			return;
 		}
 		
@@ -55,7 +70,7 @@ public abstract class GuiContainerControl extends GuiContainer {
 	protected void mouseMovedOrUp(int mX, int mY, int act) {
 		for (GuiControl gc : controls) {
 			if (gc.enabled) {
-				gc.onMouseMovedOrUp(mX, mY, act);
+				gc.onMouseMovedOrUp(mX-guiLeft, mY-guiTop, act);
 			}
 		}
 		super.mouseMovedOrUp(mX, mY, act);

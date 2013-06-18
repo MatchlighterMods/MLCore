@@ -1,11 +1,14 @@
 package ml.core.gui.controls;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import ml.core.gui.GuiContainerControl;
 import ml.core.gui.GuiPositionedControl;
 import ml.core.gui.GuiRenderUtils;
 
+@SideOnly(Side.CLIENT)
 public class ControlButton extends GuiPositionedControl {
 	
 	public String text;

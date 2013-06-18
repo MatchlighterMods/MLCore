@@ -13,6 +13,35 @@ public class BlockUtils {
 
 	public static int[] atCCW = new int[]{4,5,4,5,3,2, 6};
 	public static int[] atCW = new int[]{5,4,5,4,2,3, 6};
+	public static int[][] relations = {
+		{2,3,4,5},
+		{2,3,4,5},
+		{1,0,4,5},
+		{1,0,5,4},
+		{1,0,3,2},
+		{1,0,2,3},
+	};
+	
+	public enum SpatialRelation {
+		Below,
+		Above,
+		Behind,
+		InFront,
+		Left,
+		Right,
+		;
+	}
+	
+	public static ForgeDirection getFDFromFaceRelation(ForgeDirection face, SpatialRelation rel) {
+		switch (rel) {
+		case Behind:
+			return face.getOpposite();
+		case InFront:
+			return face;
+		default:
+			return ForgeDirection.values()[relations[face.ordinal()][rel.ordinal()]];
+		}
+	}
 	
 	/**
 	 * Gets the y-axis rotation for a {@link ForgeDirection}

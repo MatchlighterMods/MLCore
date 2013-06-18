@@ -2,7 +2,6 @@ package ml.core.gui;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ml.core.geo.GeoMath.XYPair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 
@@ -16,6 +15,8 @@ public abstract class GuiControl extends Gui {
 		guiContainer = gcc;
 	}
 
+	public void update() {}
+	
 	public abstract boolean isPointIn(int pX, int pY);
 	
 	public abstract void performRender(Minecraft mc, int mouseX, int mouseY);
