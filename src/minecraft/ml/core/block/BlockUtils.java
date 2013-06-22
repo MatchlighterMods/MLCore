@@ -14,22 +14,21 @@ public class BlockUtils {
 	public static int[] atCCW = new int[]{4,5,4,5,3,2, 6};
 	public static int[] atCW = new int[]{5,4,5,4,2,3, 6};
 	public static int[][] relations = {
-		{2,3,4,5},
-		{2,3,4,5},
-		{1,0,4,5},
-		{1,0,5,4},
-		{1,0,3,2},
-		{1,0,2,3},
+		{3,2,4,5, 1,0},
+		{3,2,4,5, 0,1},
+		{0,1,5,4, 3,2},
+		{0,1,4,5, 2,3},
+		{0,1,2,3, 5,4},
+		{0,1,3,2, 4,5},
 	};
 	
 	public enum SpatialRelation {
 		Below,
 		Above,
-		Behind,
-		InFront,
 		Left,
 		Right,
-		;
+		Behind,
+		InFront,;
 	}
 	
 	public static ForgeDirection getFDFromFaceRelation(ForgeDirection face, SpatialRelation rel) {

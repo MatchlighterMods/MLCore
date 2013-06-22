@@ -1,6 +1,6 @@
 package ml.core.trace;
 
-import ml.core.geo.BlockVec3;
+import ml.core.geo.BlockCoord;
 import ml.core.geo.Cuboid6;
 import ml.core.geo.Vector3;
 import ml.core.math.MathHelper;
@@ -117,7 +117,7 @@ public class RayTrace {
 		return mop;
 	}
 
-	public MovingObjectPosition traceCuboids(Vector3 strt, Vector3 end, BiMap<Integer, Cuboid6> cuboids, BlockVec3 blv3, Block blk){
+	public MovingObjectPosition traceCuboids(Vector3 strt, Vector3 end, BiMap<Integer, Cuboid6> cuboids, BlockCoord blv3, Block blk){
 		MovingObjectPosition mop = traceCuboids(strt, end, cuboids);
 		if (mop != null){
 			mop.blockX = blv3.x;

@@ -16,6 +16,9 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * Note that all mouse coordinate parameters will be tab-localized.
+ */
 @SideOnly(Side.CLIENT)
 public class ControlTabManager extends GuiControl {
 
@@ -23,35 +26,43 @@ public class ControlTabManager extends GuiControl {
 
 		public ControlTabManager TabManager;
 
+		public static final int defaultSize = 24;
+		
 		public GuiTab(ControlTabManager ctm) {
 			TabManager = ctm;
 		}
 
 		public int tabColor = 0x3590FF;
 		
-		public abstract void renderContents(Minecraft mc, int mX, int mY);
+		public abstract void renderContents(Minecraft mc, int lmX, int lmY);
 		public abstract int getWidth();
 		public abstract int getHeight();
 		
-		public boolean onMouseClicked(int mouseX, int mouseY, MouseButton button) {
+		public void updateTick() {}
+		
+		public List<String> getTooltipLines(int lmx, int lmy) {
+			return new ArrayList<String>();
+		}
+		
+		public boolean onMouseClicked(int lmX, int lmY, MouseButton button) {
 			return true;
 		}
 		
-		public void onMouseMovedOrUp(int mX, int mY, int act) {}
+		public void onMouseMovedOrUp(int lmX, int lmY, int act) {}
 		
 		public boolean onKeyPress(char chr, int key) {
 			return false;
 		}
 
-		public void renderAt(Minecraft mc, int drawX, int drawY, int mX, int mY) {
+		public void renderAt(Minecraft mc, int drawX, int drawY, int lmX, int lmY) {
 			GL11.glPushMatrix();
-			renderBackground(mc, drawX, drawY, mX, mY);
+			renderBackground(mc, drawX, drawY, lmX, lmY);
 			GL11.glTranslatef(drawX, drawY, 0F);
-			renderContents(mc, mX, mY);
+			renderContents(mc, lmX, lmY);
 			GL11.glPopMatrix();
 		}
 
-		protected void renderBackground(Minecraft mc, int drawX, int drawY, int mX, int mY) {
+		protected void renderBackground(Minecraft mc, int drawX, int drawY, int lmX, int lmY) {
 			float red = ((tabColor >> 16) & 0xFF) /255F;
 			float green = ((tabColor >> 8) & 0xFF) /255F;
 			float blue = (tabColor & 0xFF) /255F;
@@ -121,20 +132,32 @@ public class ControlTabManager extends GuiControl {
 		}
 		return false;
 	}
+	
+	@Override
+	public List<String> getTooltipLines(int mx, int my) {
+		GuiTab tab = getTabAt(mx, my);
+		if (tab != null) {
+			Rectangle bbox = getTabBounds(tab);
+			return tab.getTooltipLines(mx-bbox.xCoord, my-bbox.yCoord);
+		}
+		return super.getTooltipLines(mx, my);
+	}
 
 	@Override
-	public void performRender(Minecraft mc, int mouseX, int mouseY) {
+	public void renderBackground(Minecraft mc, int mouseX, int mouseY) {
 		int offset = 4;
 		for (GuiTab gt : tabs) {
 			switch (side) {
 			case Left:
 			case Right:
-				gt.renderAt(mc, side==GuiSide.Left ? -gt.getWidth() : guiContainer.getWinWidth(), offset, mouseX, mouseY);
+				int x = side==GuiSide.Left ? -gt.getWidth() : guiContainer.getWinWidth();
+				gt.renderAt(mc, x, offset, mouseX-x, mouseY-offset);
 				offset += gt.getHeight();
 				break;
 			case Top:
 			case Bottom:
-				gt.renderAt(mc, side==GuiSide.Top ? -gt.getHeight() : guiContainer.getWinHeight(), offset, mouseX, mouseY);
+				int y = side==GuiSide.Top ? -gt.getHeight() : guiContainer.getWinHeight();
+				gt.renderAt(mc, offset, y, mouseX-offset, mouseY-y);
 				offset =+ gt.getWidth();
 				break;	
 			}

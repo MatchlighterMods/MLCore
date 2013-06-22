@@ -3,7 +3,7 @@ package ml.core.geo;
 import ml.core.math.MathHelper;
 import net.minecraft.util.Vec3;
 
-public class Vector3{
+public class Vector3 {
 
 	public double x;
 	public double y;

@@ -44,15 +44,18 @@ public abstract class GuiContainerControl extends GuiContainer {
 		}
 	}
 	
+	protected abstract void drawBackgroundLayer(float f, int i, int j);
+	
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
-		// TODO Auto-generated method stub
-		
+	protected final void drawGuiContainerBackgroundLayer(float f, int i, int j) {
+		for (GuiControl ctrl : controls) ctrl.renderFirst(mc, i, j);
+		drawBackgroundLayer(f, i, j);
+		for (GuiControl ctrl : controls) ctrl.renderBackground(mc, i, j);
 	}
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-		// TODO Auto-generated method stub
+		for (GuiControl ctrl : controls) ctrl.renderForeground(mc, par1, par2);
 		super.drawGuiContainerForegroundLayer(par1, par2);
 	}
 	

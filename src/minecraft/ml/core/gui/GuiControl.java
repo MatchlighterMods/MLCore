@@ -1,5 +1,8 @@
 package ml.core.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -19,7 +22,13 @@ public abstract class GuiControl extends Gui {
 	
 	public abstract boolean isPointIn(int pX, int pY);
 	
-	public abstract void performRender(Minecraft mc, int mouseX, int mouseY);
+	public void renderFirst(Minecraft mc, int mouseX, int mouseY) {}
+	public void renderBackground(Minecraft mc, int mouseX, int mouseY) {}
+	public void renderForeground(Minecraft mc, int mouseX, int mouseY) {}
+	
+	public List<String> getTooltipLines(int mx, int my) {
+		return new ArrayList<String>();
+	}
 	
 	public boolean onMouseClicked(int mouseX, int mouseY, MouseButton button) {
 		return false;

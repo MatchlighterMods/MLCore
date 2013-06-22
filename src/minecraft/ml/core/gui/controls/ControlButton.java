@@ -19,7 +19,7 @@ public class ControlButton extends GuiPositionedControl {
 	}
 
 	@Override
-	public void performRender(Minecraft mc, int mouseX, int mouseY) {
+	public void renderForeground(Minecraft mc, int mouseX, int mouseY) {
 		mc.renderEngine.bindTexture("/gui/gui.png");
 		GuiRenderUtils.drawSlicedRect(bounds.xCoord, bounds.yCoord, bounds.width, bounds.height, 0, enabled ? isPointIn(mouseX, mouseY) ? 86 : 66 : 46, 200, 20, 2, 2, 2, 2);
 	}
