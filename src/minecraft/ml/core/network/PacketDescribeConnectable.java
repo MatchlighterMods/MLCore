@@ -16,19 +16,17 @@ import cpw.mods.fml.common.network.Player;
  */
 public class PacketDescribeConnectable extends PacketDescribe {
 
-	ForgeDirection linkDir;
+	public @data ForgeDirection linkDir;
 	
 	public PacketDescribeConnectable(TileEntityConnectable tec, String ch) {
 		super(tec, ch);
 		linkDir = tec.linkedDir;
 		
-		writeInt(linkDir.ordinal());
 	}
 	
 	public PacketDescribeConnectable(Player pl, ByteArrayDataInput data) {
 		super(pl, data);
 		
-		linkDir = ForgeDirection.getOrientation(data.readInt());
 	}
 	
 	@Override

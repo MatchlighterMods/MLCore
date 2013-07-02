@@ -1,22 +1,36 @@
 package ml.core.gui.controls;
 
+import ml.core.geo.Vector2;
+import ml.core.gui.MouseButton;
+import ml.core.gui.controls.ControlTabManager.GuiTab;
 import net.minecraft.client.Minecraft;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ml.core.gui.controls.ControlTabManager.GuiTab;
 
 @SideOnly(Side.CLIENT)
-public class TabLedger extends GuiTab {
+public abstract class TabLedger extends GuiTab {
 
-	public TabLedger(ControlTabManager ctm) {
+	protected boolean openState = false;
+	public Vector2<Integer> openSize;
+	public Vector2<Integer> closeSize;
+	
+	public int sizingSpeed = 8;
+	
+	public TabLedger(ControlTabManager ctm, Vector2<Integer> oSize) {
 		super(ctm);
-		// TODO Auto-generated constructor stub
+		
+		closeSize = new Vector2<Integer>(defaultSize, defaultSize);
+		size = closeSize.copy();
+		openSize = oSize.copy();
 	}
 
 	@Override
 	public void updateTick() {
-		// TODO Sizing logic
 		super.updateTick();
+		
+		Vector2<Integer> trg = openState ? openSize : closeSize;
+		size.X = Math.abs(size.X-trg.X) < sizingSpeed ? trg.X : size.X + (size.X > trg.X ? -sizingSpeed : sizingSpeed);
+		size.Y = Math.abs(size.Y-trg.Y) < sizingSpeed ? trg.Y : size.Y + (size.Y > trg.Y ? -sizingSpeed : sizingSpeed);
 	}
 	
 	public void openLedger() {
@@ -25,29 +39,20 @@ public class TabLedger extends GuiTab {
 				((TabLedger)tab).closeLedger();
 			}
 		}
-		// TODO Open
+		openState = true;
 	}
 	
 	public void closeLedger() {
-		
+		openState = false;
 	}
 	
 	@Override
-	public void renderContents(Minecraft mc, int mX, int mY) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	public abstract void renderContents(Minecraft mc, int mX, int mY);
+	
 	@Override
-	public int getWidth() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getHeight() {
-		// TODO Auto-generated method stub
-		return 0;
+	public boolean onMouseClicked(int lmX, int lmY, MouseButton button) {
+		if (openState) closeLedger(); else openLedger();
+		return true;
 	}
 
 }

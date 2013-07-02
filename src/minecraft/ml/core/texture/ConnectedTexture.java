@@ -5,7 +5,6 @@ import ml.core.block.BlockUtils.SpatialRelation;
 import ml.core.geo.BlockCoord;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.IBlockLiquid.BlockType;
 
 public abstract class ConnectedTexture {
 

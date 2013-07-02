@@ -9,6 +9,20 @@ public class Vector2<T> {
 		this.Y = y;
 	}
 	
+	public Vector2<T> set(T x, T y) {
+		X=x;
+		Y=y;
+		return this;
+	}
+	
+	public Vector2<T> set(Vector2<T> ov) {
+		return set(ov.X, ov.Y);
+	}
+	
+	public Vector2<T> copy() {
+		return new Vector2<T>(X, Y);
+	}
+	
 	@Override
 	public String toString(){
 		return "X: " + X + ", Y: " + Y;

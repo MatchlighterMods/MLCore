@@ -1,10 +1,9 @@
 package ml.core.gui;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import ml.core.geo.GeoMath;
 import ml.core.geo.Rectangle;
-import net.minecraft.client.gui.Gui;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiPositionedControl extends GuiControl {

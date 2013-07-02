@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.texture.TextureStitched;

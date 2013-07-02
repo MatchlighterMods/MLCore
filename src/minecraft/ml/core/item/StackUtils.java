@@ -1,7 +1,6 @@
 package ml.core.item;
 
 import ml.core.data.NBTUtils;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 

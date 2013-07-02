@@ -7,14 +7,14 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.texture.TextureStitched;
 import net.minecraft.client.texturepacks.ITexturePack;
+
+import org.lwjgl.opengl.GL11;
 
 public class TextureUtils {
 

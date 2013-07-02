@@ -1,13 +1,18 @@
 package ml.core.network;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
+import ml.core.network.serializers.SForgeDirection;
+import ml.core.network.serializers.SItemsStack;
+import ml.core.network.serializers.SNBTTagCompound;
+import ml.core.network.serializers.SString;
 import net.minecraft.network.packet.Packet250CustomPayload;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -16,15 +21,26 @@ import cpw.mods.fml.common.network.Player;
 
 public abstract class MLPacket {
 	
+	public static final List<IDataSerializer> serializers = new ArrayList<IDataSerializer>();
+	static {
+		serializers.add(new SString());
+		serializers.add(new SNBTTagCompound());
+		serializers.add(new SItemsStack());
+		serializers.add(new SForgeDirection());
+	}
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	public static @interface data {}
+	
 	protected Player player;
 	protected Integer packetID;
 	
 	// Incoming
-	protected ByteArrayDataInput dataIn;
 	
 	public MLPacket(Player pl, ByteArrayDataInput data) {
-		dataIn = data;
 		player = pl;
+		
+		loadData(data);
 	}
 	
 	public abstract void handleClientSide() throws IOException;
@@ -32,193 +48,85 @@ public abstract class MLPacket {
 	public abstract void handleServerSide() throws IOException;
 	
 	// Outgoing
-	protected ByteArrayOutputStream dataOutRaw;
-	protected DataOutputStream dataOut;
 	protected boolean chunkDataPacket = true;
 	protected String channel;
 	
 	public MLPacket(Player pl, String ch) {
 		player = pl;
-		dataOutRaw = new ByteArrayOutputStream();
-		dataOut = new DataOutputStream(dataOutRaw);
+		
 		packetID = PacketHandler.findPacketId(this.getClass());
 		channel = ch;
-		writeInt(packetID);
 	}
 	
-	public Packet250CustomPayload convertToPkt250(){
+	protected void loadData(ByteArrayDataInput dataIn) {
+		try {
+			for (Field fld : this.getClass().getFields()) {
+				data ann = fld.getAnnotation(data.class);
+				if (ann != null) {
+					Class cls = fld.getType();
+				
+					if (cls == int.class || cls == Integer.class)
+						fld.setInt(this, dataIn.readInt());
+					else if (cls == boolean.class || cls == Boolean.class)
+						fld.setBoolean(this, dataIn.readBoolean());
+					else if (cls == double.class || cls == Double.class)
+						fld.setDouble(this, dataIn.readDouble());
+					else if (cls == byte.class || cls == Byte.class)
+						fld.setByte(this, dataIn.readByte());
+					
+					else {
+						IDataSerializer slzr = null;
+						for (IDataSerializer IDS : serializers) {
+							if (IDS.handles(cls) && (slzr == null || slzr.getPriority()<IDS.getPriority()))
+									slzr = IDS;
+						}
+						if (slzr != null) fld.set(this, slzr.deserialize(dataIn));
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Packet250CustomPayload convertToPkt250() {
+		ByteArrayOutputStream dataOutRaw = new ByteArrayOutputStream();
+		DataOutputStream dataOut = new DataOutputStream(dataOutRaw);
+		
+		try {
+			dataOut.writeInt(packetID);
+			
+			for (Field fld : this.getClass().getFields()) {
+				data ann = fld.getAnnotation(data.class);
+				if (ann != null) {
+					Class cls = fld.getType();
+				
+					if (cls == int.class || cls == Integer.class)
+						dataOut.writeInt(fld.getInt(this));
+					else if (cls == boolean.class || cls == Boolean.class)
+						dataOut.writeBoolean(fld.getBoolean(this));
+					else if (cls == double.class || cls == Double.class)
+						dataOut.writeDouble(fld.getDouble(this));
+					else if (cls == byte.class || cls == Byte.class)
+						dataOut.writeByte(fld.getByte(this));
+					
+					else {
+						IDataSerializer slzr = null;
+						for (IDataSerializer IDS : serializers) {
+							if (IDS.handles(cls) && (slzr == null || slzr.getPriority()<IDS.getPriority()))
+									slzr = IDS;
+						}
+						if (slzr != null) slzr.serialize(fld.get(this), dataOut);
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		Packet250CustomPayload mcPkt = new Packet250CustomPayload(channel, dataOutRaw.toByteArray());
 		mcPkt.isChunkDataPacket = chunkDataPacket;
 		return mcPkt;
 	}
 	
-	// Readers
-	
-//	public Integer readInt() throws IOException
-//    {
-//		return dataIn.readInt();
-//    }
-//    
-//    public Double readDouble() throws IOException
-//    {
-//    	return dataIn.readDouble();
-//    }
-//    
-//    public Boolean readBoolean() throws IOException
-//    {
-//    	return dataIn.readBoolean();
-//    }
-//    
-//    public Byte readByte() throws IOException
-//    {
-//    	return dataIn.readByte();
-//    }
-	
-    public ItemStack readItemStack() throws IOException
-    {
-        ItemStack var1 = null;
-        short var2 = dataIn.readShort();
-
-        if (var2 >= 0)
-        {
-            byte var3 = dataIn.readByte();
-            short var4 = dataIn.readShort();
-            var1 = new ItemStack(var2, var3, var4);
-            var1.stackTagCompound = readNBTTagCompound();
-        }
-
-        return var1;
-    }
-
-    public NBTTagCompound readNBTTagCompound() throws IOException
-    {
-        short var1 = dataIn.readShort();
-
-        if (var1 < 0)
-        {
-            return null;
-        }
-        else
-        {
-            byte[] var2 = new byte[var1];
-            dataIn.readFully(var2);
-            return CompressedStreamTools.decompress(var2);
-        }
-    }
-    
-    public String readString(Integer maxLength) throws IOException
-    {
-    	short var2 = dataIn.readShort();
-
-    	if (var2 > maxLength){
-    		throw new IOException("Received string length longer than maximum allowed (" + var2 + " > " + maxLength + ")");
-    	}else if (var2 < 0){
-    		throw new IOException("Received string length is less than zero! Weird string!");
-    	}else{
-    		StringBuilder var3 = new StringBuilder();
-
-    		for (int var4 = 0; var4 < var2; ++var4){
-    			var3.append(dataIn.readChar());
-    		}
-
-    		return var3.toString();
-    	}
-    }
-    
-    // Writers
-    
-    public void writeInt(Integer i)
-    {
-    	try {
-			dataOut.writeInt(i);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
-    
-    public void writeDouble(Double d)
-    {
-    	try {
-			dataOut.writeDouble(d);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
-    
-    public void writeBoolean(Boolean b)
-    {
-    	try {
-    		dataOut.writeBoolean(b);
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
-    }
-
-    public void writeByte(Byte b)
-    {
-    	try {
-    		dataOut.writeByte(b);
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
-    }
-
-    public void writeItemStack(ItemStack par0ItemStack)
-    {
-    	try {
-    		if (par0ItemStack == null)
-    		{
-    			dataOut.writeShort(-1);
-    		}
-    		else
-    		{
-    			dataOut.writeShort(par0ItemStack.itemID);
-    			dataOut.writeByte(par0ItemStack.stackSize);
-    			dataOut.writeShort(par0ItemStack.getItemDamage());
-    			NBTTagCompound var2 = null;
-
-    			if (par0ItemStack.getItem().isDamageable() || par0ItemStack.getItem().getShareTag())
-    			{
-    				var2 = par0ItemStack.stackTagCompound;
-    			}
-
-    			writeNBTTagCompound(var2);
-    		}
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
-    }
-
-    public void writeNBTTagCompound(NBTTagCompound par0NBTTagCompound)
-    {
-    	try {
-    		if (par0NBTTagCompound == null)
-    		{
-    			dataOut.writeShort(-1);
-    		}
-    		else
-    		{
-    			byte[] var2 = CompressedStreamTools.compress(par0NBTTagCompound);
-    			dataOut.writeShort((short)var2.length);
-    			dataOut.write(var2);
-    		}
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
-    }
-
-    public void writeString(String par0Str)
-    {
-    	try {
-    		if (par0Str.length() > 32767){
-    			throw new IOException("String too big");
-    		}else{
-    			dataOut.writeShort(par0Str.length());
-    			dataOut.writeChars(par0Str);
-    		}
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    	}
-    }
-    
 }

@@ -13,10 +13,10 @@ import cpw.mods.fml.common.network.Player;
 
 public abstract class PacketDescribe extends MLPacket {
 
-	public int x;
-	public int y;
-	public int z;
-	public ForgeDirection facing;
+	public @data int x;
+	public @data int y;
+	public @data int z;
+	public @data ForgeDirection facing;
 
 	public PacketDescribe(TileEntity te, String ch) {
 		super(null, ch);
@@ -26,19 +26,11 @@ public abstract class PacketDescribe extends MLPacket {
 		z = te.zCoord;
 		facing = (te instanceof IRotatableTE) ? ((IRotatableTE)te).getFacing() : ForgeDirection.UNKNOWN;
 
-		writeInt(x);
-		writeInt(y);
-		writeInt(z);
-		writeInt(facing.ordinal());
 	}
 
 	public PacketDescribe(Player pl, ByteArrayDataInput data) {
 		super(pl, data);
 
-		x = dataIn.readInt();
-		y = dataIn.readInt();
-		z = dataIn.readInt();
-		facing = ForgeDirection.getOrientation(dataIn.readInt());
 	}
 
 	@Override

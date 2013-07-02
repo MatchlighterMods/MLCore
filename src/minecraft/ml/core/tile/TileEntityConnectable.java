@@ -1,11 +1,11 @@
 package ml.core.tile;
 
-import cpw.mods.fml.common.network.PacketDispatcher;
 import ml.core.network.PacketDescribeConnectable;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TileEntityConnectable extends TileEntity {
 
@@ -54,6 +54,9 @@ public class TileEntityConnectable extends TileEntity {
 		PacketDispatcher.sendPacketToAllInDimension(getDescriptionPacket(), worldObj.getWorldInfo().getDimension());
 	}
 	
+	public void onConnect(boolean isMaster, TileEntityConnectable remote) {}
+	public void onDisconnect() {}
+	
 	public boolean canConnectWith(TileEntityConnectable rtec) {
 		return rtec.getClass() == this.getClass() && rtec.facing==this.facing;
 	}
@@ -68,6 +71,7 @@ public class TileEntityConnectable extends TileEntity {
 				
 				linkedDir = fd;
 				rtec.linkedDir = fd.getOpposite();
+				onConnect(getMaster()==this, rtec);
 				rtec.sendPacket();
 				return true;
 			}
@@ -87,6 +91,7 @@ public class TileEntityConnectable extends TileEntity {
 			if (!(te instanceof TileEntityConnectable) || !canConnectWith((TileEntityConnectable)te) ||
 					((TileEntityConnectable)te).linkedDir != linkedDir.getOpposite()){
 				linkedDir = ForgeDirection.UNKNOWN;
+				onDisconnect();
 				sendPacket();
 			}
 		}

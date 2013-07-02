@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ml.core.geo.Rectangle;
+import ml.core.geo.Vector2;
 import ml.core.gui.GuiContainerControl;
 import ml.core.gui.GuiControl;
 import ml.core.gui.GuiSide;
@@ -16,27 +17,30 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-/**
- * Note that all mouse coordinate parameters will be tab-localized.
- */
 @SideOnly(Side.CLIENT)
 public class ControlTabManager extends GuiControl {
-
+	
+	public int tabTopMargin = 4;
+	
+	/**
+	 * Note that all mouse coordinate parameters will be tab-localized.
+	 */
 	public abstract static class GuiTab extends Gui {
 
 		public ControlTabManager TabManager;
 
 		public static final int defaultSize = 24;
 		
+		public Vector2<Integer> size;
+		
 		public GuiTab(ControlTabManager ctm) {
 			TabManager = ctm;
+			size = new Vector2<Integer>(defaultSize, defaultSize);
 		}
 
 		public int tabColor = 0x3590FF;
 		
 		public abstract void renderContents(Minecraft mc, int lmX, int lmY);
-		public abstract int getWidth();
-		public abstract int getHeight();
 		
 		public void updateTick() {}
 		
@@ -68,24 +72,24 @@ public class ControlTabManager extends GuiControl {
 			float blue = (tabColor & 0xFF) /255F;
 
 			GL11.glColor4f(red, green, blue, 1.0F);
-			mc.renderEngine.bindTexture("mods/MLCore/textures/gui/ledger.png");
+			mc.renderEngine.bindTexture("/mods/MLCore/textures/gui/ledger.png");
 
 			switch (TabManager.side){
 			case Left:
-				this.drawTexturedModalRect(drawX, drawY, 0, 0, this.getWidth(), this.getHeight()-4);
-				this.drawTexturedModalRect(drawX, drawY+4, 0, 256-this.getHeight()+4, this.getWidth(), this.getHeight()-4);
+				this.drawTexturedModalRect(drawX, drawY, 0, 0, this.size.X, this.size.Y-4);
+				this.drawTexturedModalRect(drawX, drawY+4, 0, 256-this.size.Y+4, this.size.X, this.size.Y-4);
 				break;
 			case Right:
-				this.drawTexturedModalRect(drawX, drawY, 256-this.getWidth(), 0, this.getWidth(), this.getHeight()-4);
-				this.drawTexturedModalRect(drawX, drawY+4, 256-this.getWidth(), 256-this.getHeight()+4, this.getWidth(), this.getHeight()-4);
+				this.drawTexturedModalRect(drawX, drawY, 256-this.size.X, 0, this.size.X, this.size.Y-4);
+				this.drawTexturedModalRect(drawX, drawY+4, 256-this.size.X, 256-this.size.Y+4, this.size.X, this.size.Y-4);
 				break;
 			case Top:
-				this.drawTexturedModalRect(drawX, drawY, 0, 0, this.getWidth()-4, this.getHeight());
-				this.drawTexturedModalRect(drawX+4, drawY, 256-this.getWidth()+4, 0, this.getWidth()-4, this.getHeight());
+				this.drawTexturedModalRect(drawX, drawY, 0, 0, this.size.X-4, this.size.Y);
+				this.drawTexturedModalRect(drawX+4, drawY, 256-this.size.X+4, 0, this.size.X-4, this.size.Y);
 				break;
 			case Bottom:
-				this.drawTexturedModalRect(drawX, drawY, 0, 256-this.getHeight(), this.getWidth()-4, this.getHeight());
-				this.drawTexturedModalRect(drawX+4, drawY, 256-this.getWidth()+4, 256-this.getHeight(), this.getWidth()-4, this.getHeight());
+				this.drawTexturedModalRect(drawX, drawY, 0, 256-this.size.Y, this.size.X-4, this.size.Y);
+				this.drawTexturedModalRect(drawX+4, drawY, 256-this.size.X+4, 256-this.size.Y, this.size.X-4, this.size.Y);
 				break;
 			}
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -144,41 +148,50 @@ public class ControlTabManager extends GuiControl {
 	}
 
 	@Override
+	public void update() {
+		super.update();
+		
+		for (GuiTab gt : tabs) {
+			gt.updateTick();
+		}
+	}
+	
+	@Override
 	public void renderBackground(Minecraft mc, int mouseX, int mouseY) {
-		int offset = 4;
+		int offset = tabTopMargin;
 		for (GuiTab gt : tabs) {
 			switch (side) {
 			case Left:
 			case Right:
-				int x = side==GuiSide.Left ? -gt.getWidth() : guiContainer.getWinWidth();
+				int x = side==GuiSide.Left ? -gt.size.X : guiContainer.getWinWidth();
 				gt.renderAt(mc, x, offset, mouseX-x, mouseY-offset);
-				offset += gt.getHeight();
+				offset += gt.size.Y;
 				break;
 			case Top:
 			case Bottom:
-				int y = side==GuiSide.Top ? -gt.getHeight() : guiContainer.getWinHeight();
+				int y = side==GuiSide.Top ? -gt.size.Y : guiContainer.getWinHeight();
 				gt.renderAt(mc, offset, y, mouseX-offset, mouseY-y);
-				offset =+ gt.getWidth();
+				offset =+ gt.size.X;
 				break;	
 			}
 		}
 	}
 
 	public Rectangle getTabBounds(GuiTab iTab) {
-		int offset = 4;
+		int offset = tabTopMargin;
 		for (GuiTab gt : tabs) {
 			switch (side) {
 			case Left:
 			case Right:
 				if (gt==iTab)
-					return new Rectangle(side==GuiSide.Left ? -gt.getWidth() : guiContainer.getWinWidth(), offset, gt.getWidth(), gt.getHeight());
-				offset += gt.getHeight();
+					return new Rectangle(side==GuiSide.Left ? -gt.size.X : guiContainer.getWinWidth(), offset, gt.size.X, gt.size.Y);
+				offset += gt.size.Y;
 				break;
 			case Top:
 			case Bottom:
 				if (gt==iTab)
-					return new Rectangle(side==GuiSide.Top ? -gt.getHeight() : guiContainer.getWinHeight(), offset, gt.getWidth(), gt.getHeight());
-				offset =+ gt.getWidth();
+					return new Rectangle(side==GuiSide.Top ? -gt.size.Y : guiContainer.getWinHeight(), offset, gt.size.X, gt.size.Y);
+				offset =+ gt.size.X;
 				break;	
 			}
 		}
@@ -186,28 +199,28 @@ public class ControlTabManager extends GuiControl {
 	}
 	
 	public GuiTab getTabAt(int x, int y) {
-		int xLower = 4;
-		int yLower = 4;
+		int xLower = tabTopMargin;
+		int yLower = tabTopMargin;
 
 		for (GuiTab gt : tabs) {
 			switch (side) {
 			case Left:
 			case Right:
-				if (y>yLower && y<yLower+gt.getHeight() &&
-						((side==GuiSide.Left && x>-gt.getWidth() && x<0) ||
-								(side==GuiSide.Right && x>guiContainer.getWinWidth() && x<guiContainer.getWinWidth()+gt.getWidth()))) {
+				if (y>yLower && y<yLower+gt.size.Y &&
+						((side==GuiSide.Left && x>-gt.size.X && x<0) ||
+								(side==GuiSide.Right && x>guiContainer.getWinWidth() && x<guiContainer.getWinWidth()+gt.size.X))) {
 					return gt;
 				}
-				yLower += gt.getHeight();
+				yLower += gt.size.Y;
 				break;
 			case Top:
 			case Bottom:
-				if (x>xLower && y<xLower+gt.getWidth() &&
-						((side==GuiSide.Top && y>-gt.getHeight() && y<0) ||
-								(side==GuiSide.Bottom && y>guiContainer.getWinHeight() && y<guiContainer.getWinHeight()+gt.getHeight()))) {
+				if (x>xLower && y<xLower+gt.size.X &&
+						((side==GuiSide.Top && y>-gt.size.Y && y<0) ||
+								(side==GuiSide.Bottom && y>guiContainer.getWinHeight() && y<guiContainer.getWinHeight()+gt.size.Y))) {
 					return gt;
 				}
-				xLower += gt.getWidth();
+				xLower += gt.size.X;
 				break;
 			}
 		}

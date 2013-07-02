@@ -3,15 +3,15 @@ package ml.core.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public abstract class GuiControl extends Gui {
 	
-	protected GuiContainerControl guiContainer;
+	public GuiContainerControl guiContainer;
 	public boolean enabled = true;
 	
 	public GuiControl(GuiContainerControl gcc) {
