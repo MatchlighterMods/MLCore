@@ -66,13 +66,13 @@ public abstract class MLPacket {
 					Class cls = fld.getType();
 				
 					if (cls == int.class || cls == Integer.class)
-						fld.setInt(this, dataIn.readInt());
+						fld.set(this, dataIn.readInt());
 					else if (cls == boolean.class || cls == Boolean.class)
-						fld.setBoolean(this, dataIn.readBoolean());
+						fld.set(this, dataIn.readBoolean());
 					else if (cls == double.class || cls == Double.class)
-						fld.setDouble(this, dataIn.readDouble());
+						fld.set(this, dataIn.readDouble());
 					else if (cls == byte.class || cls == Byte.class)
-						fld.setByte(this, dataIn.readByte());
+						fld.set(this, dataIn.readByte());
 					
 					else {
 						IDataSerializer slzr = null;
@@ -102,13 +102,13 @@ public abstract class MLPacket {
 					Class cls = fld.getType();
 				
 					if (cls == int.class || cls == Integer.class)
-						dataOut.writeInt(fld.getInt(this));
+						dataOut.writeInt((Integer)fld.get(this));
 					else if (cls == boolean.class || cls == Boolean.class)
-						dataOut.writeBoolean(fld.getBoolean(this));
+						dataOut.writeBoolean((Boolean)fld.get(this));
 					else if (cls == double.class || cls == Double.class)
-						dataOut.writeDouble(fld.getDouble(this));
+						dataOut.writeDouble((Double)fld.get(this));
 					else if (cls == byte.class || cls == Byte.class)
-						dataOut.writeByte(fld.getByte(this));
+						dataOut.writeByte((Byte)fld.get(this));
 					
 					else {
 						IDataSerializer slzr = null;
