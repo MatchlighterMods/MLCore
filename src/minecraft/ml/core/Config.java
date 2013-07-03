@@ -1,7 +1,9 @@
 package ml.core;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -15,11 +17,19 @@ import cpw.mods.fml.common.FMLLog;
 public abstract class Config {
 
 	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.FIELD)
 	public static @interface Prop {
 		public String category() default Configuration.CATEGORY_GENERAL;
 		public String comment() default "";
 		public String inFileName() default "";
 		
+		/**
+		 * If you rename a property, add this annotation with any old names.
+		 * The config will load the most recent name that it can find.
+		 * Will resave as the latest name and delete old names.
+		 * 
+		 * *Do NOT create a new property with the name of a renamed property. It will be deleted.
+		 */
 		@Retention(RetentionPolicy.RUNTIME)
 		public static @interface Renamed {
 			public String[] value();

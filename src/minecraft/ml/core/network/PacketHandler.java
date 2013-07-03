@@ -41,8 +41,6 @@ public abstract class PacketHandler implements IPacketHandler {
 					mlPkt.handleClientSide();
 				}
 				
-			} catch (IOException e) {
-				// "UNPOSSIBLE?" -cpw
 			} catch (Exception e) {
 				onError(e, mlPkt);
 			}
@@ -61,7 +59,9 @@ public abstract class PacketHandler implements IPacketHandler {
 		if (PacketTypes.get(pkId) != null){
 			try {
 				Constructor<? extends MLPacket> contructor = PacketTypes.get(pkId).getConstructor(Player.class, ByteArrayDataInput.class);
-				return contructor.newInstance(pl, dat);
+				MLPacket nPkt = contructor.newInstance(pl, dat);
+				nPkt.channel = pkt.channel;
+				return nPkt;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
