@@ -7,6 +7,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import ml.core.network.serializers.SForgeDirection;
@@ -29,6 +32,10 @@ public abstract class MLPacket {
 		serializers.add(new SForgeDirection());
 	}
 	
+	/**
+	 * Can be applied to any field that has a Type that has a serializer.
+	 * See {@link MLPacket#serializers}, {@link IDataSerializer}, and examples in the serializers package
+	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	public static @interface data {}
 	
@@ -60,7 +67,9 @@ public abstract class MLPacket {
 	
 	protected void loadData(ByteArrayDataInput dataIn) {
 		try {
-			for (Field fld : this.getClass().getFields()) {
+			Field[] flds = this.getClass().getFields();
+			Arrays.sort(flds, fldComparator);
+			for (Field fld : flds) {
 				data ann = fld.getAnnotation(data.class);
 				if (ann != null) {
 					Class cls = fld.getType();
@@ -96,7 +105,9 @@ public abstract class MLPacket {
 		try {
 			dataOut.writeInt(packetID);
 			
-			for (Field fld : this.getClass().getFields()) {
+			Field[] flds = this.getClass().getFields();
+			Arrays.sort(flds, fldComparator);
+			for (Field fld : flds) {
 				data ann = fld.getAnnotation(data.class);
 				if (ann != null) {
 					Class cls = fld.getType();
@@ -129,4 +140,10 @@ public abstract class MLPacket {
 		return mcPkt;
 	}
 	
+	private Comparator<Field> fldComparator = new Comparator<Field>() {
+		@Override
+		public int compare(Field arg0, Field arg1) {
+			return arg0.getName().compareTo(arg1.getName());
+		}
+	};
 }
