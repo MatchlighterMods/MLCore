@@ -3,6 +3,7 @@ package ml.core.network;
 import java.lang.reflect.Constructor;
 import java.util.logging.Level;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
 
@@ -31,14 +32,15 @@ public abstract class PacketHandler implements IPacketHandler {
 	@Override
 	public void onPacketData(INetworkManager manager,
 			Packet250CustomPayload packet, Player player) {
+		EntityPlayer entPl = (EntityPlayer)player;
 		
-		MLPacket mlPkt = tryCastPacket(packet, player);
+		MLPacket mlPkt = tryCastPacket(packet, entPl);
 		if (mlPkt != null){
 			try {
 				if (FMLCommonHandler.instance().getEffectiveSide().isServer()){
-					mlPkt.handleServerSide();
+					mlPkt.handleServerSide(entPl);
 				} else {
-					mlPkt.handleClientSide();
+					mlPkt.handleClientSide(entPl);
 				}
 				
 			} catch (Exception e) {
@@ -53,12 +55,12 @@ public abstract class PacketHandler implements IPacketHandler {
 		FMLLog.log("Packet|"+mlPkt.channel, Level.SEVERE, e, "Error handling packet");
 	}
 
-	private static MLPacket tryCastPacket(Packet250CustomPayload pkt, Player pl){
+	private static MLPacket tryCastPacket(Packet250CustomPayload pkt, EntityPlayer pl){
 		ByteArrayDataInput dat = ByteStreams.newDataInput(pkt.data);
 		int pkId = dat.readInt();
 		if (PacketTypes.get(pkId) != null){
 			try {
-				Constructor<? extends MLPacket> contructor = PacketTypes.get(pkId).getConstructor(Player.class, ByteArrayDataInput.class);
+				Constructor<? extends MLPacket> contructor = PacketTypes.get(pkId).getConstructor(EntityPlayer.class, ByteArrayDataInput.class);
 				MLPacket nPkt = contructor.newInstance(pl, dat);
 				nPkt.channel = pkt.channel;
 				return nPkt;

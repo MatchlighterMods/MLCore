@@ -25,12 +25,8 @@ public abstract class TabLedger extends GuiTab {
 	}
 
 	@Override
-	public void updateTick() {
-		super.updateTick();
-		
-		Vector2<Integer> trg = openState ? openSize : closeSize;
-		size.X = Math.abs(size.X-trg.X) < sizingSpeed ? trg.X : size.X + (size.X > trg.X ? -sizingSpeed : sizingSpeed);
-		size.Y = Math.abs(size.Y-trg.Y) < sizingSpeed ? trg.Y : size.Y + (size.Y > trg.Y ? -sizingSpeed : sizingSpeed);
+	public Vector2<Integer> getTargetSize() {
+		return openState ? openSize : closeSize;
 	}
 	
 	public void openLedger() {

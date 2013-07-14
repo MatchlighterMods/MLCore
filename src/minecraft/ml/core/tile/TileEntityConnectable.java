@@ -36,12 +36,20 @@ public class TileEntityConnectable extends TileEntity {
 		return this;
 	}
 	
+	public boolean isMaster() {
+		return getMaster() == this;
+	}
+	
 	public TileEntityConnectable getConnected() {
 		TileEntity te = worldObj.getBlockTileEntity(xCoord+linkedDir.offsetX, yCoord+linkedDir.offsetY, zCoord+linkedDir.offsetZ);
-		if (te instanceof TileEntityConnectable && te.getClass()==this.getClass()) {
+		if (linkedDir != ForgeDirection.UNKNOWN && te instanceof TileEntityConnectable && te.getClass()==this.getClass()) {
 			return (TileEntityConnectable)te;
 		}
 		return null; 
+	}
+	
+	public boolean isConnected() {
+		return getConnected() != null;
 	}
 	
 	@Override

@@ -1,0 +1,48 @@
+package ml.core.texture;
+
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+import net.minecraft.client.renderer.texture.TextureMap;
+
+@SideOnly(Side.CLIENT)
+public abstract class CustomTextureMap extends TextureMap {
+
+	public static BufferedImage defaultMissingTextureImage = new BufferedImage(64, 64, 2);
+	static {
+		Graphics graphics = defaultMissingTextureImage.getGraphics();
+        graphics.setColor(Color.WHITE);
+        graphics.fillRect(0, 0, 64, 64);
+        graphics.setColor(Color.BLACK);
+        int i = 10;
+        int j = 0;
+
+        while (i < 64)
+        {
+            String s = j++ % 2 == 0 ? "missing" : "texture";
+            graphics.drawString(s, 1, i);
+            i += graphics.getFont().getSize();
+
+            if (j % 2 == 0)
+            {
+                i += 5;
+            }
+        }
+
+        graphics.dispose();
+	}
+	
+	public CustomTextureMap(int par1, String par2, String par3Str,
+			BufferedImage par4BufferedImage) {
+		super(par1, par2, par3Str, par4BufferedImage);
+	}
+
+	/**
+	 * Called by MLCore. You code should find whatever is using this TextureMap and re-register the icons into its list.
+	 */
+	public abstract void reregisterIcons();
+}

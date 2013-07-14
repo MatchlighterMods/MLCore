@@ -24,6 +24,14 @@ public class Vector2<T> {
 	}
 	
 	@Override
+	public boolean equals(Object obj) {
+		if (obj.getClass() == this.getClass()) {
+			return ((Vector2)obj).X == X && ((Vector2)obj).Y == Y; 
+		}
+		return false;
+	}
+	
+	@Override
 	public String toString(){
 		return "X: " + X + ", Y: " + Y;
 	}

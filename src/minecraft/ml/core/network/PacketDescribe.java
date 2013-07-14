@@ -9,8 +9,7 @@ import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
 
-import cpw.mods.fml.common.network.Player;
-
+@Deprecated
 public abstract class PacketDescribe extends MLPacket {
 
 	public @data int x;
@@ -19,7 +18,7 @@ public abstract class PacketDescribe extends MLPacket {
 	public @data ForgeDirection facing;
 
 	public PacketDescribe(TileEntity te, String ch) {
-		super(null, ch);
+		super(ch);
 
 		x = te.xCoord;
 		y = te.yCoord;
@@ -28,26 +27,25 @@ public abstract class PacketDescribe extends MLPacket {
 
 	}
 
-	public PacketDescribe(Player pl, ByteArrayDataInput data) {
+	public PacketDescribe(EntityPlayer pl, ByteArrayDataInput data) {
 		super(pl, data);
 
 	}
 
 	@Override
-	public void handleClientSide() throws IOException{
-		EntityPlayer asEntPl = (EntityPlayer)player;
-		TileEntity te = asEntPl.worldObj.getBlockTileEntity(x, y, z);
+	public void handleClientSide(EntityPlayer epl) throws IOException{
+		TileEntity te = epl.worldObj.getBlockTileEntity(x, y, z);
 		
 		if (te instanceof IRotatableTE){
 			((IRotatableTE)te).setFacing(facing);
 		}
 		
-		handleClientSide(te);
+		handleClientSide(te, epl);
 	}
 	
-	public abstract void handleClientSide(TileEntity te) throws IOException;
+	public abstract void handleClientSide(TileEntity te, EntityPlayer epl) throws IOException;
 
 	@Override
-	public void handleServerSide() throws IOException {};
+	public void handleServerSide(EntityPlayer epl) throws IOException {};
 
 }

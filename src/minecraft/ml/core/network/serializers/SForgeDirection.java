@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import ml.core.network.IDataSerializer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.ForgeDirection;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -16,7 +17,7 @@ public class SForgeDirection implements IDataSerializer {
 	}
 
 	@Override
-	public Object deserialize(ByteArrayDataInput dIn) throws IOException {
+	public Object deserialize(ByteArrayDataInput dIn, EntityPlayer epl) throws IOException {
 		return ForgeDirection.values()[dIn.readInt()];
 	}
 

@@ -14,10 +14,12 @@ import net.minecraft.util.Icon;
 public class TextureSheet {
 
 	public class TextureSprite extends TextureStitched {
+		protected String textureName;
 		protected int index;
 		
 		protected TextureSprite(String par1, int tindex) {
 			super(par1);
+			textureName = par1;
 			index = tindex;
 		}
 		
@@ -26,7 +28,7 @@ public class TextureSheet {
 			int offX = index%tilesX * swidth;
 			int offY = index/tilesY * sheight;
 			
-			textures.add(TextureUtils.loadTextureFromImage(texFile+"-"+index, masterImg.getSubimage(offX, offY, swidth, sheight)));
+			textures.add(TextureUtils.loadTextureFromImage(textureName, masterImg.getSubimage(offX, offY, swidth, sheight)));
 			
 			return true;
 		}

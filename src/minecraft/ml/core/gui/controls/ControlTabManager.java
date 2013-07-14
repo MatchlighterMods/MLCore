@@ -30,6 +30,7 @@ public class ControlTabManager extends GuiControl {
 		public ControlTabManager TabManager;
 
 		public static final int defaultSize = 24;
+		public int sizingSpeed = 8;
 		
 		public Vector2<Integer> size;
 		
@@ -42,7 +43,15 @@ public class ControlTabManager extends GuiControl {
 		
 		public abstract void renderContents(Minecraft mc, int lmX, int lmY);
 		
-		public void updateTick() {}
+		public void updateTick() {
+			Vector2<Integer> trg = getTargetSize();
+			size.X = Math.abs(size.X-trg.X) < sizingSpeed ? trg.X : size.X + (size.X > trg.X ? -sizingSpeed : sizingSpeed);
+			size.Y = Math.abs(size.Y-trg.Y) < sizingSpeed ? trg.Y : size.Y + (size.Y > trg.Y ? -sizingSpeed : sizingSpeed);
+		}
+		
+		public Vector2<Integer> getTargetSize() {
+			return size;
+		}
 		
 		public List<String> getTooltipLines(int lmx, int lmy) {
 			return new ArrayList<String>();
@@ -60,13 +69,15 @@ public class ControlTabManager extends GuiControl {
 
 		public void renderAt(Minecraft mc, int drawX, int drawY, int lmX, int lmY) {
 			GL11.glPushMatrix();
-			renderBackground(mc, drawX, drawY, lmX, lmY);
 			GL11.glTranslatef(drawX, drawY, 0F);
+			
+			renderBackground(mc, lmX, lmY);
 			renderContents(mc, lmX, lmY);
+			
 			GL11.glPopMatrix();
 		}
 
-		protected void renderBackground(Minecraft mc, int drawX, int drawY, int lmX, int lmY) {
+		protected void renderBackground(Minecraft mc, int lmX, int lmY) {
 			float red = ((tabColor >> 16) & 0xFF) /255F;
 			float green = ((tabColor >> 8) & 0xFF) /255F;
 			float blue = (tabColor & 0xFF) /255F;
@@ -76,20 +87,20 @@ public class ControlTabManager extends GuiControl {
 
 			switch (TabManager.side){
 			case Left:
-				this.drawTexturedModalRect(drawX, drawY, 0, 0, this.size.X, this.size.Y-4);
-				this.drawTexturedModalRect(drawX, drawY+4, 0, 256-this.size.Y+4, this.size.X, this.size.Y-4);
+				this.drawTexturedModalRect(0, 0, 0, 0, this.size.X, this.size.Y-4);
+				this.drawTexturedModalRect(0, 4, 0, 256-this.size.Y+4, this.size.X, this.size.Y-4);
 				break;
 			case Right:
-				this.drawTexturedModalRect(drawX, drawY, 256-this.size.X, 0, this.size.X, this.size.Y-4);
-				this.drawTexturedModalRect(drawX, drawY+4, 256-this.size.X, 256-this.size.Y+4, this.size.X, this.size.Y-4);
+				this.drawTexturedModalRect(0, 0, 256-this.size.X, 0, this.size.X, this.size.Y-4);
+				this.drawTexturedModalRect(0, 4, 256-this.size.X, 256-this.size.Y+4, this.size.X, this.size.Y-4);
 				break;
 			case Top:
-				this.drawTexturedModalRect(drawX, drawY, 0, 0, this.size.X-4, this.size.Y);
-				this.drawTexturedModalRect(drawX+4, drawY, 256-this.size.X+4, 0, this.size.X-4, this.size.Y);
+				this.drawTexturedModalRect(0, 0, 0, 0, this.size.X-4, this.size.Y);
+				this.drawTexturedModalRect(4, 0, 256-this.size.X+4, 0, this.size.X-4, this.size.Y);
 				break;
 			case Bottom:
-				this.drawTexturedModalRect(drawX, drawY, 0, 256-this.size.Y, this.size.X-4, this.size.Y);
-				this.drawTexturedModalRect(drawX+4, drawY, 256-this.size.X+4, 256-this.size.Y, this.size.X-4, this.size.Y);
+				this.drawTexturedModalRect(0, 0, 0, 256-this.size.Y, this.size.X-4, this.size.Y);
+				this.drawTexturedModalRect(4, 0, 256-this.size.X+4, 256-this.size.Y, this.size.X-4, this.size.Y);
 				break;
 			}
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

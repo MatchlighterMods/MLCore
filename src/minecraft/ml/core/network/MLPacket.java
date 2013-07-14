@@ -16,6 +16,8 @@ import ml.core.network.serializers.SForgeDirection;
 import ml.core.network.serializers.SItemsStack;
 import ml.core.network.serializers.SNBTTagCompound;
 import ml.core.network.serializers.SString;
+import ml.core.network.serializers.STileEntity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -30,6 +32,7 @@ public abstract class MLPacket {
 		serializers.add(new SNBTTagCompound());
 		serializers.add(new SItemsStack());
 		serializers.add(new SForgeDirection());
+		serializers.add(new STileEntity());
 	}
 	
 	/**
@@ -39,33 +42,12 @@ public abstract class MLPacket {
 	@Retention(RetentionPolicy.RUNTIME)
 	public static @interface data {}
 	
-	protected Player player;
 	protected Integer packetID;
 	
 	// Incoming
 	
-	public MLPacket(Player pl, ByteArrayDataInput data) {
-		player = pl;
+	public MLPacket(EntityPlayer pl, ByteArrayDataInput dataIn) {
 		
-		loadData(data);
-	}
-	
-	public abstract void handleClientSide() throws IOException;
-	
-	public abstract void handleServerSide() throws IOException;
-	
-	// Outgoing
-	protected boolean chunkDataPacket = true;
-	protected String channel;
-	
-	public MLPacket(Player pl, String ch) {
-		player = pl;
-		
-		packetID = PacketHandler.findPacketId(this.getClass());
-		channel = ch;
-	}
-	
-	protected void loadData(ByteArrayDataInput dataIn) {
 		try {
 			Field[] flds = this.getClass().getFields();
 			Arrays.sort(flds, fldComparator);
@@ -87,15 +69,28 @@ public abstract class MLPacket {
 						IDataSerializer slzr = null;
 						for (IDataSerializer IDS : serializers) {
 							if (IDS.handles(cls) && (slzr == null || slzr.getPriority()<IDS.getPriority()))
-									slzr = IDS;
-						}
-						if (slzr != null) fld.set(this, slzr.deserialize(dataIn));
+								slzr = IDS;
+						} 
+						if (slzr != null) fld.set(this, slzr.deserialize(dataIn, pl)); else throw new RuntimeException("Could not find serializer for "+cls.getName());
 					}
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
+	}
+	
+	public abstract void handleClientSide(EntityPlayer epl) throws IOException;
+	
+	public abstract void handleServerSide(EntityPlayer epl) throws IOException;
+	
+	// Outgoing
+	protected boolean chunkDataPacket = true;
+	protected String channel;
+	
+	public MLPacket(String ch) {
+		packetID = PacketHandler.findPacketId(this.getClass());
+		channel = ch;
 	}
 	
 	public Packet250CustomPayload convertToPkt250() {
@@ -127,7 +122,7 @@ public abstract class MLPacket {
 							if (IDS.handles(cls) && (slzr == null || slzr.getPriority()<IDS.getPriority()))
 									slzr = IDS;
 						}
-						if (slzr != null) slzr.serialize(fld.get(this), dataOut);
+						if (slzr != null) slzr.serialize(fld.get(this), dataOut); else throw new RuntimeException("Could not find serializer for "+cls.getName());
 					}
 				}
 			}

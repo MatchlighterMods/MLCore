@@ -1,6 +1,8 @@
 package ml.core;
 
+import net.minecraftforge.common.MinecraftForge;
 import ml.core.internal.PacketHandler;
+import ml.core.texture.CustomTextureMapManager;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
 import cpw.mods.fml.common.Mod.Instance;
@@ -9,7 +11,7 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
 @Mod(modid="MLCore", name="MLCore")
-@NetworkMod(versionBounds="[0.5,)", clientSideRequired=false, serverSideRequired=false, channels={"MLCore"}, packetHandler=PacketHandler.class)
+@NetworkMod(versionBounds="[0.6,)", clientSideRequired=false, serverSideRequired=false, channels={"MLCore"}, packetHandler=PacketHandler.class)
 @TransformerExclusions({"ml"})
 public class MLCore { // implements IFMLLoadingPlugin
 	
@@ -18,7 +20,7 @@ public class MLCore { // implements IFMLLoadingPlugin
 	
 	@Init
 	public void init(FMLInitializationEvent evt) {
-
+		MinecraftForge.EVENT_BUS.register(CustomTextureMapManager.instance);
 	}
 	
 //	@Override

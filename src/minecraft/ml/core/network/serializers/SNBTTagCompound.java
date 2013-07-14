@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import ml.core.network.IDataSerializer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -17,7 +18,7 @@ public class SNBTTagCompound implements IDataSerializer {
 	}
 
 	@Override
-	public Object deserialize(ByteArrayDataInput dIn) throws IOException {
+	public Object deserialize(ByteArrayDataInput dIn, EntityPlayer epl) throws IOException {
 		return readNBTTagCompound(dIn);
 	}
 
