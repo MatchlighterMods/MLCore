@@ -1,13 +1,12 @@
 package ml.core.tile;
 
-import ml.core.network.PacketDescribeConnectable;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class TileEntityConnectable extends TileEntity {
+public abstract class TileEntityConnectable extends TileEntity {
 
 	public ForgeDirection facing = ForgeDirection.NORTH;
 	public ForgeDirection linkedDir = ForgeDirection.UNKNOWN;
@@ -53,10 +52,7 @@ public class TileEntityConnectable extends TileEntity {
 	}
 	
 	@Override
-	public Packet getDescriptionPacket() {
-		PacketDescribeConnectable pdc = new PacketDescribeConnectable(this, "MLCore");
-		return pdc.convertToPkt250();
-	}
+	public abstract Packet getDescriptionPacket();
 	
 	private void sendPacket() {
 		PacketDispatcher.sendPacketToAllInDimension(getDescriptionPacket(), worldObj.getWorldInfo().getDimension());
