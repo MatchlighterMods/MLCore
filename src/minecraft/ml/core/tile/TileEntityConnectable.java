@@ -76,6 +76,7 @@ public abstract class TileEntityConnectable extends TileEntity {
 				linkedDir = fd;
 				rtec.linkedDir = fd.getOpposite();
 				onConnect(getMaster()==this, rtec);
+				rtec.onConnect(getMaster()==rtec, this);
 				rtec.sendPacket();
 				return true;
 			}

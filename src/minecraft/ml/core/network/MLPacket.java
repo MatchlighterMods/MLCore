@@ -80,9 +80,9 @@ public abstract class MLPacket {
 		}
 	}
 	
-	public abstract void handleClientSide(EntityPlayer epl) throws IOException;
+	public void handleClientSide(EntityPlayer epl) throws IOException {};
 	
-	public abstract void handleServerSide(EntityPlayer epl) throws IOException;
+	public void handleServerSide(EntityPlayer epl) throws IOException {};
 	
 	// Outgoing
 	protected boolean chunkDataPacket = true;
