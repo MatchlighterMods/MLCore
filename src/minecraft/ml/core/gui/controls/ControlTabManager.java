@@ -11,6 +11,7 @@ import ml.core.gui.GuiSide;
 import ml.core.gui.MouseButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -19,6 +20,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ControlTabManager extends GuiControl {
+	
+	protected static ResourceLocation ledgerRes = new ResourceLocation("MLCore:textures/gui/ledger.png");
 	
 	public int tabTopMargin = 4;
 	
@@ -83,7 +86,7 @@ public class ControlTabManager extends GuiControl {
 			float blue = (tabColor & 0xFF) /255F;
 
 			GL11.glColor4f(red, green, blue, 1.0F);
-			mc.renderEngine.bindTexture("/mods/MLCore/textures/gui/ledger.png");
+			mc.func_110434_K().func_110577_a(ledgerRes);
 
 			switch (TabManager.side){
 			case Left:

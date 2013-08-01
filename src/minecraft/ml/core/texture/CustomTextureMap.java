@@ -8,10 +8,18 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.util.ResourceLocation;
 
 @SideOnly(Side.CLIENT)
 public abstract class CustomTextureMap extends TextureMap {
 
+	public ResourceLocation resourceLoc;
+	
+	public CustomTextureMap(int par1, String par2Str, ResourceLocation resLoc) {
+		super(par1, par2Str);
+		resourceLoc = resLoc;
+	}
+	
 	public static BufferedImage defaultMissingTextureImage = new BufferedImage(64, 64, 2);
 	static {
 		Graphics graphics = defaultMissingTextureImage.getGraphics();
@@ -34,11 +42,6 @@ public abstract class CustomTextureMap extends TextureMap {
         }
 
         graphics.dispose();
-	}
-	
-	public CustomTextureMap(int par1, String par2, String par3Str,
-			BufferedImage par4BufferedImage) {
-		super(par1, par2, par3Str, par4BufferedImage);
 	}
 
 	/**

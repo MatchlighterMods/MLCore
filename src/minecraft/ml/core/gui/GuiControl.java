@@ -39,4 +39,6 @@ public abstract class GuiControl extends Gui {
 	public boolean onKeyPress(char chr, int key) {
 		return false;
 	}
+	
+	public float getZLevel() { return this.zLevel; }
 }

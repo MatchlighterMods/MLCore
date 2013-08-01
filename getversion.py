@@ -43,13 +43,14 @@ def main():
     except OSError:
       print("Git not found")
       vers="v1.0-0-deadbeef"
-    (major,minor,rev,githash)=re.match("v(\d+).(\d+)-(\d+)-(.*)",vers).groups()
+    (major,minor,info,rev,githash)=re.match("v(\d+).(\d+)-?(.*)-(\d+)-(.*)",vers).groups()
 
     (mcpversion,mcversion,mcserverversion) = re.match("[.\w]+ \(data: ([.\w]+), client: ([.\w.]+), server: ([.\w.]+)\)",Commands.fullversion()).groups()
 
     with open("version.properties","w") as f:
       f.write("%s=%s\n" %("MLCore.build.major.number",major))
       f.write("%s=%s\n" %("MLCore.build.minor.number",minor))
+      f.write("%s=%s\n" %("MLCore.build.info",info))
       f.write("%s=%s\n" %("MLCore.build.revision.number",rev))
       f.write("%s=%s\n" %("MLCore.build.githash",githash))
       f.write("%s=%s\n" %("MLCore.build.mcpversion",mcpversion))

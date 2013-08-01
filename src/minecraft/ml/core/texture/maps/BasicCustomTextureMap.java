@@ -5,13 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.util.ResourceLocation;
 
 import ml.core.texture.CustomTextureMap;
 import ml.core.texture.CustomTextureMapManager;
 
 public class BasicCustomTextureMap extends CustomTextureMap {
 
-	public static final BasicCustomTextureMap GUI = new BasicCustomTextureMap(CustomTextureMapManager.getNextMapId(), "gui", "textures/gui/", defaultMissingTextureImage);
+	public static final BasicCustomTextureMap GUI = new BasicCustomTextureMap(CustomTextureMapManager.getNextMapId(), "textures/gui/", "MLCore:textures/icons.png");
 	
 	
 	public List<IIconProvider> providers = new ArrayList<IIconProvider>();
@@ -20,15 +21,14 @@ public class BasicCustomTextureMap extends CustomTextureMap {
 		providers.add(pvdr);
 	}
 	
-	public BasicCustomTextureMap(int par1, String par2, String par3Str, BufferedImage par4BufferedImage) {
-		super(par1, par2, par3Str, par4BufferedImage);
+	public BasicCustomTextureMap(int par1, String basePath, ResourceLocation resLoc) {
+		super(par1, basePath, resLoc);
 		
 		CustomTextureMapManager.instance.registerMap(this);
 	}
-
-	@Override
-	public void refreshTextures() {
-		super.refreshTextures();
+	
+	public BasicCustomTextureMap(int par1, String basePath, String resLoc) {
+		this(par1, basePath, new ResourceLocation(resLoc));
 	}
 	
 	@Override

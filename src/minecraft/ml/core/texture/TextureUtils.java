@@ -3,37 +3,37 @@ package ml.core.texture;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.Texture;
-import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.texture.TextureStitched;
-import net.minecraft.client.texturepacks.ITexturePack;
-
-import org.lwjgl.opengl.GL11;
+import net.minecraft.client.resources.ResourceManager;
+import net.minecraft.util.ResourceLocation;
 
 public class TextureUtils {
 
-	public static Texture createDefaultTexture(String nm, int w, int h) {
-		return new Texture(nm, 2, w, h, GL11.GL_CLAMP, GL11.GL_RGBA, GL11.GL_NEAREST, GL11.GL_NEAREST, null);
+//	public static Texture createDefaultTexture(String nm, int w, int h) {
+//		return new Texture(nm, 2, w, h, GL11.GL_CLAMP, GL11.GL_RGBA, GL11.GL_NEAREST, GL11.GL_NEAREST, null);
+//	}
+//	
+//	public static Texture loadTextureFromFile(String file) {
+//		BufferedImage bfi = loadBufferedImage(file);
+//		return new Texture(file, 2, bfi.getWidth(), bfi.getHeight(), GL11.GL_CLAMP, GL11.GL_RGBA, GL11.GL_NEAREST, GL11.GL_NEAREST, bfi);
+//	}
+//	
+//	public static Texture loadTextureFromImage(String name, BufferedImage bfi) {
+//		return new Texture(name, 2, bfi.getWidth(), bfi.getHeight(), GL11.GL_CLAMP, GL11.GL_RGBA, GL11.GL_NEAREST, GL11.GL_NEAREST, bfi);
+//	}
+	
+	public static BufferedImage loadBufferedImage(String fl) {
+		return loadBufferedImage(new ResourceLocation(fl));
 	}
 	
-	public static Texture loadTextureFromFile(String file) {
-		BufferedImage bfi = loadBufferedImage(file);
-		return new Texture(file, 2, bfi.getWidth(), bfi.getHeight(), GL11.GL_CLAMP, GL11.GL_RGBA, GL11.GL_NEAREST, GL11.GL_NEAREST, bfi);
-	}
-	
-	public static Texture loadTextureFromImage(String name, BufferedImage bfi) {
-		return new Texture(name, 2, bfi.getWidth(), bfi.getHeight(), GL11.GL_CLAMP, GL11.GL_RGBA, GL11.GL_NEAREST, GL11.GL_NEAREST, bfi);
-	}
-	
-	public static BufferedImage loadBufferedImage(String file) {
+	public static BufferedImage loadBufferedImage(ResourceLocation resLoc) {
 		try {
-			InputStream is = Minecraft.getMinecraft().renderEngine.texturePack.getSelectedTexturePack().getResourceAsStream(file);
+			InputStream is = Minecraft.getMinecraft().func_110442_L().func_110536_a(resLoc).func_110527_b();
 			if (is != null) {
 				BufferedImage bfi = loadBufferedImage(is);
 				return bfi;
@@ -51,9 +51,10 @@ public class TextureUtils {
 	}
 	
 	public static boolean shouldReloadTexture(TextureMap mp, String texFile) {
-		return mp.setTextureEntry(texFile, new TextureStitched(texFile) {
+		return mp.setTextureEntry(texFile, new TextureAtlasSprite(texFile) {
 			@Override
-			public boolean loadTexture(TextureManager manager, ITexturePack texturepack, String name, String fileName, BufferedImage image, ArrayList textures) {
+			public boolean load(ResourceManager manager,
+					ResourceLocation location) throws IOException {
 				return false;
 			}
 		}); 

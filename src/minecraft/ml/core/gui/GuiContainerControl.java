@@ -36,9 +36,9 @@ public abstract class GuiContainerControl extends GuiContainer {
 		GuiControl ret = null;
 		float cZind = 0;
 		for (GuiControl ctrl : controls) {
-			if (ctrl.isPointIn(x, y) && ctrl.zLevel>=cZind) {
+			if (ctrl.isPointIn(x, y) && ctrl.getZLevel()>=cZind) {
 				ret = ctrl;
-				cZind = ret.zLevel;
+				cZind = ret.getZLevel();
 			}
 		}
 		return ret;

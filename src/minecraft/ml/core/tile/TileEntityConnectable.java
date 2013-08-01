@@ -55,7 +55,7 @@ public abstract class TileEntityConnectable extends TileEntity {
 	public abstract Packet getDescriptionPacket();
 	
 	private void sendPacket() {
-		PacketDispatcher.sendPacketToAllInDimension(getDescriptionPacket(), worldObj.getWorldInfo().getDimension());
+		PacketDispatcher.sendPacketToAllInDimension(getDescriptionPacket(), worldObj.provider.dimensionId);
 	}
 	
 	public void onConnect(boolean isMaster, TileEntityConnectable remote) {}
