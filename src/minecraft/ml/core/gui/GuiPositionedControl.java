@@ -1,7 +1,7 @@
 package ml.core.gui;
 
-import ml.core.geo.GeoMath;
-import ml.core.geo.Rectangle;
+import ml.core.vec.GeoMath;
+import ml.core.vec.Rectangle;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

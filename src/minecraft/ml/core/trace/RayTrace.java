@@ -1,9 +1,9 @@
 package ml.core.trace;
 
-import ml.core.geo.BlockCoord;
-import ml.core.geo.Cuboid6;
-import ml.core.geo.Vector3;
 import ml.core.math.MathHelper;
+import ml.core.vec.BlockCoord;
+import ml.core.vec.Cuboid6;
+import ml.core.vec.Vector3;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;

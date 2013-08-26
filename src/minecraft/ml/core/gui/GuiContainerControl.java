@@ -3,7 +3,7 @@ package ml.core.gui;
 import java.util.ArrayList;
 import java.util.List;
 
-import ml.core.geo.Rectangle;
+import ml.core.vec.Rectangle;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Container;
 

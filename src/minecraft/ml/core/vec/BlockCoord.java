@@ -1,4 +1,4 @@
-package ml.core.geo;
+package ml.core.vec;
 
 import net.minecraftforge.common.ForgeDirection;
 

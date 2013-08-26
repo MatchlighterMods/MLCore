@@ -1,4 +1,4 @@
-package ml.core.geo;
+package ml.core.vec;
 
 public class Rectangle {
 	public int xCoord;

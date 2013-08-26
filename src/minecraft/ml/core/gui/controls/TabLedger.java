@@ -1,8 +1,8 @@
 package ml.core.gui.controls;
 
-import ml.core.geo.Vector2;
 import ml.core.gui.MouseButton;
 import ml.core.gui.controls.ControlTabManager.GuiTab;
+import ml.core.vec.Vector2;
 import net.minecraft.client.Minecraft;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

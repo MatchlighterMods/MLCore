@@ -1,6 +1,6 @@
 package ml.core.block;
 
-import ml.core.geo.Vector3;
+import ml.core.vec.Vector3;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.ForgeDirection;

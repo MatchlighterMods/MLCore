@@ -2,7 +2,7 @@ package ml.core.texture;
 
 import ml.core.block.BlockUtils;
 import ml.core.block.BlockUtils.SpatialRelation;
-import ml.core.geo.BlockCoord;
+import ml.core.vec.BlockCoord;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -28,11 +28,15 @@ public abstract class ConnectedTexture {
 		return mapTexture(data);
 	}
 	
+	/**
+	 * Maps data to an index of the sprite it is associated with.
+	 * Typical use cases can use {@link ConnectedTexture#ctmMap} for mapping.
+	 */
 	public abstract int mapTexture(int data);
 	public abstract boolean faceCanConnectOnSide(IBlockAccess iba, BlockCoord co, ForgeDirection side, int face);
 	
 	protected static int[] ctmMap = new int[256];
-	static { //Why does it need Java 7 for binary literals...? Anyone need a script for converting binary literals found in a file? I got one.
+	static { //Why does it need Java 7 for binary literals...? Anyone need a script for converting binary literals found in a file? I've got one.
 		ctmMap[0] = 17;
 		ctmMap[255] = 51; //0b11111111
 		

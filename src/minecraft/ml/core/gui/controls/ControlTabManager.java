@@ -3,12 +3,12 @@ package ml.core.gui.controls;
 import java.util.ArrayList;
 import java.util.List;
 
-import ml.core.geo.Rectangle;
-import ml.core.geo.Vector2;
 import ml.core.gui.GuiContainerControl;
 import ml.core.gui.GuiControl;
 import ml.core.gui.GuiSide;
 import ml.core.gui.MouseButton;
+import ml.core.vec.Rectangle;
+import ml.core.vec.Vector2;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;

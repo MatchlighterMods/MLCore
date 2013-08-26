@@ -1,4 +1,4 @@
-package ml.core.geo;
+package ml.core.vec;
 
 public class Vector2<T> {
 	public T X;
