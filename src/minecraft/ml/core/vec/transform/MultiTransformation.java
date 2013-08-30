@@ -25,8 +25,8 @@ public class MultiTransformation extends Transformation {
 	public Matrix4d toMatrix() {
 		if (cacheMat==null) {
 			cacheMat = new Matrix4d();
-			for (Transformation t : tranforms)
-				t.applyTo(cacheMat);
+			for (int i=tranforms.size()-1; i>=0; i--)
+				tranforms.get(i).applyTo(cacheMat);
 		}
 		return cacheMat;
 	}

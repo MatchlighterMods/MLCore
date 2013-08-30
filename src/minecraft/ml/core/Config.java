@@ -47,7 +47,11 @@ public abstract class Config {
 		}
 	}
 	
-	public abstract String getFailMsg();
+	protected Configuration fcfg;
+	
+	public Config(Configuration cfg) {
+		fcfg = cfg;
+	}
 	
 	public static Property.Type getForgeType(Class cls) {
 		if (cls.isArray()) cls = cls.getComponentType();
@@ -62,7 +66,7 @@ public abstract class Config {
 		return null;
 	}
 		
-	public void load(Configuration cfg) {
+	public Config load() {
 		try {
 			for (Field fld : this.getClass().getFields()){
 				Prop ann = fld.getAnnotation(Prop.class);
@@ -95,7 +99,7 @@ public abstract class Config {
 							if (onm.endsWith(".")) onm += propName;
 							String[] path = onm.split("\\"+Configuration.CATEGORY_SPLITTER);
 							onm = path[path.length-1];
-							ConfigCategory cat = cfg.getCategory(path.length>1 ? StringUtils.join(Arrays.copyOf(path, path.length-1), ".") : ann.category());
+							ConfigCategory cat = fcfg.getCategory(path.length>1 ? StringUtils.join(Arrays.copyOf(path, path.length-1), ".") : ann.category());
 							if (cat != null && cat.containsKey(onm)) {
 								cProp = cat.get(onm);
 								cat.remove(onm);
@@ -103,7 +107,7 @@ public abstract class Config {
 						}
 					
 					if (type.isArray()) {
-						cProp = cfg.get(ann.category(), propName, cProp!=null ? cProp.getStringList() : (String[])fld.get(this), null, forgeTyp);
+						cProp = fcfg.get(ann.category(), propName, cProp!=null ? cProp.getStringList() : (String[])fld.get(this), null, forgeTyp);
 						switch (forgeTyp) {
 						case INTEGER:
 							fld.set(this, cProp.getIntList());
@@ -119,7 +123,7 @@ public abstract class Config {
 							break;
 						}
 					} else {
-						cProp = cfg.get(ann.category(), propName, cProp!=null ? cProp.getString() : fld.get(this).toString(), null, forgeTyp);
+						cProp = fcfg.get(ann.category(), propName, cProp!=null ? cProp.getString() : fld.get(this).toString(), null, forgeTyp);
 						switch (forgeTyp) {
 						case INTEGER:
 							fld.set(this, cProp.getInt(fld.getInt(this)));
@@ -141,9 +145,42 @@ public abstract class Config {
 				}
 			}
 		} catch(Exception e) {
-			FMLLog.log(Level.SEVERE, e, getFailMsg());
+			FMLLog.log(Level.SEVERE, e, "Failed to load the configuration properly");
 		} finally {
-			cfg.save();
+			fcfg.save();
+		}
+		return this;
+	}
+	
+	public void save() {
+		try {
+			for (Field fld : this.getClass().getFields()){
+				Prop ann = fld.getAnnotation(Prop.class);
+				if (ann != null){
+					Class type = fld.getType();
+					String fldName = fld.getName();
+					
+					String propName = ann.inFileName().isEmpty() ? fldName : ann.inFileName();
+					Property cProp = null;
+					
+					Property.Type forgeTyp = getForgeType(type);
+					
+					if (type.isArray()) {
+						cProp = fcfg.get(ann.category(), propName, (String[])fld.get(this), null, forgeTyp);
+						cProp.set((String[])fld.get(this));
+					} else {
+						cProp = fcfg.get(ann.category(), propName, fld.get(this).toString(), null, forgeTyp);
+						cProp.set((String)fld.get(this));
+					}
+										
+					if (cProp != null && !ann.comment().isEmpty())
+						cProp.comment = ann.comment();
+				}
+			}
+		} catch(Exception e) {
+			FMLLog.log(Level.SEVERE, e, "Failed to save all of the configuration");
+		} finally {
+			fcfg.save();
 		}
 	}
 }
