@@ -5,7 +5,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 
 import ml.core.Config.Prop.Renamed;
@@ -48,6 +51,11 @@ public abstract class Config {
 	}
 	
 	protected Configuration fcfg;
+	private List<Object> mods = new ArrayList<Object>();
+	
+	public void addModule(Object mod) {
+		mods.add(mod);
+	}
 	
 	public Config(Configuration cfg) {
 		fcfg = cfg;
@@ -65,85 +73,89 @@ public abstract class Config {
 			return Property.Type.STRING;
 		return null;
 	}
-		
+	
+	protected void loadModule(Object modInst, Class modCls) throws IllegalArgumentException, IllegalAccessException {
+		for (Field fld : modCls.getFields()){
+			Prop ann = fld.getAnnotation(Prop.class);
+			if (ann != null){
+				Class type = fld.getType();
+				String fldName = fld.getName();
+				
+				String[] cats = ann.category().split("\\.");
+				for (int i=cats.length-1; i>=0; i--) {
+					String cccat = cats[i].toLowerCase();
+					for (int j=i+1; j<cats.length; j++) {
+						cccat += cats[j].substring(0, 1).toUpperCase() + cats[j].substring(1);
+					}
+					cccat+="_";
+					if (fldName.startsWith(cccat))
+						fldName = fldName.substring(cccat.length());
+				}
+				fldName = fldName.substring(0, 1).toLowerCase() + fldName.substring(1);
+				
+				String propName = ann.inFileName().isEmpty() ? fldName : ann.inFileName();
+				Property cProp = null;
+				
+				Property.Type forgeTyp = getForgeType(type);
+				
+				Renamed oldNames = fld.getAnnotation(Renamed.class);
+				if (oldNames != null)
+					for (int i=0; i<oldNames.value().length; i++) {
+						String onm = oldNames.value()[i];
+						
+						if (onm.endsWith(".")) onm += propName;
+						String[] path = onm.split("\\"+Configuration.CATEGORY_SPLITTER);
+						onm = path[path.length-1];
+						ConfigCategory cat = fcfg.getCategory(path.length>1 ? StringUtils.join(Arrays.copyOf(path, path.length-1), ".") : ann.category());
+						if (cat != null && cat.containsKey(onm)) {
+							cProp = cat.get(onm);
+							cat.remove(onm);
+						}
+					}
+				
+				if (type.isArray()) {
+					cProp = fcfg.get(ann.category(), propName, cProp!=null ? cProp.getStringList() : (String[])fld.get(modInst), null, forgeTyp);
+					switch (forgeTyp) {
+					case INTEGER:
+						fld.set(modInst, cProp.getIntList());
+						break;
+					case BOOLEAN:
+						fld.set(modInst, cProp.getBooleanList());
+						break;
+					case DOUBLE:
+						fld.set(modInst, cProp.getDoubleList());
+						break;
+					case STRING:
+						fld.set(modInst, cProp.getStringList());
+						break;
+					}
+				} else {
+					cProp = fcfg.get(ann.category(), propName, cProp!=null ? cProp.getString() : fld.get(modInst).toString(), null, forgeTyp);
+					switch (forgeTyp) {
+					case INTEGER:
+						fld.set(modInst, cProp.getInt(fld.getInt(this)));
+						break;
+					case BOOLEAN:
+						fld.set(modInst, cProp.getBoolean(fld.getBoolean(this)));
+						break;
+					case DOUBLE:
+						fld.set(modInst, cProp.getDouble(fld.getDouble(this)));
+						break;
+					case STRING:
+						fld.set(modInst, cProp.getString());
+						break;
+					}
+				}
+									
+				if (cProp != null && !ann.comment().isEmpty())
+					cProp.comment = ann.comment();
+			}
+		}
+	}
+	
 	public Config load() {
 		try {
-			for (Field fld : this.getClass().getFields()){
-				Prop ann = fld.getAnnotation(Prop.class);
-				if (ann != null){
-					Class type = fld.getType();
-					String fldName = fld.getName();
-					
-					String[] cats = ann.category().split("\\.");
-					for (int i=cats.length-1; i>=0; i--) {
-						String cccat = cats[i].toLowerCase();
-						for (int j=i+1; j<cats.length; j++) {
-							cccat += cats[j].substring(0, 1).toUpperCase() + cats[j].substring(1);
-						}
-						cccat+="_";
-						if (fldName.startsWith(cccat))
-							fldName = fldName.substring(cccat.length());
-					}
-					fldName = fldName.substring(0, 1).toLowerCase() + fldName.substring(1);
-					
-					String propName = ann.inFileName().isEmpty() ? fldName : ann.inFileName();
-					Property cProp = null;
-					
-					Property.Type forgeTyp = getForgeType(type);
-					
-					Renamed oldNames = fld.getAnnotation(Renamed.class);
-					if (oldNames != null)
-						for (int i=0; i<oldNames.value().length; i++) {
-							String onm = oldNames.value()[i];
-							
-							if (onm.endsWith(".")) onm += propName;
-							String[] path = onm.split("\\"+Configuration.CATEGORY_SPLITTER);
-							onm = path[path.length-1];
-							ConfigCategory cat = fcfg.getCategory(path.length>1 ? StringUtils.join(Arrays.copyOf(path, path.length-1), ".") : ann.category());
-							if (cat != null && cat.containsKey(onm)) {
-								cProp = cat.get(onm);
-								cat.remove(onm);
-							}
-						}
-					
-					if (type.isArray()) {
-						cProp = fcfg.get(ann.category(), propName, cProp!=null ? cProp.getStringList() : (String[])fld.get(this), null, forgeTyp);
-						switch (forgeTyp) {
-						case INTEGER:
-							fld.set(this, cProp.getIntList());
-							break;
-						case BOOLEAN:
-							fld.set(this, cProp.getBooleanList());
-							break;
-						case DOUBLE:
-							fld.set(this, cProp.getDoubleList());
-							break;
-						case STRING:
-							fld.set(this, cProp.getStringList());
-							break;
-						}
-					} else {
-						cProp = fcfg.get(ann.category(), propName, cProp!=null ? cProp.getString() : fld.get(this).toString(), null, forgeTyp);
-						switch (forgeTyp) {
-						case INTEGER:
-							fld.set(this, cProp.getInt(fld.getInt(this)));
-							break;
-						case BOOLEAN:
-							fld.set(this, cProp.getBoolean(fld.getBoolean(this)));
-							break;
-						case DOUBLE:
-							fld.set(this, cProp.getDouble(fld.getDouble(this)));
-							break;
-						case STRING:
-							fld.set(this, cProp.getString());
-							break;
-						}
-					}
-										
-					if (cProp != null && !ann.comment().isEmpty())
-						cProp.comment = ann.comment();
-				}
-			}
+			loadModule(this, this.getClass());
 		} catch(Exception e) {
 			FMLLog.log(Level.SEVERE, e, "Failed to load the configuration properly");
 		} finally {
@@ -152,31 +164,40 @@ public abstract class Config {
 		return this;
 	}
 	
+	protected void saveModule(Object modInst, Class modCls) throws IllegalArgumentException, IllegalAccessException {
+		for (Field fld : modInst.getClass().getFields()){
+			Prop ann = fld.getAnnotation(Prop.class);
+			if (ann != null){
+				Class type = fld.getType();
+				String fldName = fld.getName();
+				
+				String propName = ann.inFileName().isEmpty() ? fldName : ann.inFileName();
+				Property cProp = null;
+				
+				Property.Type forgeTyp = getForgeType(type);
+				
+				if (type.isArray()) {
+					cProp = fcfg.get(ann.category(), propName, (String[])fld.get(modInst), null, forgeTyp);
+					cProp.set((String[])fld.get(modInst));
+				} else {
+					cProp = fcfg.get(ann.category(), propName, fld.get(modInst).toString(), null, forgeTyp);
+					cProp.set((String)fld.get(modInst));
+				}
+									
+				if (cProp != null && !ann.comment().isEmpty())
+					cProp.comment = ann.comment();
+			}
+		}
+	}
+	
 	public void save() {
 		try {
-			for (Field fld : this.getClass().getFields()){
-				Prop ann = fld.getAnnotation(Prop.class);
-				if (ann != null){
-					Class type = fld.getType();
-					String fldName = fld.getName();
-					
-					String propName = ann.inFileName().isEmpty() ? fldName : ann.inFileName();
-					Property cProp = null;
-					
-					Property.Type forgeTyp = getForgeType(type);
-					
-					if (type.isArray()) {
-						cProp = fcfg.get(ann.category(), propName, (String[])fld.get(this), null, forgeTyp);
-						cProp.set((String[])fld.get(this));
-					} else {
-						cProp = fcfg.get(ann.category(), propName, fld.get(this).toString(), null, forgeTyp);
-						cProp.set((String)fld.get(this));
-					}
-										
-					if (cProp != null && !ann.comment().isEmpty())
-						cProp.comment = ann.comment();
-				}
-			}
+			saveModule(this, this.getClass());
+			for (Object mod : mods)
+				if (mod instanceof Class)
+					loadModule(null, (Class)mod);
+				else loadModule(mod, mod.getClass());
+			
 		} catch(Exception e) {
 			FMLLog.log(Level.SEVERE, e, "Failed to save all of the configuration");
 		} finally {
