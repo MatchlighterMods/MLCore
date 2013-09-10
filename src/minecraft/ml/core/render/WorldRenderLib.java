@@ -1,5 +1,7 @@
 package ml.core.render;
 
+import ml.core.block.BlockUtils;
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -19,8 +21,8 @@ public class WorldRenderLib {
 	private static RenderBlocks renderBlocks = new RenderBlocks();
 	private static EntityItem renderEnt;
 	
-	public static boolean shouldSpreadItems = false;
-	public static RenderItem renderItem = new RenderItem() {
+	private static boolean shouldSpreadItems = false;
+	private static RenderItem renderItem = new RenderItem() {
 		@Override
 		public boolean shouldBob() {
 			return false;
@@ -38,7 +40,8 @@ public class WorldRenderLib {
 		renderEnt.hoverStart = 0F;
 	}
 	
-	public static void renderItemIntoWorldCenteredAt(ItemStack is, boolean renderIn3D){
+	public static void renderItemIntoWorldCenteredAt(ItemStack is, boolean renderIn3D, boolean spreadItems) {
+		shouldSpreadItems = spreadItems;
 		boolean isBlock = is.getItem() instanceof ItemBlock;
 		if (!renderIn3D){
 			GL11.glPushMatrix();
@@ -53,8 +56,12 @@ public class WorldRenderLib {
 			GL11.glPopMatrix();
 		} else {
 			if (isBlock){
-				GL11.glScalef(1.2F, 1.2F, 1.2F);
-				GL11.glRotatef(90F, 0, 1F, 0);
+				if (RenderBlocks.renderItemIn3d(Block.blocksList[is.itemID].getRenderType())) {
+					GL11.glScalef(1.2F, 1.2F, 1.2F);
+					GL11.glRotatef(90F, 0, 1F, 0);
+				} else {
+					GL11.glScalef(0.625F, 0.625F, 0.625F);
+				}
 			} else {
 				GL11.glTranslatef(0F, -0.125F, 0F);
 			}
@@ -62,4 +69,9 @@ public class WorldRenderLib {
 			renderItem.doRenderItem(renderEnt, 0, 0, 0, 0, 0);
 		}
 	}
+	
+	public static void renderItemIntoWorldCenteredAt(ItemStack is, boolean renderIn3D) {
+		renderItemIntoWorldCenteredAt(is, renderIn3D, false);
+	}
+	
 }

@@ -5,6 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -74,10 +75,10 @@ public abstract class Config {
 		return null;
 	}
 	
-	protected void loadModule(Object modInst, Class modCls) throws IllegalArgumentException, IllegalAccessException {
+	protected void loadModule(Object modInst, Class modCls) throws IllegalAccessException {
 		for (Field fld : modCls.getFields()){
 			Prop ann = fld.getAnnotation(Prop.class);
-			if (ann != null){
+			if ((modInst != null || Modifier.isStatic(fld.getModifiers())) && ann != null){
 				Class type = fld.getType();
 				String fldName = fld.getName();
 				
@@ -156,6 +157,10 @@ public abstract class Config {
 	public Config load() {
 		try {
 			loadModule(this, this.getClass());
+			for (Object mod : mods)
+				if (mod instanceof Class)
+					loadModule(null, (Class)mod);
+				else loadModule(mod, mod.getClass());
 		} catch(Exception e) {
 			FMLLog.log(Level.SEVERE, e, "Failed to load the configuration properly");
 		} finally {
@@ -164,10 +169,10 @@ public abstract class Config {
 		return this;
 	}
 	
-	protected void saveModule(Object modInst, Class modCls) throws IllegalArgumentException, IllegalAccessException {
+	protected void saveModule(Object modInst, Class modCls) throws IllegalAccessException {
 		for (Field fld : modInst.getClass().getFields()){
 			Prop ann = fld.getAnnotation(Prop.class);
-			if (ann != null){
+			if ((modInst != null || Modifier.isStatic(fld.getModifiers())) && ann != null){
 				Class type = fld.getType();
 				String fldName = fld.getName();
 				
@@ -195,8 +200,8 @@ public abstract class Config {
 			saveModule(this, this.getClass());
 			for (Object mod : mods)
 				if (mod instanceof Class)
-					loadModule(null, (Class)mod);
-				else loadModule(mod, mod.getClass());
+					saveModule(null, (Class)mod);
+				else saveModule(mod, mod.getClass());
 			
 		} catch(Exception e) {
 			FMLLog.log(Level.SEVERE, e, "Failed to save all of the configuration");
