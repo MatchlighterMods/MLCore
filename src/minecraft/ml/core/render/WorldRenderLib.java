@@ -1,7 +1,10 @@
 package ml.core.render;
 
+import java.lang.ProcessBuilder.Redirect;
+
 import ml.core.block.BlockUtils;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -9,6 +12,10 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.ForgeHooksClient;
+import net.minecraftforge.client.IItemRenderer;
+import net.minecraftforge.client.IItemRenderer.ItemRenderType;
+import net.minecraftforge.client.IItemRenderer.ItemRendererHelper;
+import net.minecraftforge.client.MinecraftForgeClient;
 
 import org.lwjgl.opengl.GL11;
 
@@ -55,12 +62,14 @@ public class WorldRenderLib {
 			}
 			GL11.glPopMatrix();
 		} else {
-			if (isBlock){
-				if (RenderBlocks.renderItemIn3d(Block.blocksList[is.itemID].getRenderType())) {
-					GL11.glScalef(1.2F, 1.2F, 1.2F);
+			IItemRenderer cstm = MinecraftForgeClient.getItemRenderer(is, ItemRenderType.ENTITY);
+			boolean renderAs3DBlock = cstm != null && cstm.shouldUseRenderHelper(ItemRenderType.ENTITY, is, ItemRendererHelper.BLOCK_3D);
+			if (isBlock || renderAs3DBlock){
+				if (renderAs3DBlock || RenderBlocks.renderItemIn3d(Block.blocksList[is.itemID].getRenderType())) {
+					GL11.glScalef(1.5F, 1.5F, 1.5F);
 					GL11.glRotatef(90F, 0, 1F, 0);
 				} else {
-					GL11.glScalef(0.625F, 0.625F, 0.625F);
+					GL11.glTranslatef(0F, -0.125F, 0F);
 				}
 			} else {
 				GL11.glTranslatef(0F, -0.125F, 0F);
