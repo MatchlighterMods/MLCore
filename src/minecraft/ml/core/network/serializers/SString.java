@@ -3,9 +3,8 @@ package ml.core.network.serializers;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import net.minecraft.entity.player.EntityPlayer;
-
 import ml.core.network.IDataSerializer;
+import net.minecraft.entity.player.EntityPlayer;
 
 import com.google.common.io.ByteArrayDataInput;
 

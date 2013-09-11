@@ -2,7 +2,6 @@ package ml.core.vec.transform;
 
 import java.util.ArrayList;
 
-import ml.core.vec.Matrix;
 import ml.core.vec.Vector3;
 
 public class MultiTransformation extends Transformation {

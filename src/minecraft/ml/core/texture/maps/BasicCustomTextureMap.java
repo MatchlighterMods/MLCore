@@ -1,14 +1,12 @@
 package ml.core.texture.maps;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.util.ResourceLocation;
-
 import ml.core.texture.CustomTextureMap;
 import ml.core.texture.CustomTextureMapManager;
+import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.util.ResourceLocation;
 
 public class BasicCustomTextureMap extends CustomTextureMap {
 

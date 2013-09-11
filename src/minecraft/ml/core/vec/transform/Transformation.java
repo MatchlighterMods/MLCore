@@ -1,9 +1,8 @@
 package ml.core.vec.transform;
 
+import ml.core.vec.Vector3;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import ml.core.vec.Matrix;
-import ml.core.vec.Vector3;
 
 /**
  * Provides Object Space Transformations.

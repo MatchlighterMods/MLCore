@@ -8,7 +8,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -21,8 +20,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 
 import com.google.common.io.ByteArrayDataInput;
-
-import cpw.mods.fml.common.network.Player;
 
 public abstract class MLPacket {
 	

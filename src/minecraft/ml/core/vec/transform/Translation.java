@@ -1,8 +1,8 @@
 package ml.core.vec.transform;
 
-import org.lwjgl.opengl.GL11;
-
 import ml.core.vec.Vector3;
+
+import org.lwjgl.opengl.GL11;
 
 public class Translation extends Transformation {
 

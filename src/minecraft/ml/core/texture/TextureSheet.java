@@ -11,7 +11,6 @@ import javax.imageio.ImageIO;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.ResourceManager;
 import net.minecraft.client.resources.SimpleResource;
