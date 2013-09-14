@@ -86,7 +86,7 @@ public class ControlTabManager extends GuiControl {
 			float blue = (tabColor & 0xFF) /255F;
 
 			GL11.glColor4f(red, green, blue, 1.0F);
-			mc.func_110434_K().func_110577_a(ledgerRes);
+			mc.getTextureManager().bindTexture(ledgerRes);
 
 			switch (TabManager.side){
 			case Left:

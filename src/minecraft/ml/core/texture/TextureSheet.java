@@ -40,7 +40,7 @@ public class TextureSheet {
 			ImageIO.write(spri, "png", ot);
 			SimpleResource res = new SimpleResource(location, new ByteArrayInputStream(ot.toByteArray()), null, null);
 			
-			super.func_130100_a(res);
+			super.loadSprite(res);
 			return true;
 		}
 		

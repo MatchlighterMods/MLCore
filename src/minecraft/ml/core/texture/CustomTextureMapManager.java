@@ -29,9 +29,9 @@ public class CustomTextureMapManager {
 		maps.put(map.textureType, map);
 		Minecraft mc = Minecraft.getMinecraft();
 		
-		mc.renderEngine.func_130088_a(map.resourceLoc, map);
+		mc.renderEngine.loadTextureMap(map.resourceLoc, map);
 		try {
-			map.func_110551_a(mc.func_110442_L());
+			map.loadTexture(mc.getResourceManager());
 		} catch (IOException e) {}
 	}
 	
@@ -41,7 +41,7 @@ public class CustomTextureMapManager {
 		if (evt.map.textureType==0) {
 			for (CustomTextureMap map : maps.values()) {
 				try {
-					map.func_110551_a(mc.func_110442_L());
+					map.loadTexture(mc.getResourceManager());
 				} catch (IOException e) {}
 			}
 		}

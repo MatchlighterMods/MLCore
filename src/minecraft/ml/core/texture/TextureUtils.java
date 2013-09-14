@@ -33,7 +33,7 @@ public class TextureUtils {
 	
 	public static BufferedImage loadBufferedImage(ResourceLocation resLoc) {
 		try {
-			InputStream is = Minecraft.getMinecraft().func_110442_L().func_110536_a(resLoc).func_110527_b();
+			InputStream is = Minecraft.getMinecraft().getResourceManager().getResource(resLoc).getInputStream();
 			if (is != null) {
 				BufferedImage bfi = loadBufferedImage(is);
 				return bfi;
