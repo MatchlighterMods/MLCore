@@ -35,6 +35,9 @@
 			<os family="Windows" />
 		</condition>
 		
+		<property name="mcp.binoutput" location="${mcp.home}/bin" />
+		<property name="mcp.binoutput.classes" location="${mcp.binoutput}/minecraft" />
+		
 		<property name="mcp.obfoutput" location="${mcp.home}/reobf" />
 		<property name="mcp.obfoutput.classes" location="${mcp.obfoutput}/minecraft" />
 		<property name="mcp.srcdir" location="${mcp.home}/src" />
@@ -109,7 +112,28 @@
 			<fileset dir="${code.src.dir}/minecraft" includes="**/ml/core/res/**/*" erroronmissingdir="false"/>
 			
 			<zipfileset dir="${build.env}" includes="version.properties"/>
-			<zipfileset dir="${build.env}" includes="mlcore_at.cfg"/>
+			<!--<zipfileset dir="${build.env}" includes="mlcore_at.cfg"/>-->
+			<mappedresources>
+				<concat>
+					<fileset dir="${build.env}" includes="mcmod.info" />
+					<filterchain>
+						<replacetokens>
+							<token key="VERSION" value="${version}" />
+						</replacetokens>
+						<replacetokens>
+							<token key="MCVERSION" value="${version.minecraft}" />
+						</replacetokens>
+					</filterchain>
+				</concat>
+				<mergemapper to="mcmod.info" />
+			</mappedresources>
+		</jar>
+		<jar destfile="${build.dest}/${jarname}-dev.jar">
+			<fileset dir="${mcp.binoutput.classes}" includes="**/ml/core/**/*.class" />
+			<fileset dir="${code.src.dir}/minecraft" includes="**/ml/core/res/**/*" erroronmissingdir="false"/>
+			
+			<zipfileset dir="${build.env}" includes="version.properties"/>
+			<!--<zipfileset dir="${build.env}" includes="mlcore_at.cfg"/>-->
 			<mappedresources>
 				<concat>
 					<fileset dir="${build.env}" includes="mcmod.info" />
