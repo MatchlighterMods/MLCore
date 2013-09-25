@@ -1,10 +1,10 @@
 package ml.core;
 
-import ml.core.texture.CustomTextureMapManager;
-import net.minecraftforge.common.MinecraftForge;
+import ml.core.internal.CommonProxy;
 import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Init;
+import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 
@@ -16,9 +16,12 @@ public class MLCore { // implements IFMLLoadingPlugin
 	@Instance("MLCore")
 	public static MLCore instance;
 	
-	@Init
+	@SidedProxy(serverSide="ml.core.internal.CommonProxy", clientSide="ml.core.internal.ClientProxy")
+	public static CommonProxy proxy;
+	
+	@EventHandler
 	public void init(FMLInitializationEvent evt) {
-		MinecraftForge.EVENT_BUS.register(CustomTextureMapManager.instance);
+		proxy.load();
 	}
 	
 //	@Override

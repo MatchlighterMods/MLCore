@@ -152,7 +152,7 @@ public abstract class RecipeMixed implements IRecipe {
 				ItemStack slot = inv.getStackInRowAndColumn(x, y);
 
 				if (target != null) {
-					if (!checkItemEquals(target, slot)) return false;
+					if (!ItemUtils.checkOreItemEquals(target, slot)) return false;
 				} else if (slot!=null) {
 					shapelessStacks.add(slot);
 				}
@@ -163,19 +163,5 @@ public abstract class RecipeMixed implements IRecipe {
 			return false;
 
 		return true;
-	}
-
-	protected boolean checkItemEquals(Object target, ItemStack input) {
-		if (input == null && target != null || input != null && target == null) {
-			return false;
-		}
-		
-		if (target instanceof String) {
-			return OreDictionary.getOreID(input) == OreDictionary.getOreID((String)target);
-		} else if (target instanceof ItemStack) {
-			ItemStack trgIS = (ItemStack)target;
-			return (trgIS.itemID == input.itemID && (trgIS.getItemDamage() == OreDictionary.WILDCARD_VALUE|| trgIS.getItemDamage() == input.getItemDamage()));
-		}
-		return false;
 	}
 }

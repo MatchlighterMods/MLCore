@@ -9,6 +9,9 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -17,6 +20,7 @@ import net.minecraft.client.resources.SimpleResource;
 import net.minecraft.util.Icon;
 import net.minecraft.util.ResourceLocation;
 
+@SideOnly(Side.CLIENT)
 public class TextureSheet {
 
 	public class TextureSprite extends TextureAtlasSprite {

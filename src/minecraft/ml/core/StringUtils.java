@@ -1,5 +1,8 @@
 package ml.core;
 
+import net.minecraft.item.ItemDye;
+import net.minecraft.util.StatCollector;
+
 public class StringUtils {
 
 	private static String[] suffixes = {"k", "M", "G", "T", "P"};
@@ -39,6 +42,10 @@ public class StringUtils {
 			
 		}
 		return out;
+	}
+	
+	public static String getLColorName(int c) {
+		return StatCollector.translateToLocal("item.fireworksCharge." + ItemDye.dyeColorNames[c]);
 	}
 	
 }

@@ -52,8 +52,7 @@ public class WorldRenderLib {
 			GL11.glTranslatef(8, 8, 0);
 			GL11.glRotatef(180F, 0, 0, 1.0F);
 
-			if (!ForgeHooksClient.renderInventoryItem(renderBlocks, RenderManager.instance.renderEngine, is, true, 0, 0F, 0F))
-			{
+			if (!ForgeHooksClient.renderInventoryItem(renderBlocks, RenderManager.instance.renderEngine, is, true, 0, 0F, 0F)) {
 				renderItem.renderItemIntoGUI(null, RenderManager.instance.renderEngine, is, 0, 0);
 			}
 			GL11.glPopMatrix();
