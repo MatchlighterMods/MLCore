@@ -1,9 +1,10 @@
 package ml.core.item;
 
+import java.util.ArrayList;
+
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.ItemDye;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -44,24 +45,26 @@ public class ItemUtils {
 		dropItemIntoWorld(par1World, x + d0, y + d1, z + d2, par5ItemStack);
 	}
 	
-	public static boolean checkOreItemEquals(Object target, ItemStack input) {
+	/**
+	 * End-all function of checking if two items equal.
+	 * @param target Can be an {@link ArrayList}&lt;ItemStack&gt;, {@link ItemStack}, or an {@link Item}
+	 */
+	public static boolean checkItemEquals(Object target, ItemStack input) {
 		if (input == null && target != null || input != null && target == null) {
 			return false;
 		}
 		
-		if (target instanceof String) {
-			return OreDictionary.getOreID(input) == OreDictionary.getOreID((String)target);
+		if (target instanceof ArrayList) {
+			for (ItemStack is : (ArrayList<ItemStack>)target) {
+				if (checkItemEquals(input, is))
+					return true;
+			}
 		} else if (target instanceof ItemStack) {
 			ItemStack trgIS = (ItemStack)target;
 			return (trgIS.itemID == input.itemID && (trgIS.getItemDamage() == OreDictionary.WILDCARD_VALUE|| trgIS.getItemDamage() == input.getItemDamage()));
+		} else if (target instanceof Item) {
+			return (((Item)target).itemID == input.itemID);
 		}
 		return false;
-	}
-	
-	public static boolean checkItemEquals(ItemStack target, ItemStack input) {
-		if (input == null && target != null || input != null && target == null) {
-			return false;
-		}
-		return (target.itemID == input.itemID && (target.getItemDamage() == Short.MAX_VALUE || target.getItemDamage() == input.getItemDamage()));
 	}
 }
