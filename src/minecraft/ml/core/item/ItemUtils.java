@@ -67,4 +67,16 @@ public class ItemUtils {
 		}
 		return false;
 	}
+	
+	/**
+	 * Takes an ItemStack of OreDictionary dye and returns the vanilla Dye Id for that color
+	 */
+	public static int getVanillaColorId(ItemStack mOre) {
+		for (int i=0; i<16; i++){
+			if (OreDictionary.getOreID(new ItemStack(Item.dyePowder, 1, i)) == OreDictionary.getOreID(mOre)){
+				return i;
+			}
+		}
+		return 0;
+	}
 }

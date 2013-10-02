@@ -17,22 +17,27 @@ import net.minecraftforge.oredict.OreDictionary;
  */
 public abstract class RecipeShapedVariable extends CRecipeShapedBase implements IRecipe {
     
-    public RecipeShapedVariable(Object... recipe) {
+	
+	public RecipeShapedVariable(int w, int h) {
+		super(w,h);
+	}
+	
+    public RecipeShapedVariable(Object[] recipe) {
 		super(recipe);
     }
 
 	protected boolean checkMatch(InventoryCrafting inv, int offx, int offy, boolean mirror) {
-		for (int x = 0; x < 3; ++x) {
-			for (int y = 0; y < 3; ++y) {
+		for (int x = 0; x < MAX_CRAFT_GRID_WIDTH; x++) {
+			for (int y = 0; y < MAX_CRAFT_GRID_HEIGHT; y++) {
 				int lx = x - offx;
 				int ly = y - offy;
 
 				ItemStack itemstack1 = inv.getStackInRowAndColumn(x, y);
 				
 				if (lx>=0 && lx<this.width && ly>=0 && ly<this.height) {
-					if (itemstack1 != null)
+					if (!itemMatchesAt(mirror ? this.width-lx-1 : lx, ly, itemstack1))
 						return false;
-				} else if (!itemMatchesAt(mirror ? this.width-lx-1 : lx, ly, itemstack1))
+				} else if (itemstack1 != null)
 					return false;
 			}
 		}

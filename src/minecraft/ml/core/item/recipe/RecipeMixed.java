@@ -21,9 +21,9 @@ public abstract class RecipeMixed extends CRecipeShapedBase implements IRecipe {
 
 	protected ItemStack output = null;
 
-	public RecipeMixed(Block     result, Object... recipe){ this(new ItemStack(result), recipe); }
-	public RecipeMixed(Item      result, Object... recipe){ this(new ItemStack(result), recipe); }
-	public RecipeMixed(ItemStack result, Object... recipe) {
+	public RecipeMixed(Block     result, Object[] recipe){ this(new ItemStack(result), recipe); }
+	public RecipeMixed(Item      result, Object[] recipe){ this(new ItemStack(result), recipe); }
+	public RecipeMixed(ItemStack result, Object[] recipe) {
 		super(recipe);
 		output = result.copy();
 	}

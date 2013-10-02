@@ -18,23 +18,29 @@ public abstract class CRecipeShapedBase implements IRecipe {
 	protected Object[] pattern = null;
 	protected int width = 0;
 	protected int height = 0;
-	protected boolean allowMirror = true;
+	protected boolean allowMirror = false;
 	
-	public CRecipeShapedBase(Object... recipe) {
+	public CRecipeShapedBase(int w, int h) {
+		width = w;
+		height = h;
+		pattern = new Object[w*h];
+	}
+	
+	public CRecipeShapedBase(Object[] p) {
 		String shape = "";
 		int idx = 0;
 
-		if (recipe[idx] instanceof Boolean) {
-			allowMirror = (Boolean)recipe[idx];
-			if (recipe[idx+1] instanceof Object[]) {
-				recipe = (Object[])recipe[idx+1];
+		if (p[idx] instanceof Boolean) {
+			allowMirror = (Boolean)p[idx];
+			if (p[idx+1] instanceof Object[]) {
+				p = (Object[])p[idx+1];
 			} else {
 				idx = 1;
 			}
 		}
 
-		if (recipe[idx] instanceof String[]) {
-			String[] parts = ((String[])recipe[idx++]);
+		if (p[idx] instanceof String[]) {
+			String[] parts = ((String[])p[idx++]);
 
 			for (String s : parts) {
 				width = s.length();
@@ -43,8 +49,8 @@ public abstract class CRecipeShapedBase implements IRecipe {
 
 			height = parts.length;
 		} else {
-			while (recipe[idx] instanceof String) {
-				String s = (String)recipe[idx++];
+			while (p[idx] instanceof String) {
+				String s = (String)p[idx++];
 				shape += s;
 				width = s.length();
 				height++;
@@ -53,7 +59,7 @@ public abstract class CRecipeShapedBase implements IRecipe {
 
 		if (width * height != shape.length()) {
 			String ret = "Invalid shaped ore recipe: ";
-			for (Object tmp :  recipe) {
+			for (Object tmp :  p) {
 				ret += tmp + ", ";
 			}
 			throw new RuntimeException(ret);
@@ -61,9 +67,9 @@ public abstract class CRecipeShapedBase implements IRecipe {
 
 		HashMap<Character, Object> itemMap = new HashMap<Character, Object>();
 
-		for (; idx < recipe.length; idx += 2) {
-			Character chr = (Character)recipe[idx];
-			Object in = recipe[idx + 1];
+		for (; idx < p.length; idx += 2) {
+			Character chr = (Character)p[idx];
+			Object in = p[idx + 1];
 
 			if (in instanceof ItemStack) {
 				itemMap.put(chr, ((ItemStack)in).copy());
@@ -75,7 +81,7 @@ public abstract class CRecipeShapedBase implements IRecipe {
 				itemMap.put(chr, OreDictionary.getOres((String)in));
 			} else {
 				String ret = "Invalid shaped ore recipe: ";
-				for (Object tmp :  recipe) {
+				for (Object tmp :  p) {
 					ret += tmp + ", ";
 				}
 				throw new RuntimeException(ret);
@@ -93,8 +99,8 @@ public abstract class CRecipeShapedBase implements IRecipe {
 	public boolean matches(InventoryCrafting inv, World par2World) {
 		for (int x = 0; x <= MAX_CRAFT_GRID_WIDTH - this.width; ++x) {
 			for (int y = 0; y <= MAX_CRAFT_GRID_HEIGHT - this.height; ++y) {
-				if (this.checkMatch(inv, x, y, true)) return true;
-				if (allowMirror && this.checkMatch(inv, x, y, false)) return true;
+				if (this.checkMatch(inv, x, y, false)) return true;
+				if (allowMirror && this.checkMatch(inv, x, y, true)) return true;
 			}
 		}
 

@@ -31,7 +31,7 @@ public class ChatUtils {
 	public static final String color_white			= special+"f";
 	
 	public static final String[] nDyeColor = new String[]{
-		color_black, color_darkRed, color_darkGreen, color_darkGray,
+		color_black, color_darkRed, color_darkGreen, color_gold,
 		color_darkBlue, color_darkPurple, color_darkAqua, color_gray,
 		color_darkGray, color_lightPurple, color_green, color_yellow,
 		color_blue, color_lightPurple, color_gold, color_white};
