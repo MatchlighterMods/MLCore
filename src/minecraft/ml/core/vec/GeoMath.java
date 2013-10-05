@@ -13,15 +13,15 @@ public class GeoMath {
 		return (pntX >= rectX && pntY >= rectY && pntX <= rectX+rectW && pntY <= rectY + rectH);
 	}
 
-	public static Vector2 determineSquarestGrid(int elements){
+	public static Vector2i determineSquarestGrid(int elements){
 		if (elements == 0)
-			return new Vector2(0, 0);
+			return new Vector2i(0, 0);
 		int a = (int)Math.round(Math.sqrt(elements));
 		int b = (int)Math.ceil(((float)elements)/a);
-		return a>b ? new Vector2(a, b) : new Vector2(b, a);
+		return a>b ? new Vector2i(a, b) : new Vector2i(b, a);
 	}
 
-	public static Vector2<Integer> getScaledMouse(){
+	public static Vector2i getScaledMouse(){
 		Minecraft mc = FMLClientHandler.instance().getClient();
 		ScaledResolution var13 = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
 		int var14 = var13.getScaledWidth();
@@ -29,7 +29,7 @@ public class GeoMath {
 		int adjMouseX = Mouse.getX() * var14 / mc.displayWidth;
 		int adjMouseY = var15 - Mouse.getY() * var15 / mc.displayHeight - 1;
 		
-		return new Vector2(adjMouseX, adjMouseY);
+		return new Vector2i(adjMouseX, adjMouseY);
 	}
 
 }

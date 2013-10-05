@@ -1,6 +1,6 @@
 package ml.core.vec.transform;
 
-import ml.core.vec.Vector3;
+import ml.core.vec.Vector3d;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -14,9 +14,9 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public abstract class Transformation {
 
-	public abstract void applyTo(Vector3 V);
+	public abstract void applyTo(Vector3d V);
 	
-	public abstract void applyToNormal(Vector3 N);
+	public abstract void applyToNormal(Vector3d N);
 	
 	public abstract void applyTo(Matrix4d mat);
 	
@@ -24,7 +24,7 @@ public abstract class Transformation {
 		return new MultiTransformation(new Transformation[]{this, t});
 	}
 	
-	public LocalizedTransformation localize(Vector3 norig) {
+	public LocalizedTransformation localize(Vector3d norig) {
 		return new LocalizedTransformation(norig, this);
 	}
 	

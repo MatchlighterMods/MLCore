@@ -3,13 +3,12 @@ package ml.core.texture.maps;
 import java.util.ArrayList;
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import ml.core.texture.CustomTextureMap;
 import ml.core.texture.CustomTextureMapManager;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.util.ResourceLocation;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class BasicCustomTextureMap extends CustomTextureMap {

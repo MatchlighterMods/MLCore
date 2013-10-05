@@ -30,19 +30,13 @@ public abstract class PacketHandler implements IPacketHandler {
 	}
 	
 	@Override
-	public void onPacketData(INetworkManager manager,
-			Packet250CustomPayload packet, Player player) {
+	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player) {
 		EntityPlayer entPl = (EntityPlayer)player;
 		
 		MLPacket mlPkt = tryCastPacket(packet, entPl);
 		if (mlPkt != null){
 			try {
-				if (FMLCommonHandler.instance().getEffectiveSide().isServer()){
-					mlPkt.handleServerSide(entPl);
-				} else {
-					mlPkt.handleClientSide(entPl);
-				}
-				
+				mlPkt.handle(entPl, FMLCommonHandler.instance().getEffectiveSide());
 			} catch (Exception e) {
 				onError(e, mlPkt);
 			}
@@ -72,7 +66,7 @@ public abstract class PacketHandler implements IPacketHandler {
 		return null;
 	}
 	
-	public static Integer findPacketId(Class<? extends MLPacket> pktClass){
+	public static int findPacketId(Class<? extends MLPacket> pktClass){
 		return PacketTypes.inverse().get(pktClass);
 	}
 }

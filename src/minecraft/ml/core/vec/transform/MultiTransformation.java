@@ -2,7 +2,7 @@ package ml.core.vec.transform;
 
 import java.util.ArrayList;
 
-import ml.core.vec.Vector3;
+import ml.core.vec.Vector3d;
 
 public class MultiTransformation extends Transformation {
 
@@ -31,13 +31,13 @@ public class MultiTransformation extends Transformation {
 	}
 
 	@Override
-	public void applyTo(Vector3 V) {
+	public void applyTo(Vector3d V) {
 		for (Transformation t : tranforms)
 			t.applyTo(V);
 	}
 
 	@Override
-	public void applyToNormal(Vector3 N) {
+	public void applyToNormal(Vector3d N) {
 		for (Transformation t : tranforms)
 			t.applyToNormal(N);
 	}

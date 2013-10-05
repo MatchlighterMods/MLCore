@@ -1,7 +1,6 @@
 package ml.core.item.recipe;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import ml.core.item.ItemUtils;
@@ -10,8 +9,6 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * Thanks to copyboy for the idea on how to implement this.
@@ -40,6 +37,7 @@ public abstract class RecipeMixed extends CRecipeShapedBase implements IRecipe {
 		return output;
 	}
 
+	@Override
 	protected boolean checkMatch(InventoryCrafting inv, int startX, int startY, boolean mirror) {
 		List<ItemStack> shapelessStacks = new ArrayList<ItemStack>();
 

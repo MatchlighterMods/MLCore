@@ -1,4 +1,4 @@
-package ml.core.gui;
+package ml.core.enums;
 
 public enum MouseButton {
 	Left,

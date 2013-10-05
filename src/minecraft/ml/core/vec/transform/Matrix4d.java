@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.DoubleBuffer;
 
 import ml.core.vec.Matrix;
-import ml.core.vec.Vector3;
+import ml.core.vec.Vector3d;
 
 import org.lwjgl.opengl.GL11;
 
@@ -264,7 +264,7 @@ public class Matrix4d extends Transformation {
 		return this;
 	}
 	
-	public Matrix4d translate(Vector3 vec) {
+	public Matrix4d translate(Vector3d vec) {
 		this.m30 += this.m00 * vec.x + this.m10 * vec.y + this.m20 * vec.z;
 		this.m31 += this.m01 * vec.x + this.m11 * vec.y + this.m21 * vec.z;
 		this.m32 += this.m02 * vec.x + this.m12 * vec.y + this.m22 * vec.z;
@@ -273,7 +273,7 @@ public class Matrix4d extends Transformation {
 		return this;
 	}
 	
-	public Matrix4d rotateDegs(Vector3 axis, double degs) {
+	public Matrix4d rotateDegs(Vector3d axis, double degs) {
 		double rads = Math.toRadians(degs);
 		double l = axis.x; double m = axis.y; double n = axis.z;
 		double sT = Math.sin(rads);
@@ -290,7 +290,7 @@ public class Matrix4d extends Transformation {
 		return this.mult(new Matrix4d(d));
 	}
 	
-	public Matrix4d scale(Vector3 vec) {
+	public Matrix4d scale(Vector3d vec) {
 		this.m00 = this.m00 * vec.x;
 		this.m01 = this.m01 * vec.x;
 		this.m02 = this.m02 * vec.x;
@@ -307,6 +307,7 @@ public class Matrix4d extends Transformation {
 		return this;
 	}
 	
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void glTransform() {
 		store.put(m00);
@@ -331,7 +332,7 @@ public class Matrix4d extends Transformation {
 	}
 
 	@Override
-	public void applyTo(Vector3 V) {
+	public void applyTo(Vector3d V) {
 		double x = (this.m00*V.x) + (this.m01*V.y) + (this.m02*V.z) + (this.m03*1);
 		double y = (this.m10*V.x) + (this.m11*V.y) + (this.m12*V.z) + (this.m13*1);
 		double z = (this.m20*V.x) + (this.m21*V.y) + (this.m22*V.z) + (this.m23*1);
@@ -341,7 +342,7 @@ public class Matrix4d extends Transformation {
 	}
 
 	@Override
-	public void applyToNormal(Vector3 N) {
+	public void applyToNormal(Vector3d N) {
 		double x = (this.m00*N.x) + (this.m01*N.y) + (this.m02*N.z);
 		double y = (this.m10*N.x) + (this.m11*N.y) + (this.m12*N.z);
 		double z = (this.m20*N.x) + (this.m21*N.y) + (this.m22*N.z);

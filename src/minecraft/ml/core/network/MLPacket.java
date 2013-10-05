@@ -21,6 +21,8 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 
 import com.google.common.io.ByteArrayDataInput;
 
+import cpw.mods.fml.relauncher.Side;
+
 public abstract class MLPacket {
 	
 	public static final List<IDataSerializer> serializers = new ArrayList<IDataSerializer>();
@@ -39,7 +41,7 @@ public abstract class MLPacket {
 	@Retention(RetentionPolicy.RUNTIME)
 	public static @interface data {}
 	
-	protected Integer packetID;
+	protected int packetID;
 	
 	// Incoming
 	
@@ -77,13 +79,21 @@ public abstract class MLPacket {
 		}
 	}
 	
+	public void handle(EntityPlayer epl, Side side) throws IOException {
+		if (side == Side.CLIENT) {
+			handleClientSide(epl);
+		} else {
+			handleServerSide(epl);
+		}
+	}
+	
 	public void handleClientSide(EntityPlayer epl) throws IOException {};
 	
 	public void handleServerSide(EntityPlayer epl) throws IOException {};
 	
 	// Outgoing
-	protected boolean chunkDataPacket = true;
-	protected String channel;
+	public boolean chunkDataPacket = true;
+	public String channel;
 	
 	public MLPacket(String ch) {
 		packetID = PacketHandler.findPacketId(this.getClass());

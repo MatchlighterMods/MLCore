@@ -1,15 +1,9 @@
 package ml.core.item.recipe;
 
-import java.util.HashMap;
-
 import ml.core.item.ItemUtils;
-import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.world.World;
-import net.minecraftforge.oredict.OreDictionary;
 
 /**
  * A simple ShapedRecipe clone that will call out to subclasses to match each slot
@@ -26,6 +20,7 @@ public abstract class RecipeShapedVariable extends CRecipeShapedBase implements 
 		super(recipe);
     }
 
+	@Override
 	protected boolean checkMatch(InventoryCrafting inv, int offx, int offy, boolean mirror) {
 		for (int x = 0; x < MAX_CRAFT_GRID_WIDTH; x++) {
 			for (int y = 0; y < MAX_CRAFT_GRID_HEIGHT; y++) {

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ml.core.vec.Vector3;
+import ml.core.vec.Vector3d;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.Tessellator;
 
@@ -102,44 +102,44 @@ public class ObjModel {
 
 	public static class ObjModelImporter {
 
-		public List<Vector3> vertices = new ArrayList<Vector3>();
+		public List<Vector3d> vertices = new ArrayList<Vector3d>();
 		public List<uvPair> uvs = new ArrayList<uvPair>();
-		public List<Vector3> normals = new ArrayList<Vector3>();
+		public List<Vector3d> normals = new ArrayList<Vector3d>();
 		public List<uvVertex[]> faces = new ArrayList<uvVertex[]>();
 		public Map<Integer, String> groups = new HashMap<Integer, String>();
 
 		private int readInt(StreamTokenizer st) throws IOException {
-			if (st.nextToken() != st.TT_NUMBER)
+			if (st.nextToken() != StreamTokenizer.TT_NUMBER)
 				throw new IOException("Failed to parse int");
 			return (int)st.nval;
 		}
 
 		private double readDouble(StreamTokenizer st) throws IOException {
-			if (st.nextToken() != st.TT_NUMBER)
+			if (st.nextToken() != StreamTokenizer.TT_NUMBER)
 				throw new IOException("Failed to parse double");
 			return st.nval;
 		}
 
 		private String readString(StreamTokenizer st) throws IOException {
-			if (st.nextToken() != st.TT_WORD)
+			if (st.nextToken() != StreamTokenizer.TT_WORD)
 				throw new IOException("Failed to parse String");
 			return st.sval;
 		}
 
 		private void readLineEnd(StreamTokenizer st) throws IOException {
-			if (st.nextToken() != st.TT_EOL)
+			if (st.nextToken() != StreamTokenizer.TT_EOL)
 				throw new IOException("EOL expected");
 		}
 
 		private void readToEOL(StreamTokenizer st) throws IOException {
-			while (st.nextToken() != st.TT_EOL);
+			while (st.nextToken() != StreamTokenizer.TT_EOL);
 		}
 
 		private void parseFace(StreamTokenizer st) throws IOException {
 			List<uvVertex> fverts = new ArrayList<uvVertex>();
 			st.nextToken();
-			while (st.ttype != st.TT_EOL && st.ttype != st.TT_EOF){
-				if (st.ttype != st.TT_NUMBER)
+			while (st.ttype != StreamTokenizer.TT_EOL && st.ttype != StreamTokenizer.TT_EOF){
+				if (st.ttype != StreamTokenizer.TT_NUMBER)
 					throw new IOException("Failed to parse int");
 				
 				int vref = (int)st.nval-1;
@@ -171,16 +171,16 @@ public class ObjModel {
 			st.lowerCaseMode(false);
 			st.parseNumbers();
 
-			while (st.nextToken() != st.TT_EOF){
-				if (st.ttype == st.TT_EOL){
+			while (st.nextToken() != StreamTokenizer.TT_EOF){
+				if (st.ttype == StreamTokenizer.TT_EOL){
 					continue;
-				} else if (st.ttype != st.TT_WORD) {
+				} else if (st.ttype != StreamTokenizer.TT_WORD) {
 					throw new IOException("Expected an OBJ type to start the line");
 				}
 
 				// If only it could be assumed that everyone had Java 7...
 				if (st.sval.equals("v")){
-					Vector3 nv = new Vector3(readDouble(st), readDouble(st), readDouble(st));
+					Vector3d nv = new Vector3d(readDouble(st), readDouble(st), readDouble(st));
 					vertices.add(nv);
 					readLineEnd(st);
 					continue;
@@ -189,7 +189,7 @@ public class ObjModel {
 					readLineEnd(st);
 					continue;
 				} else if (st.sval.equals("vn")){
-					Vector3 nv = new Vector3(readDouble(st), readDouble(st), readDouble(st));
+					Vector3d nv = new Vector3d(readDouble(st), readDouble(st), readDouble(st));
 					normals.add(nv);
 					readLineEnd(st);
 					continue;
@@ -219,11 +219,11 @@ public class ObjModel {
 	}
 
 	public static class uvVertex {
-		public Vector3 vertex;
+		public Vector3d vertex;
 		public uvPair uv;
-		public Vector3 normal;
+		public Vector3d normal;
 
-		public uvVertex(Vector3 ivert, uvPair iuv, Vector3 norm) {
+		public uvVertex(Vector3d ivert, uvPair iuv, Vector3d norm) {
 			vertex = ivert;
 			uv = iuv;
 			normal = norm;

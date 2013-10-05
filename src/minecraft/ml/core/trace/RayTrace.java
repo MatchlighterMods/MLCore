@@ -3,7 +3,7 @@ package ml.core.trace;
 import ml.core.math.MathHelper;
 import ml.core.vec.BlockCoord;
 import ml.core.vec.Cuboid6;
-import ml.core.vec.Vector3;
+import ml.core.vec.Vector3d;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,8 +27,8 @@ public class RayTrace {
 
 	private double f_dist;
 	private int f_face;
-	private Vector3 traceFace(int face, Vector3 strt, Vector3 end, Cuboid6 cuboid){
-		Vector3 hit = null;
+	private Vector3d traceFace(int face, Vector3d strt, Vector3d end, Cuboid6 cuboid){
+		Vector3d hit = null;
 		switch(face){
 		case 0:
 			hit = strt.getInterceptOfXZ(end, cuboid.min.y);
@@ -82,10 +82,10 @@ public class RayTrace {
 		return hit;
 	}
 
-	public MovingObjectPosition traceCuboid(Vector3 strt, Vector3 end, Cuboid6 cuboid){
+	public MovingObjectPosition traceCuboid(Vector3d strt, Vector3d end, Cuboid6 cuboid){
 		f_dist = Double.MAX_VALUE;
 		f_face = -1;
-		Vector3 hit = null;
+		Vector3d hit = null;
 
 		for (int i=0; i<6; i++){
 			hit = traceFace(i, strt, end, cuboid);
@@ -99,7 +99,7 @@ public class RayTrace {
 	}
 
 	private Cuboid6 c_cuboid;
-	public MovingObjectPosition traceCuboids(Vector3 strt, Vector3 end, BiMap<Integer, Cuboid6> cuboids){
+	public MovingObjectPosition traceCuboids(Vector3d strt, Vector3d end, BiMap<Integer, Cuboid6> cuboids){
 		double l_dist = Double.MAX_VALUE;
 		MovingObjectPosition mop = null;
 
@@ -116,7 +116,7 @@ public class RayTrace {
 		return mop;
 	}
 
-	public MovingObjectPosition traceCuboids(Vector3 strt, Vector3 end, BiMap<Integer, Cuboid6> cuboids, BlockCoord blv3, Block blk){
+	public MovingObjectPosition traceCuboids(Vector3d strt, Vector3d end, BiMap<Integer, Cuboid6> cuboids, BlockCoord blv3, Block blk){
 		MovingObjectPosition mop = traceCuboids(strt, end, cuboids);
 		if (mop != null){
 			mop.blockX = blv3.x;
@@ -124,7 +124,7 @@ public class RayTrace {
 			mop.blockZ = blv3.z;
 			mop.typeOfHit = EnumMovingObjectType.TILE;
 			if (blk != null)
-				c_cuboid.translate(new Vector3(blv3.x, blv3.y, blv3.z)).setToBlockBounds(blk);
+				c_cuboid.translate(new Vector3d(blv3.x, blv3.y, blv3.z)).setToBlockBounds(blk);
 		}
 		return mop;
 	}

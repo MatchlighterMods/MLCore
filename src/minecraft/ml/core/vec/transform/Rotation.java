@@ -1,15 +1,15 @@
 package ml.core.vec.transform;
 
-import ml.core.vec.Vector3;
+import ml.core.vec.Vector3d;
 
 import org.lwjgl.opengl.GL11;
 
 public class Rotation extends Transformation {
 
-	public Vector3 axis;
+	public Vector3d axis;
 	public double degrees;
 	
-	public Rotation(Vector3 axis, double degs) {
+	public Rotation(Vector3d axis, double degs) {
 		this.axis = axis;
 		this.degrees = degs;
 	}
@@ -19,12 +19,12 @@ public class Rotation extends Transformation {
 	}
 	
 	@Override
-	public void applyTo(Vector3 V) {
+	public void applyTo(Vector3d V) {
 		getMatrix().applyTo(V);
 	}
 
 	@Override
-	public void applyToNormal(Vector3 N) {
+	public void applyToNormal(Vector3d N) {
 		getMatrix().applyToNormal(N);
 	}
 	

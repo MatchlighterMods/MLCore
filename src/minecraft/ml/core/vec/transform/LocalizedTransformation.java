@@ -1,28 +1,28 @@
 package ml.core.vec.transform;
 
-import ml.core.vec.Vector3;
+import ml.core.vec.Vector3d;
 
 import org.lwjgl.opengl.GL11;
 
 public class LocalizedTransformation extends Transformation {
 
-	public Vector3 loc;
+	public Vector3d loc;
 	public Transformation baseTrans;
 	
-	public LocalizedTransformation(Vector3 off, Transformation t) {
+	public LocalizedTransformation(Vector3d off, Transformation t) {
 		loc = off;
 		baseTrans = t;
 	}
 	
 	@Override
-	public void applyTo(Vector3 V) {
+	public void applyTo(Vector3d V) {
 		V.minus(loc);
 		baseTrans.applyTo(V);
 		V.add(loc);
 	}
 
 	@Override
-	public void applyToNormal(Vector3 N) {
+	public void applyToNormal(Vector3d N) {
 		baseTrans.applyToNormal(N);
 	}
 

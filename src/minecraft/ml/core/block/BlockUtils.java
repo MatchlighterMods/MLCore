@@ -1,6 +1,6 @@
 package ml.core.block;
 
-import ml.core.vec.Vector3;
+import ml.core.vec.Vector3d;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.common.ForgeDirection;
@@ -131,12 +131,12 @@ public class BlockUtils {
 	 */
 	public static ForgeDirection getPlacedForgeDir(Entity placer, int x, int y, int z, ForgeDirection[] allowedDirs){
 		
-		Vector3 look = (new Vector3(placer.posX, placer.posY+placer.height/2, placer.posZ).minus(new Vector3((float)x+0.5F, (float)y+0.5F, (float)z+0.5F))).normalize(); 
+		Vector3d look = (new Vector3d(placer.posX, placer.posY+placer.height/2, placer.posZ).minus(new Vector3d((float)x+0.5F, (float)y+0.5F, (float)z+0.5F))).normalize(); 
 		
 		ForgeDirection cfd = ForgeDirection.UNKNOWN;
 		double loang = Math.PI;
 		for (ForgeDirection fd : allowedDirs){
-			double secDot = Math.acos(look.dotProd(new Vector3(fd.offsetX, fd.offsetY, fd.offsetZ)));
+			double secDot = Math.acos(look.dotProd(new Vector3d(fd.offsetX, fd.offsetY, fd.offsetZ)));
 			if (secDot<loang){
 				loang = secDot;
 				cfd = fd;

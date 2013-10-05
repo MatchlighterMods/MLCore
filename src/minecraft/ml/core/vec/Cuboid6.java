@@ -6,23 +6,23 @@ import net.minecraft.util.AxisAlignedBB;
 
 public class Cuboid6 {
 	
-	public Vector3 min;
-	public Vector3 max;
+	public Vector3d min;
+	public Vector3d max;
 	
-	public Cuboid6(Vector3 imin, Vector3 imax) {
+	public Cuboid6(Vector3d imin, Vector3d imax) {
 		min = imin.copy();
 		max = imax.copy();
 	}
 	
 	public Cuboid6(double minx, double miny, double minz, double maxx, double maxy, double maxz) {
-		this(new Vector3(minx, miny, minz), new Vector3(maxx, maxy, maxz));
+		this(new Vector3d(minx, miny, minz), new Vector3d(maxx, maxy, maxz));
 	}
 	
 	public Cuboid6(AxisAlignedBB aabb){
 		this(aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ);
 	}
 	
-	public Cuboid6 translate(Vector3 v3){
+	public Cuboid6 translate(Vector3d v3){
 		min = min.add(v3);
 		max = max.add(v3);
 		return this;
