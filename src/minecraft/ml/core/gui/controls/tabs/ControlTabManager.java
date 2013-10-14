@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ml.core.enums.NaturalSide;
+import ml.core.gui.GuiRenderUtils;
 import ml.core.gui.core.GuiElement;
 import ml.core.gui.core.Window;
 import ml.core.vec.Rectangle;
@@ -38,7 +39,7 @@ public class ControlTabManager extends GuiElement {
 		public GuiTab(ControlTabManager ctm) {
 			super(ctm);
 			TabManager = ctm;
-			size = new Vector2i(defaultSize, defaultSize);
+			setSize(new Vector2i(defaultSize, defaultSize));
 		}
 
 		public int tabColor = 0x3590FF;
@@ -48,12 +49,12 @@ public class ControlTabManager extends GuiElement {
 			super.guiTick();
 			
 			Vector2i trg = getTargetSize();
-			size.x = Math.abs(size.x-trg.x) < sizingSpeed ? trg.x : size.x + (size.x > trg.x ? -sizingSpeed : sizingSpeed);
-			size.y = Math.abs(size.y-trg.y) < sizingSpeed ? trg.y : size.y + (size.y > trg.y ? -sizingSpeed : sizingSpeed);
+			getSize().x = Math.abs(getSize().x-trg.x) < sizingSpeed ? trg.x : getSize().x + (getSize().x > trg.x ? -sizingSpeed : sizingSpeed);
+			getSize().y = Math.abs(getSize().y-trg.y) < sizingSpeed ? trg.y : getSize().y + (getSize().y > trg.y ? -sizingSpeed : sizingSpeed);
 		}
 		
 		public Vector2i getTargetSize() {
-			return size;
+			return getSize();
 		}
 		
 		@Override
@@ -78,20 +79,20 @@ public class ControlTabManager extends GuiElement {
 
 			switch (TabManager.side){
 			case Left:
-				this.drawTexturedModalRect(0, 0, 0, 0, this.size.x, this.size.y-4);
-				this.drawTexturedModalRect(0, 4, 0, 256-this.size.y+4, this.size.x, this.size.y-4);
+				GuiRenderUtils.drawTexturedModalRect(0, 0, 0, 0, this.getSize().x, this.getSize().y-4);
+				GuiRenderUtils.drawTexturedModalRect(0, 4, 0, 256-this.getSize().y+4, this.getSize().x, this.getSize().y-4);
 				break;
 			case Right:
-				this.drawTexturedModalRect(0, 0, 256-this.size.x, 0, this.size.x, this.size.y-4);
-				this.drawTexturedModalRect(0, 4, 256-this.size.x, 256-this.size.y+4, this.size.x, this.size.y-4);
+				GuiRenderUtils.drawTexturedModalRect(0, 0, 256-this.getSize().x, 0, this.getSize().x, this.getSize().y-4);
+				GuiRenderUtils.drawTexturedModalRect(0, 4, 256-this.getSize().x, 256-this.getSize().y+4, this.getSize().x, this.getSize().y-4);
 				break;
 			case Top:
-				this.drawTexturedModalRect(0, 0, 0, 0, this.size.x-4, this.size.y);
-				this.drawTexturedModalRect(4, 0, 256-this.size.x+4, 0, this.size.x-4, this.size.y);
+				GuiRenderUtils.drawTexturedModalRect(0, 0, 0, 0, this.getSize().x-4, this.getSize().y);
+				GuiRenderUtils.drawTexturedModalRect(4, 0, 256-this.getSize().x+4, 0, this.getSize().x-4, this.getSize().y);
 				break;
 			case Bottom:
-				this.drawTexturedModalRect(0, 0, 0, 256-this.size.y, this.size.x-4, this.size.y);
-				this.drawTexturedModalRect(4, 0, 256-this.size.x+4, 256-this.size.y, this.size.x-4, this.size.y);
+				GuiRenderUtils.drawTexturedModalRect(0, 0, 0, 256-this.getSize().y, this.getSize().x-4, this.getSize().y);
+				GuiRenderUtils.drawTexturedModalRect(4, 0, 256-this.getSize().x+4, 256-this.getSize().y, this.getSize().x-4, this.getSize().y);
 				break;
 			}
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -161,14 +162,14 @@ public class ControlTabManager extends GuiElement {
 			case Left:
 			case Right:
 				if (gt==iTab)
-					return new Rectangle(side==NaturalSide.Left ? -gt.size.x : cgui.getSize().x, offset, gt.size.x, gt.size.y);
-				offset += gt.size.y;
+					return new Rectangle(side==NaturalSide.Left ? -gt.getSize().x : cgui.getSize().x, offset, gt.getSize().x, gt.getSize().y);
+				offset += gt.getSize().y;
 				break;
 			case Top:
 			case Bottom:
 				if (gt==iTab)
-					return new Rectangle(side==NaturalSide.Top ? -gt.size.y : cgui.getSize().y, offset, gt.size.x, gt.size.y);
-				offset =+ gt.size.x;
+					return new Rectangle(side==NaturalSide.Top ? -gt.getSize().y : cgui.getSize().y, offset, gt.getSize().x, gt.getSize().y);
+				offset =+ gt.getSize().x;
 				break;	
 			}
 		}
@@ -183,21 +184,21 @@ public class ControlTabManager extends GuiElement {
 			switch (side) {
 			case Left:
 			case Right:
-				if (pos.y>yLower && pos.y<yLower+gt.size.y &&
-						((side==NaturalSide.Left && pos.x>-gt.size.x && pos.x<0) ||
-								(side==NaturalSide.Right && pos.x>cgui.getSize().x && pos.x<cgui.getSize().x+gt.size.x))) {
+				if (pos.y>yLower && pos.y<yLower+gt.getSize().y &&
+						((side==NaturalSide.Left && pos.x>-gt.getSize().x && pos.x<0) ||
+								(side==NaturalSide.Right && pos.x>cgui.getSize().x && pos.x<cgui.getSize().x+gt.getSize().x))) {
 					return gt;
 				}
-				yLower += gt.size.y;
+				yLower += gt.getSize().y;
 				break;
 			case Top:
 			case Bottom:
-				if (pos.x>xLower && pos.y<xLower+gt.size.x &&
-						((side==NaturalSide.Top && pos.y>-gt.size.y && pos.y<0) ||
-								(side==NaturalSide.Bottom && pos.y>cgui.getSize().y && pos.y<cgui.getSize().y+gt.size.y))) {
+				if (pos.x>xLower && pos.y<xLower+gt.getSize().x &&
+						((side==NaturalSide.Top && pos.y>-gt.getSize().y && pos.y<0) ||
+								(side==NaturalSide.Bottom && pos.y>cgui.getSize().y && pos.y<cgui.getSize().y+gt.getSize().y))) {
 					return gt;
 				}
-				xLower += gt.size.x;
+				xLower += gt.getSize().x;
 				break;
 			}
 		}

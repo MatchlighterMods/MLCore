@@ -6,7 +6,6 @@ import java.util.List;
 import ml.core.gui.event.EventFocusLost;
 import ml.core.gui.event.GuiEvent;
 import ml.core.vec.Vector2i;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -14,20 +13,29 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public abstract class GuiElement extends Gui {
+public abstract class GuiElement {
 
 	public GuiElement parentObject;
 	private List<GuiElement> childObjects = new ArrayList<GuiElement>();
-	public Vector2i position;
-	public Vector2i size;
+	private Vector2i position;
+	private Vector2i size;
 	
 	public GuiElement(GuiElement parent) {
+		parentObject = parent;
 		if (parent != null)
 			parent.addChild(this);
-		position = new Vector2i();
-		size = new Vector2i();
+		setPosition(new Vector2i());
+		setSize(new Vector2i());
 	}
 	
+	public Vector2i getPosition() {
+		return position;
+	}
+
+	public void setPosition(Vector2i position) {
+		this.position = position;
+	}
+
 	public void clearChildren() {
 		childObjects.clear();
 	}
@@ -57,8 +65,38 @@ public abstract class GuiElement extends Gui {
 		return getParent().getTopParent();
 	}
 	
+	public Vector2i getSize() { return size; }
+	
+	public void setSize(Vector2i size) {
+		this.size = size;
+	}
+	
+	public void setSize(int w, int h) {
+		setSize(new Vector2i(w, h));
+	}
+
+	public Vector2i getLocalPosition() {
+		return getPosition();
+	}
+	
+	public Vector2i getAbsolutePosition() {
+		if (!isTopParentElem()) return getParent().getAbsolutePosition().add(getLocalPosition());
+		return getLocalPosition().copy();
+	}
+	
 	public Vector2i getLocalMousePos() {
-		return getTopParent().gmousePos.copy().minus(getAbsolutePosition());
+		return localizeGlobal(getTopParent().gmousePos);
+	}
+	
+	public Vector2i localizeGlobal(Vector2i g) {
+		return g.copy().minus(getAbsolutePosition());
+	}
+	
+	/**
+	 * Localizes a point that is presently localized to the parent element.
+	 */
+	public Vector2i localizeParent(Vector2i g) {
+		return g.copy().minus(getLocalPosition());
 	}
 	
 	public GuiEvent injectEvent(GuiEvent evt, boolean injectAtTop) {
@@ -122,17 +160,6 @@ public abstract class GuiElement extends Gui {
 		return getTopParent().focusedElement == this;
 	}
 	
-	public Vector2i getSize() { return size; }
-	
-	public Vector2i getLocalPosition() {
-		return position;
-	}
-	
-	public Vector2i getAbsolutePosition() {
-		if (!isTopParentElem()) return getParent().getAbsolutePosition().add(getLocalPosition());
-		return getLocalPosition().copy();
-	}
-	
 	public void guiTick() {
 		for (GuiElement el : childObjects) {
 			el.guiTick();
@@ -143,6 +170,10 @@ public abstract class GuiElement extends Gui {
 		getTopParent().getGui().getMinecraft().getTextureManager().bindTexture(res);
 	}
 
+	/**
+	 * Always make a super call as your last call. It will render children.<br/>
+	 * Your matrix will be localized to the parent element, so you need to shift by your local position.
+	 */
 	@SideOnly(Side.CLIENT)
 	public void drawBackground() {
 		for (GuiElement el : childObjects) {
@@ -154,6 +185,10 @@ public abstract class GuiElement extends Gui {
 		}
 	}
 	
+	/**
+	 * Always make a super call as your last call. It will render children.<br/>
+	 * Your matrix will be localized to the parent element, so you need to shift by your local position.
+	 */
 	@SideOnly(Side.CLIENT)
 	public void drawForeground() {
 		for (GuiElement el : childObjects) {
@@ -165,6 +200,10 @@ public abstract class GuiElement extends Gui {
 		}
 	}
 	
+	/**
+	 * Always make a super call as your last call. It will render children.<br/>
+	 * Your matrix will be localized to the parent element, so you need to shift by your local position.
+	 */
 	@SideOnly(Side.CLIENT)
 	public void drawOverlay() {
 		for (GuiElement el : childObjects) {

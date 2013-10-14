@@ -27,7 +27,7 @@ public class ControlButton extends GuiControl {
 	public void drawForeground() {
 		getTopParent().getGui().getMinecraft().getTextureManager().bindTexture(buttonRes);
 		Vector2i mPos = getLocalMousePos();
-		GuiRenderUtils.drawSlicedRect(position.x, position.y, size.x, size.y, 0, enabled ? getTopParent().hoverElement==this ? 86 : 66 : 46, 200, 20, 2, 2, 2, 2);
+		GuiRenderUtils.drawSlicedRect(getPosition().x, getPosition().y, getSize().x, getSize().y, 0, enabled ? getTopParent().hoverElement==this ? 86 : 66 : 46, 200, 20, 2, 2, 2, 2);
 		super.drawForeground();
 	}
 

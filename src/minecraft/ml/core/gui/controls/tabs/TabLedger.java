@@ -21,7 +21,7 @@ public abstract class TabLedger extends GuiTab {
 		super(ctm);
 		
 		closeSize = new Vector2i(defaultSize, defaultSize);
-		size = closeSize.copy();
+		setSize(closeSize.copy());
 		openSize = oSize.copy();
 	}
 

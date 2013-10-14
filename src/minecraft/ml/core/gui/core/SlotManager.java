@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import ml.core.vec.Vector2i;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -28,20 +28,14 @@ public class SlotManager {
 	}
 
 	/** Used when touchscreen is enabled */
-	private Slot clickedSlot;
-
-	/** Used when touchscreen is enabled */
-	private boolean isRightMouseClick;
-
-	/** Used when touchscreen is enabled */
 	private ItemStack draggedStack;
-	private int field_85049_r;
-	private int field_85048_s;
+	private ItemStack returningStack;
+	private boolean isRightMouseClick;
+	private Slot clickedSlot;
+	private Vector2i draggedStackPos;
 	private Slot returningStackDestSlot;
 	private long returningStackTime;
 
-	/** Used when touchscreen is enabled */
-	private ItemStack returningStack;
 	private Slot field_92033_y;
 	private long field_92032_z;
 	protected final Set field_94077_p = new HashSet();
@@ -126,11 +120,11 @@ public class SlotManager {
 	 * Called when a mouse button is pressed and the mouse is moved around. Parameters are : mouseX, mouseY,
 	 * lastButtonClicked & timeSinceMouseClick.
 	 */
-	public void mouseClickMove(Slot slot, int par1, int par2, int par3, long par4) {
+	public void mouseClickMove(Slot slot, int mX, int mY, int button, long timeSinceLast) {
 		ItemStack itemstack = this.mc.thePlayer.inventory.getItemStack();
 
 		if (this.clickedSlot != null && this.mc.gameSettings.touchscreen) {
-			if (par3 == 0 || par3 == 1) {
+			if (button == 0 || button == 1) {
 				if (this.draggedStack == null) {
 					if (slot != this.clickedSlot) {
 						this.draggedStack = this.clickedSlot.getStack().copy();
@@ -187,27 +181,18 @@ public class SlotManager {
 	 * Called when the mouse is moved or a mouse button is released.  Signature: (mouseX, mouseY, which) which==-1 is
 	 * mouseMove, which==0 or which==1 is mouseUp
 	 */
-	public void mouseMovedOrUp(Slot slot, int par1, int par2, int par3) {
-		int l = this.guiLeft;
-		int i1 = this.guiTop;
-		boolean flag = par1 < l || par2 < i1 || par1 >= l + this.xSize || par2 >= i1 + this.ySize;
+	public void mouseMovedOrUp(Slot slot, int which) {
 		int j1 = -1;
 
 		if (slot != null) {
 			j1 = slot.slotNumber;
 		}
 
-		if (flag) {
-			j1 = -999;
-		}
-
 		Slot slot1;
 		Iterator iterator;
 
-		if (this.field_94074_J && slot != null && par3 == 0 && owner.getContainer().func_94530_a((ItemStack)null, slot)) {
-			;
-			owner.getGui();
-			if (GuiScreen.isShiftKeyDown()) {
+		if (this.field_94074_J && slot != null && which == 0 && owner.getContainer().func_94530_a((ItemStack)null, slot)) {
+			if (owner.getGui().isShiftKeyDown()) {
 				if (slot != null && slot.inventory != null && this.field_94075_K != null) {
 					iterator = owner.getContainer().inventorySlots.iterator();
 
@@ -215,18 +200,18 @@ public class SlotManager {
 						slot1 = (Slot)iterator.next();
 
 						if (slot1 != null && slot1.canTakeStack(this.mc.thePlayer) && slot1.getHasStack() && slot1.inventory == slot.inventory && Container.func_94527_a(slot1, this.field_94075_K, true)) {
-							this.handleAction(slot1, slot1.slotNumber, par3, 1);
+							this.handleAction(slot1, slot1.slotNumber, which, 1);
 						}
 					}
 				}
 			} else {
-				this.handleAction(slot, j1, par3, 6);
+				this.handleAction(slot, j1, which, 6);
 			}
 
 			this.field_94074_J = false;
 			this.field_94070_G = 0L;
 		} else {
-			if (this.field_94076_q && this.field_94067_D != par3) {
+			if (this.field_94076_q && this.field_94067_D != which) {
 				this.field_94076_q = false;
 				this.field_94077_p.clear();
 				this.field_94068_E = true;
@@ -241,7 +226,7 @@ public class SlotManager {
 			boolean flag1;
 
 			if (this.clickedSlot != null && this.mc.gameSettings.touchscreen) {
-				if (par3 == 0 || par3 == 1) {
+				if (which == 0 || which == 1) {
 					if (this.draggedStack == null && slot != this.clickedSlot) {
 						this.draggedStack = this.clickedSlot.getStack();
 					}
@@ -249,13 +234,12 @@ public class SlotManager {
 					flag1 = Container.func_94527_a(slot, this.draggedStack, false);
 
 					if (j1 != -1 && this.draggedStack != null && flag1) {
-						this.handleAction(this.clickedSlot, this.clickedSlot.slotNumber, par3, 0);
+						this.handleAction(this.clickedSlot, this.clickedSlot.slotNumber, which, 0);
 						this.handleAction(slot, j1, 0, 0);
 
 						if (this.mc.thePlayer.inventory.getItemStack() != null) {
-							this.handleAction(this.clickedSlot, this.clickedSlot.slotNumber, par3, 0);
-							this.field_85049_r = par1 - l;
-							this.field_85048_s = par2 - i1;
+							this.handleAction(this.clickedSlot, this.clickedSlot.slotNumber, which, 0);
+							this.draggedStackPos = owner.getLocalMousePos();
 							this.returningStackDestSlot = this.clickedSlot;
 							this.returningStack = this.draggedStack;
 							this.returningStackTime = Minecraft.getSystemTime();
@@ -263,8 +247,7 @@ public class SlotManager {
 							this.returningStack = null;
 						}
 					} else if (this.draggedStack != null) {
-						this.field_85049_r = par1 - l;
-						this.field_85048_s = par2 - i1;
+						this.draggedStackPos = owner.getLocalMousePos();
 						this.returningStackDestSlot = this.clickedSlot;
 						this.returningStack = this.draggedStack;
 						this.returningStackTime = Minecraft.getSystemTime();
@@ -284,8 +267,8 @@ public class SlotManager {
 
 				this.handleAction((Slot)null, -999, Container.func_94534_d(2, this.field_94071_C), 5);
 			} else if (this.mc.thePlayer.inventory.getItemStack() != null) {
-				if (par3 == this.mc.gameSettings.keyBindPickBlock.keyCode + 100) {
-					this.handleAction(slot, j1, par3, 3);
+				if (which == this.mc.gameSettings.keyBindPickBlock.keyCode + 100) {
+					this.handleAction(slot, j1, which, 3);
 				} else {
 					flag1 = j1 != -999 && (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54));
 
@@ -293,7 +276,7 @@ public class SlotManager {
 						this.field_94075_K = slot != null && slot.getHasStack() ? slot.getStack() : null;
 					}
 
-					this.handleAction(slot, j1, par3, flag1 ? 1 : 0);
+					this.handleAction(slot, j1, which, flag1 ? 1 : 0);
 				}
 			}
 		}

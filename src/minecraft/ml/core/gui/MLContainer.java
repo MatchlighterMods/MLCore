@@ -16,15 +16,17 @@ import cpw.mods.fml.relauncher.Side;
 public class MLContainer extends Container {
 	
 	protected List<Slot> slots = new ArrayList<Slot>();
+	protected TopParentGuiElement priElemement;
 	
 	public MLContainer(TopParentGuiElement elm) {
+		priElemement = elm;
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	
 	/**
@@ -51,11 +53,13 @@ public class MLContainer extends Container {
 	}
 	
 	/**
-	 * DO NOT call dynamically. Call once per slot on init. Not again. Must be synced between Client and server.
+	 * DO NOT call dynamically. Call once per slot on init. Not again. Must be synced between Client and server. <br/>
+	 * <b>Note:</b> ControlSlot automatically handles this on instantiation.
 	 */
 	public int registerSlot(Slot slt) {
 		if (!slots.contains(slt))
 			slots.add(slt);
-		return slots.indexOf(slt);
+		slt.slotNumber = slots.indexOf(slt);
+		return slt.slotNumber;
 	}
 }

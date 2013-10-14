@@ -15,17 +15,23 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public abstract class TopParentGuiElement extends GuiElement {
 	
-	protected MLGuiClient gui;
+	protected Side side;
 	protected MLContainer container;
+	@SideOnly(Side.CLIENT)
+	protected MLGuiClient gui;
+	@SideOnly(Side.CLIENT)
+	protected SlotManager slotManager;
 	public Vector2i gmousePos = new Vector2i();
 	public GuiElement hoverElement;
 	public GuiElement focusedElement;
 
 	public TopParentGuiElement(EntityPlayer epl, Side side) {
 		super(null);
+		this.side = side;
 		container = new MLContainer(this);
 		if (side == Side.CLIENT) {
 			gui = new MLGuiClient(this);
+			slotManager = new SlotManager(this);
 		}
 	}
 	
@@ -33,6 +39,19 @@ public abstract class TopParentGuiElement extends GuiElement {
 	public Vector2i getLocalPosition() {
 		if (gui == null) return super.getLocalPosition();
 		return gui.getPosition();
+	}
+	
+	/**
+	 * THis will cause a refresh of the Gui (x|y)Size and position fields
+	 */
+	public void refreshGuiSize() {
+		if (side == Side.CLIENT)
+			getGui().refreshSize();
+	}
+	
+	public void setSize(Vector2i sz) {
+		super.setSize(sz);
+		refreshGuiSize();
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -43,4 +62,10 @@ public abstract class TopParentGuiElement extends GuiElement {
 	public MLContainer getContainer() {
 		return container;
 	}
+	
+	public SlotManager getSlotManager() {
+		return slotManager;
+	}
+	
+	public abstract void initControls();
 }

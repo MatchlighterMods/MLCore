@@ -12,8 +12,8 @@ public abstract class GuiControl extends GuiElement {
 
 	public GuiControl(GuiElement parent, Vector2i position, Vector2i size) {
 		super(parent);
-		this.position = position;
-		this.size = size;
+		this.setPosition(position);
+		this.setSize(size);
 	}
 		
 }
