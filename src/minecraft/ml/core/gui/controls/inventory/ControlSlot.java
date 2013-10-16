@@ -19,6 +19,18 @@ public class ControlSlot extends GuiControl {
 	}
 	
 	@Override
+	public void drawBackground() {
+		// TODO Draw background
+		super.drawBackground();
+	}
+	
+	@Override
+	public void drawForeground() {
+		// TODO Draw contents
+		super.drawForeground();
+	}
+	
+	@Override
 	public void handleEvent(GuiEvent evt) {
 		if (slot != null && evt instanceof EventMouseClicked && evt.origin == this) {
 			EventMouseClicked evmc = (EventMouseClicked)evt;

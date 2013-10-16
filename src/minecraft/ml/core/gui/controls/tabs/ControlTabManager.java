@@ -58,7 +58,7 @@ public class ControlTabManager extends GuiElement {
 		}
 		
 		@Override
-		public Vector2i getLocalPosition() {
+		public Vector2i getPosition() {
 			Rectangle tb = TabManager.getTabBounds(this);
 			return new Vector2i(tb.xCoord, tb.yCoord);
 		}

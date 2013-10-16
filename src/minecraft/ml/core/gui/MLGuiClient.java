@@ -1,8 +1,11 @@
 package ml.core.gui;
 
+import org.lwjgl.opengl.GL11;
+
 import ml.core.enums.MouseButton;
 import ml.core.gui.core.GuiElement;
 import ml.core.gui.core.TopParentGuiElement;
+import ml.core.gui.core.GuiElement.RenderStage;
 import ml.core.gui.event.EventKeyPressed;
 import ml.core.gui.event.EventMouseClicked;
 import ml.core.gui.event.EventMouseEntered;
@@ -20,13 +23,12 @@ public class MLGuiClient extends GuiContainer {
 	public MLGuiClient(TopParentGuiElement elm) {
 		super(elm.getContainer());
 		priElemement = elm;
-		// TODO Auto-generated constructor stub
 	}
 	
 	@Override
 	public void drawScreen(int par1, int par2, float par3) {
 		super.drawScreen(par1, par2, par3);
-		priElemement.drawOverlay();
+		matrixAndDraw(RenderStage.Overlay);
 	}
 	
 	public void refreshSize() {
@@ -43,15 +45,26 @@ public class MLGuiClient extends GuiContainer {
 		
 		priElemement.guiTick();
 	}
+	
+	/**
+	 * Calls {@link TopParentGuiElement#drawElement(RenderStage)} wrapped in a new GL Matrix<br/>
+	 * Mostly just for DRY code
+	 * @param stage
+	 */
+	private void matrixAndDraw(RenderStage stage) {
+		GL11.glPushMatrix();
+		priElemement.drawElement(stage);
+		GL11.glPopMatrix();
+	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
-		priElemement.drawBackground();
+		matrixAndDraw(RenderStage.Background);
 	}
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-		priElemement.drawForeground();
+		matrixAndDraw(RenderStage.Foreground);
 		super.drawGuiContainerForegroundLayer(par1, par2);
 	}
 

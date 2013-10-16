@@ -36,8 +36,8 @@ public abstract class TopParentGuiElement extends GuiElement {
 	}
 	
 	@Override
-	public Vector2i getLocalPosition() {
-		if (gui == null) return super.getLocalPosition();
+	public Vector2i getPosition() {
+		if (gui == null) return super.getPosition();
 		return gui.getPosition();
 	}
 	
@@ -54,6 +54,10 @@ public abstract class TopParentGuiElement extends GuiElement {
 		refreshGuiSize();
 	}
 	
+	public Side getSide() {
+		return side;
+	}
+	
 	@SideOnly(Side.CLIENT)
 	public MLGuiClient getGui() {
 		return gui;
@@ -68,4 +72,6 @@ public abstract class TopParentGuiElement extends GuiElement {
 	}
 	
 	public abstract void initControls();
+	
+	public abstract boolean canInteractWith(EntityPlayer epl);
 }

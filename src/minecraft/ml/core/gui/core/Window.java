@@ -12,26 +12,18 @@ public abstract class Window extends TopParentGuiElement {
 
 	public Window(EntityPlayer epl, Side side) {
 		super(epl, side);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public void drawBackground() {
 		bindTexture(bg);
-		GuiRenderUtils.drawSlicedRect(this.getLocalPosition().x, this.getLocalPosition().y, this.getSize().x, this.getSize().y, 0, 0, 256, 256, 4, 4, 4, 4);
+		GuiRenderUtils.drawSlicedRect(this.getPosition().x, this.getPosition().y, this.getSize().x, this.getSize().y, 0, 0, 256, 256, 4, 4, 4, 4);
 		super.drawBackground();
 	}
 	
 	@Override
 	public void handleEvent(GuiEvent evt) {
-		super.handleEvent(evt);
-		
-//		if (evt instanceof EventKeyPressed && !evt.cancelled) { // Not necessary (see GuiContainer)
-//			EventKeyPressed evkp = (EventKeyPressed)evt;
-//			if (evkp.character == getGui().getMinecraft().gameSettings.keyBindInventory.keyCode) {
-//				// TODO Close Gui
-//			}
-//		}
+		// Don't need Closing KeyHandler; GuiContainer will do it if the event isn't cancelled
 	}
 	
 	public static enum WindowSide {

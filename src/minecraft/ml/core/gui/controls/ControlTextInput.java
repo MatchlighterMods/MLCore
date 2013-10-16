@@ -1,29 +1,70 @@
 package ml.core.gui.controls;
 
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.GuiTextField;
 import ml.core.gui.core.GuiElement;
+import ml.core.gui.event.EventChanged;
+import ml.core.gui.event.EventFocusLost;
 import ml.core.gui.event.EventKeyPressed;
 import ml.core.gui.event.EventMouseClicked;
 import ml.core.gui.event.GuiEvent;
 import ml.core.vec.Vector2i;
 
+/**
+ * Note that this does NOT handle sending data to the server. It is up to you to decide when and how to do that.
+ * @author Matchlighter
+ */
 public class ControlTextInput extends GuiControl {
 
-	public String value;
+	@SideOnly(Side.CLIENT)
+	public GuiTextField textBox;
 	
 	public ControlTextInput(GuiElement parent, Vector2i pos, Vector2i size) {
 		super(parent, pos, size);
-		// TODO Auto-generated constructor stub
+		if (getSide() == Side.CLIENT) {
+			textBox = new GuiTextField(getTopParent().getGui().getMinecraft().fontRenderer, 0, 0, size.x, size.y);
+			textBox.setEnableBackgroundDrawing(false);
+		}
+	}
+	
+	@Override
+	public void drawBackground() {
+		//TODO Render TB background
 	}
 
 	@Override
+	public void drawForeground() {
+		GL11.glTranslatef(getPosition().x, getPosition().y, 0);
+		textBox.drawTextBox();
+	}
+	
+	@Override
 	public void handleEvent(GuiEvent evt) {
 		if (evt.origin == this && evt instanceof EventMouseClicked) {
-			takeFocus();
+			if (!hasFocus()) {
+				takeFocus();
+				textBox.setFocused(true);
+			}
+			EventMouseClicked msev = (EventMouseClicked)evt;
+			textBox.mouseClicked(msev.mPos.x, msev.mPos.y, msev.button.ordinal());
+			
+		} else if (evt.origin == this && evt instanceof EventFocusLost && getSide() == Side.CLIENT) {
+			textBox.setFocused(false);
+			
 		} else if (hasFocus() && evt instanceof EventKeyPressed) {
 			evt.cancel();
 			EventKeyPressed kpevt = (EventKeyPressed)evt;
-			// TODO Type
+			textBox.textboxKeyTyped(kpevt.character, kpevt.key);
+			injectEvent(new EventChanged(this));
 		}
 		super.handleEvent(evt);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public GuiTextField getTextField() {
+		return textBox;
 	}
 }

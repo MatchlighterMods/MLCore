@@ -20,20 +20,18 @@ public class MLContainer extends Container {
 	
 	public MLContainer(TopParentGuiElement elm) {
 		priElemement = elm;
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer) {
-		// TODO Auto-generated method stub
-		return true;
+		return priElemement.canInteractWith(entityplayer);
 	}
 	
 	/**
 	 * For data transmission when 2 shorts isn't enough
 	 */
 	public void handleDataPacket(NBTTagCompound pload, Side side) {
-		
+		// TODO Relay to priElement
 	}
 	
 	public void sendPacket(NBTTagCompound payload) {
@@ -43,7 +41,8 @@ public class MLContainer extends Container {
 
 	@Override
 	public void putStackInSlot(int par1, ItemStack par2ItemStack) {
-		// TODO Auto-generated method stub
+		// TODO Put stack in the slot ?
+		// Called by network code. Override may not be necessary w/ getSlot() overridden
 		super.putStackInSlot(par1, par2ItemStack);
 	}
 	
