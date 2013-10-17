@@ -1,7 +1,5 @@
 package ml.core.gui.core;
 
-import ml.core.gui.MLContainer;
-import ml.core.gui.MLGuiClient;
 import ml.core.vec.Vector2i;
 import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.relauncher.Side;
@@ -15,12 +13,15 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public abstract class TopParentGuiElement extends GuiElement {
 	
+	public EntityPlayer player;
+	
 	protected Side side;
 	protected MLContainer container;
 	@SideOnly(Side.CLIENT)
 	protected MLGuiClient gui;
 	@SideOnly(Side.CLIENT)
 	protected SlotManager slotManager;
+	
 	public Vector2i gmousePos = new Vector2i();
 	public GuiElement hoverElement;
 	public GuiElement focusedElement;
@@ -28,10 +29,10 @@ public abstract class TopParentGuiElement extends GuiElement {
 	public TopParentGuiElement(EntityPlayer epl, Side side) {
 		super(null);
 		this.side = side;
+		this.player = epl;
 		container = new MLContainer(this);
 		if (side == Side.CLIENT) {
 			gui = new MLGuiClient(this);
-			slotManager = new SlotManager(this);
 		}
 	}
 	
@@ -42,7 +43,7 @@ public abstract class TopParentGuiElement extends GuiElement {
 	}
 	
 	/**
-	 * THis will cause a refresh of the Gui (x|y)Size and position fields
+	 * This will cause a refresh of the Gui (x|y)Size and position fields
 	 */
 	public void refreshGuiSize() {
 		if (side == Side.CLIENT)

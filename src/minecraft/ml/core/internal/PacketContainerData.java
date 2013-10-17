@@ -2,7 +2,7 @@ package ml.core.internal;
 
 import java.io.IOException;
 
-import ml.core.gui.MLContainer;
+import ml.core.gui.core.MLContainer;
 import ml.core.network.MLPacket;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;

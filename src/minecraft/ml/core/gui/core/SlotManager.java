@@ -4,13 +4,22 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import ml.core.gui.GuiRenderUtils;
 import ml.core.vec.Vector2i;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.Icon;
 
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Will be paired w/ {@link TopParentGuiElement}.
@@ -51,7 +60,7 @@ public class SlotManager {
 	private ItemStack field_94075_K;
 
 	public void slotClicked(Slot slot, int mbutton) {
-		boolean flag = mbutton == this.mc.gameSettings.keyBindPickBlock.keyCode + 100;
+		boolean flag = mbutton == mc.gameSettings.keyBindPickBlock.keyCode + 100;
 		long l = Minecraft.getSystemTime();
 		this.field_94074_J = this.field_94072_H == slot && l - this.field_94070_G < 250L && this.field_94073_I == mbutton;
 		this.field_94068_E = false;
@@ -63,13 +72,13 @@ public class SlotManager {
 				k1 = slot.slotNumber;
 			}
 
-//			if (this.mc.gameSettings.touchscreen && flag1 && this.mc.thePlayer.inventory.getItemStack() == null) {
-//				this.mc.displayGuiScreen((GuiScreen)null);
+//			if (mc.gameSettings.touchscreen && flag1 && mc.thePlayer.inventory.getItemStack() == null) {
+//				mc.displayGuiScreen((GuiScreen)null);
 //				return;
 //			}
 
 			if (k1 != -1) {
-				if (this.mc.gameSettings.touchscreen) {
+				if (mc.gameSettings.touchscreen) {
 					if (slot != null && slot.getHasStack()) {
 						this.clickedSlot = slot;
 						this.draggedStack = null;
@@ -78,8 +87,8 @@ public class SlotManager {
 						this.clickedSlot = null;
 					}
 				} else if (!this.field_94076_q) {
-					if (this.mc.thePlayer.inventory.getItemStack() == null) {
-						if (mbutton == this.mc.gameSettings.keyBindPickBlock.keyCode + 100) {
+					if (mc.thePlayer.inventory.getItemStack() == null) {
+						if (mbutton == mc.gameSettings.keyBindPickBlock.keyCode + 100) {
 							this.handleAction(slot, k1, mbutton, 3);
 						} else {
 							boolean flag2 = k1 != -999 && (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54));
@@ -121,9 +130,9 @@ public class SlotManager {
 	 * lastButtonClicked & timeSinceMouseClick.
 	 */
 	public void mouseClickMove(Slot slot, int mX, int mY, int button, long timeSinceLast) {
-		ItemStack itemstack = this.mc.thePlayer.inventory.getItemStack();
+		ItemStack itemstack = mc.thePlayer.inventory.getItemStack();
 
-		if (this.clickedSlot != null && this.mc.gameSettings.touchscreen) {
+		if (this.clickedSlot != null && mc.gameSettings.touchscreen) {
 			if (button == 0 || button == 1) {
 				if (this.draggedStack == null) {
 					if (slot != this.clickedSlot) {
@@ -153,7 +162,7 @@ public class SlotManager {
 	}
 
 	private void func_94066_g() {
-		ItemStack itemstack = this.mc.thePlayer.inventory.getItemStack();
+		ItemStack itemstack = mc.thePlayer.inventory.getItemStack();
 
 		if (itemstack != null && this.field_94076_q) {
 			this.field_94069_F = itemstack.stackSize;
@@ -199,7 +208,7 @@ public class SlotManager {
 					while (iterator.hasNext()) {
 						slot1 = (Slot)iterator.next();
 
-						if (slot1 != null && slot1.canTakeStack(this.mc.thePlayer) && slot1.getHasStack() && slot1.inventory == slot.inventory && Container.func_94527_a(slot1, this.field_94075_K, true)) {
+						if (slot1 != null && slot1.canTakeStack(mc.thePlayer) && slot1.getHasStack() && slot1.inventory == slot.inventory && Container.func_94527_a(slot1, this.field_94075_K, true)) {
 							this.handleAction(slot1, slot1.slotNumber, which, 1);
 						}
 					}
@@ -225,7 +234,7 @@ public class SlotManager {
 
 			boolean flag1;
 
-			if (this.clickedSlot != null && this.mc.gameSettings.touchscreen) {
+			if (this.clickedSlot != null && mc.gameSettings.touchscreen) {
 				if (which == 0 || which == 1) {
 					if (this.draggedStack == null && slot != this.clickedSlot) {
 						this.draggedStack = this.clickedSlot.getStack();
@@ -237,7 +246,7 @@ public class SlotManager {
 						this.handleAction(this.clickedSlot, this.clickedSlot.slotNumber, which, 0);
 						this.handleAction(slot, j1, 0, 0);
 
-						if (this.mc.thePlayer.inventory.getItemStack() != null) {
+						if (mc.thePlayer.inventory.getItemStack() != null) {
 							this.handleAction(this.clickedSlot, this.clickedSlot.slotNumber, which, 0);
 							this.draggedStackPos = owner.getLocalMousePos();
 							this.returningStackDestSlot = this.clickedSlot;
@@ -266,8 +275,8 @@ public class SlotManager {
 				}
 
 				this.handleAction((Slot)null, -999, Container.func_94534_d(2, this.field_94071_C), 5);
-			} else if (this.mc.thePlayer.inventory.getItemStack() != null) {
-				if (which == this.mc.gameSettings.keyBindPickBlock.keyCode + 100) {
+			} else if (mc.thePlayer.inventory.getItemStack() != null) {
+				if (which == mc.gameSettings.keyBindPickBlock.keyCode + 100) {
 					this.handleAction(slot, j1, which, 3);
 				} else {
 					flag1 = j1 != -999 && (Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54));
@@ -281,7 +290,7 @@ public class SlotManager {
 			}
 		}
 
-		if (this.mc.thePlayer.inventory.getItemStack() == null) {
+		if (mc.thePlayer.inventory.getItemStack() == null) {
 			this.field_94070_G = 0L;
 		}
 
@@ -290,5 +299,71 @@ public class SlotManager {
 
 	protected void handleAction(Slot slot, int slnum, int button, int action) {
 		owner.getGui().getMinecraft().playerController.windowClick(owner.getContainer().windowId, slnum, button, action, owner.getGui().getMinecraft().thePlayer);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	protected static RenderItem itemRenderer = new RenderItem();
+	
+	@SideOnly(Side.CLIENT)
+	public void drawSlotInventory(int x, int y, Slot par1Slot) {
+		ItemStack itemstack = par1Slot.getStack();
+		boolean flag = false;
+		boolean flag1 = par1Slot == this.clickedSlot && this.draggedStack != null && !this.isRightMouseClick;
+		ItemStack itemstack1 = mc.thePlayer.inventory.getItemStack();
+		String s = null;
+		
+		if (par1Slot == this.clickedSlot && this.draggedStack != null && this.isRightMouseClick && itemstack != null) {
+			itemstack = itemstack.copy();
+			itemstack.stackSize /= 2;
+		} else if (this.field_94076_q && this.field_94077_p.contains(par1Slot) && itemstack1 != null) {
+			if (this.field_94077_p.size() == 1) {
+				return;
+			}
+
+			if (Container.func_94527_a(par1Slot, itemstack1, true) && owner.getContainer().canDragIntoSlot(par1Slot)) {
+				itemstack = itemstack1.copy();
+				flag = true;
+				Container.func_94525_a(this.field_94077_p, this.field_94071_C, itemstack, par1Slot.getStack() == null ? 0 : par1Slot.getStack().stackSize);
+
+				if (itemstack.stackSize > itemstack.getMaxStackSize()) {
+					s = EnumChatFormatting.YELLOW + "" + itemstack.getMaxStackSize();
+					itemstack.stackSize = itemstack.getMaxStackSize();
+				}
+
+				if (itemstack.stackSize > par1Slot.getSlotStackLimit()) {
+					s = EnumChatFormatting.YELLOW + "" + par1Slot.getSlotStackLimit();
+					itemstack.stackSize = par1Slot.getSlotStackLimit();
+				}
+			} else {
+				this.field_94077_p.remove(par1Slot);
+				this.func_94066_g();
+			}
+		}
+
+		itemRenderer.zLevel = 100.0F;
+
+		if (itemstack == null) {
+			Icon icon = par1Slot.getBackgroundIconIndex();
+
+			if (icon != null) {
+				GL11.glDisable(GL11.GL_LIGHTING);
+				mc.getTextureManager().bindTexture(TextureMap.locationItemsTexture);
+				GuiRenderUtils.drawTexturedModelRectFromIcon(x, y, icon, 16, 16);
+				GL11.glEnable(GL11.GL_LIGHTING);
+				flag1 = true;
+			}
+		}
+
+		if (!flag1) {
+			if (flag) {
+				GuiRenderUtils.drawGradientRect(x, y, x + 16, y + 16, -2130706433, -2130706433);
+			}
+
+			GL11.glEnable(GL11.GL_DEPTH_TEST);
+			itemRenderer.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.getTextureManager(), itemstack, x, y);
+			itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, mc.getTextureManager(), itemstack, x, y, s);
+		}
+
+		itemRenderer.zLevel = 0.0F;
 	}
 }

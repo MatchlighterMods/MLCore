@@ -129,10 +129,10 @@ public abstract class GuiElement {
 		}
 	}
 	
-	public GuiElement findElementAt(Vector2i pos) {
+	public GuiElement findElementAtLocal(Vector2i pos) {
 		for (GuiElement el : childObjects) {
 			if (el.pointInElement(pos)) {
-				GuiElement sel = el.findElementAt(pos.copy().minus(getPosition()));
+				GuiElement sel = el.findElementAtLocal(pos.copy().minus(el.getPosition()));
 				if (sel != null)
 					return sel;
 			}
@@ -176,6 +176,10 @@ public abstract class GuiElement {
 		return getTopParent().focusedElement == this;
 	}
 	
+	public boolean hasHover() {
+		return getTopParent().hoverElement == this;
+	}
+	
 	/**
 	 * The equivalent of {@link GuiScreen#updateScreen()}. Will only be called client-side, once per tick
 	 */
@@ -202,8 +206,8 @@ public abstract class GuiElement {
 	/**
 	 * Your matrix will be localized to the parent element, so you need to shift by your local position.
 	 */
-	@SideOnly(Side.CLIENT)
-	public void drawForeground() {}
+	//@SideOnly(Side.CLIENT)
+	//public void drawForeground() {}
 	
 	/**
 	 * Your matrix will be localized to the parent element, so you need to shift by your local position.
@@ -222,9 +226,9 @@ public abstract class GuiElement {
 		case Background:
 			drawBackground();
 			break;
-		case Foreground:
-			drawForeground();
-			break;
+		//case Foreground:
+			//drawForeground();
+			//break;
 		case Overlay:
 			drawOverlay();
 			break;
@@ -251,7 +255,7 @@ public abstract class GuiElement {
 	@SideOnly(Side.CLIENT)
 	public static enum RenderStage {
 		Background,
-		Foreground,
+		//Foreground,
 		Overlay;
 	}
 	

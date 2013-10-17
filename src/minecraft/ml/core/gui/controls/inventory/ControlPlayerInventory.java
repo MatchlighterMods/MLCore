@@ -19,7 +19,7 @@ public class ControlPlayerInventory extends GuiControl {
 		for (int slt=9; slt < epl.inventory.mainInventory.length; slt++){
 			int row = (int)Math.floor(slt/9) -1;
 			
-			addSlot(new Slot(epl.inventory, slt, 9 + (slt%9)*18, row*18));
+			addSlot(new Slot(epl.inventory, slt, (slt%9)*18, row*18));
 		}
 
 		for (int hotbarSlot = 0; hotbarSlot < 9; hotbarSlot++) {

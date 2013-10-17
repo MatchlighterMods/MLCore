@@ -1,6 +1,7 @@
 package ml.core.network;
 
 import java.lang.reflect.Constructor;
+import java.util.List;
 import java.util.logging.Level;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,12 +22,18 @@ import cpw.mods.fml.common.network.Player;
  * Thanks to MachineMuse for the idea on how to implement this
  * @author Matchlighter
  */
-public abstract class PacketHandler implements IPacketHandler {
+public class PacketHandler implements IPacketHandler {
 		
 	protected static BiMap<Integer, Class<? extends MLPacket>> PacketTypes = HashBiMap.create();
 	
-	protected static void addHandler(Class<? extends MLPacket> pktClass){
+	public static void addHandler(Class<? extends MLPacket> pktClass){
 		PacketTypes.put(PacketTypes.size(), pktClass);
+	}
+	
+	public static void addHandlers(List<Class<? extends MLPacket>> pktClss) {
+		for (Class<? extends MLPacket> pktCls : pktClss) {
+			addHandler(pktCls);
+		}
 	}
 	
 	@Override

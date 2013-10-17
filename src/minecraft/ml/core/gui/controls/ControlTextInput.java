@@ -32,15 +32,11 @@ public class ControlTextInput extends GuiControl {
 	
 	@Override
 	public void drawBackground() {
-		//TODO Render TB background
-	}
-
-	@Override
-	public void drawForeground() {
 		GL11.glTranslatef(getPosition().x, getPosition().y, 0);
+		//TODO Render TB background
 		textBox.drawTextBox();
 	}
-	
+
 	@Override
 	public void handleEvent(GuiEvent evt) {
 		if (evt.origin == this && evt instanceof EventMouseClicked) {

@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 
 import org.lwjgl.opengl.GL11;
 
@@ -87,5 +88,19 @@ public class GuiRenderUtils {
 		drawTexturedModalRect(x+lBord, y, uBase+uW-(w-lBord), vBase, w-lBord, h-bBord);
 		drawTexturedModalRect(x+lBord, y+tBord, uBase+uW-(w-lBord), vBase+uH-(h-tBord), w-lBord, h-tBord);
 		drawTexturedModalRect(x, y+tBord, uBase, vBase+uH-(h-tBord), w-rBord, h-tBord);
+	}
+
+	public static void drawSlicedRect(int x, int y, int w, int h, int uBase, int vBase, int uW, int uH, int bord){
+		drawSlicedRect(x, y, w, h, uBase, vBase, uW, uH, bord, bord, bord, bord);
+	}
+
+	public static void drawTexturedModelRectFromIcon(int par1, int par2, Icon par3Icon, int par4, int par5) {
+		Tessellator tessellator = Tessellator.instance;
+		tessellator.startDrawingQuads();
+		tessellator.addVertexWithUV((double)(par1 + 0), (double)(par2 + par5), (double)zLevel, (double)par3Icon.getMinU(), (double)par3Icon.getMaxV());
+		tessellator.addVertexWithUV((double)(par1 + par4), (double)(par2 + par5), (double)zLevel, (double)par3Icon.getMaxU(), (double)par3Icon.getMaxV());
+		tessellator.addVertexWithUV((double)(par1 + par4), (double)(par2 + 0), (double)zLevel, (double)par3Icon.getMaxU(), (double)par3Icon.getMinV());
+		tessellator.addVertexWithUV((double)(par1 + 0), (double)(par2 + 0), (double)zLevel, (double)par3Icon.getMinU(), (double)par3Icon.getMinV());
+		tessellator.draw();
 	}
 }

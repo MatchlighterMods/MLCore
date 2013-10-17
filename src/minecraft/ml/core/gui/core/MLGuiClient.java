@@ -1,10 +1,6 @@
-package ml.core.gui;
-
-import org.lwjgl.opengl.GL11;
+package ml.core.gui.core;
 
 import ml.core.enums.MouseButton;
-import ml.core.gui.core.GuiElement;
-import ml.core.gui.core.TopParentGuiElement;
 import ml.core.gui.core.GuiElement.RenderStage;
 import ml.core.gui.event.EventKeyPressed;
 import ml.core.gui.event.EventMouseClicked;
@@ -16,6 +12,8 @@ import ml.core.vec.Vector2i;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 
+import org.lwjgl.opengl.GL11;
+
 public class MLGuiClient extends GuiContainer {
 
 	protected TopParentGuiElement priElemement;
@@ -26,8 +24,20 @@ public class MLGuiClient extends GuiContainer {
 	}
 	
 	@Override
-	public void drawScreen(int par1, int par2, float par3) {
-		super.drawScreen(par1, par2, par3);
+	public void drawScreen(int mX, int mY, float par3) {
+		if (mX != priElemement.gmousePos.x || mY != priElemement.gmousePos.y) {
+			priElemement.injectEvent(new EventMouseMove(priElemement, new Vector2i(mX, mY).minus(priElemement.gmousePos)));
+			priElemement.gmousePos.set(mX, mY);
+			
+			GuiElement newHover = priElemement.findElementAtLocal(new Vector2i(mX, mY).minus(priElemement.getPosition()));
+			//System.out.println(newHover);
+			if (newHover != priElemement.hoverElement) {
+				priElemement.injectEvent(new EventMouseLeave(priElemement.hoverElement));
+				priElemement.hoverElement = newHover;
+				priElemement.injectEvent(new EventMouseEntered(priElemement.hoverElement));
+			}
+		}
+		super.drawScreen(mX, mY, par3);
 		matrixAndDraw(RenderStage.Overlay);
 	}
 	
@@ -44,6 +54,13 @@ public class MLGuiClient extends GuiContainer {
 		super.updateScreen();
 		
 		priElemement.guiTick();
+	}
+	
+	@Override
+	public void initGui() {
+		super.initGui();
+		if (priElemement.slotManager == null)
+			priElemement.slotManager = new SlotManager(priElemement);
 	}
 	
 	/**
@@ -64,7 +81,7 @@ public class MLGuiClient extends GuiContainer {
 	
 	@Override
 	protected void drawGuiContainerForegroundLayer(int par1, int par2) {
-		matrixAndDraw(RenderStage.Foreground);
+		//matrixAndDraw(RenderStage.Foreground);
 		super.drawGuiContainerForegroundLayer(par1, par2);
 	}
 
@@ -79,17 +96,7 @@ public class MLGuiClient extends GuiContainer {
 		if (which > -1) {
 			priElemement.injectEvent(new EventMouseUp(priElemement, new Vector2i(mX, mY), MouseButton.get(which)));
 		} else {
-			if (mX != priElemement.gmousePos.x || mY != priElemement.gmousePos.y) {
-				priElemement.injectEvent(new EventMouseMove(priElemement, new Vector2i(mX, mY).minus(priElemement.gmousePos)));
-				priElemement.gmousePos.set(mX, mY);
-				
-				GuiElement newHover = priElemement.findElementAt(new Vector2i(mX, mY));
-				if (newHover != priElemement.hoverElement) {
-					priElemement.injectEvent(new EventMouseLeave(priElemement.hoverElement));
-					priElemement.hoverElement = newHover;
-					priElemement.injectEvent(new EventMouseEntered(priElemement.hoverElement));
-				}
-			}
+			
 		}
 		super.mouseMovedOrUp(mX, mY, which);
 	}
