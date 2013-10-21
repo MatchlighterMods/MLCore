@@ -5,7 +5,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-
 /**
  * TopParentGuiObjects house all other GuiObjects in a Gui
  * May also be a child element
@@ -19,8 +18,8 @@ public abstract class TopParentGuiElement extends GuiElement {
 	protected MLContainer container;
 	@SideOnly(Side.CLIENT)
 	protected MLGuiClient gui;
-	@SideOnly(Side.CLIENT)
-	protected SlotManager slotManager;
+	//@SideOnly(Side.CLIENT)
+	//protected SlotManager slotManager;
 	
 	public Vector2i gmousePos = new Vector2i();
 	public GuiElement hoverElement;
@@ -68,9 +67,9 @@ public abstract class TopParentGuiElement extends GuiElement {
 		return container;
 	}
 	
-	public SlotManager getSlotManager() {
-		return slotManager;
-	}
+//	public SlotManager getSlotManager() {
+//		return slotManager;
+//	}
 	
 	public abstract void initControls();
 	

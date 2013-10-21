@@ -2,10 +2,7 @@ package ml.core.gui.controls;
 
 import ml.core.gui.core.GuiElement;
 import ml.core.vec.Vector2i;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public abstract class GuiControl extends GuiElement {
 	
 	public boolean enabled = true;

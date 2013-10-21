@@ -26,6 +26,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * Stores and handles the various click actions
  * @author Matchlighter
  */
+@Deprecated
 public class SlotManager {
 
 	TopParentGuiElement owner;
@@ -129,7 +130,7 @@ public class SlotManager {
 	 * Called when a mouse button is pressed and the mouse is moved around. Parameters are : mouseX, mouseY,
 	 * lastButtonClicked & timeSinceMouseClick.
 	 */
-	public void mouseClickMove(Slot slot, int mX, int mY, int button, long timeSinceLast) {
+	public void mouseClickMove(Slot slot, int button, long timeSinceLast) {
 		ItemStack itemstack = mc.thePlayer.inventory.getItemStack();
 
 		if (this.clickedSlot != null && mc.gameSettings.touchscreen) {
@@ -187,7 +188,7 @@ public class SlotManager {
 	}
 
 	/**
-	 * Called when the mouse is moved or a mouse button is released.  Signature: (mouseX, mouseY, which) which==-1 is
+	 * Called when the mouse is moved or a mouse button is released. Signature: (mouseX, mouseY, which) which==-1 is
 	 * mouseMove, which==0 or which==1 is mouseUp
 	 */
 	public void mouseMovedOrUp(Slot slot, int which) {

@@ -3,11 +3,12 @@ package ml.core.gui.controls.inventory;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Slot;
+import ml.core.gui.MLSlot;
 import ml.core.gui.controls.GuiControl;
 import ml.core.gui.core.GuiElement;
 import ml.core.vec.Vector2i;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Slot;
 
 public class ControlPlayerInventory extends GuiControl {
 
@@ -19,11 +20,11 @@ public class ControlPlayerInventory extends GuiControl {
 		for (int slt=9; slt < epl.inventory.mainInventory.length; slt++){
 			int row = (int)Math.floor(slt/9) -1;
 			
-			addSlot(new Slot(epl.inventory, slt, (slt%9)*18, row*18));
+			addSlot(new MLSlot(epl.inventory, slt, (slt%9)*18, row*18));
 		}
 
 		for (int hotbarSlot = 0; hotbarSlot < 9; hotbarSlot++) {
-			addSlot(new Slot(epl.inventory, hotbarSlot, hotbarSlot * 18, 58));
+			addSlot(new MLSlot(epl.inventory, hotbarSlot, hotbarSlot * 18, 58));
 		}
 	}
 

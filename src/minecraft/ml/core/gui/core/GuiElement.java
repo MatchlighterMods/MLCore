@@ -17,7 +17,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public abstract class GuiElement {
 
 	public GuiElement parentObject;
-	private List<GuiElement> childObjects = new ArrayList<GuiElement>();
+	protected List<GuiElement> childObjects = new ArrayList<GuiElement>();
 	private Vector2i position;
 	private Vector2i size;
 	
@@ -64,6 +64,15 @@ public abstract class GuiElement {
 		if (isTopParentElem()) return (TopParentGuiElement)this;
 		if (getParent() == null) return null;
 		return getParent().getTopParent();
+	}
+	
+	public List<GuiElement> getDescendants() {
+		List<GuiElement> lst = new ArrayList<GuiElement>();
+		for (GuiElement c : childObjects) {
+			lst.add(c);
+			lst.addAll(c.getDescendants());
+		}
+		return lst;
 	}
 	
 	/**
@@ -246,6 +255,7 @@ public abstract class GuiElement {
 		Vector2i pos = getPosition();
 		for (GuiElement el : childObjects) {
 			GL11.glPushMatrix();
+			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			GL11.glTranslatef(pos.x, pos.y, 0.0F);
 			el.drawElement(stage);
 			GL11.glPopMatrix();

@@ -1,18 +1,17 @@
 package ml.core.gui.controls.inventory;
 
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
 import ml.core.gui.GuiRenderUtils;
 import ml.core.gui.controls.GuiControl;
 import ml.core.gui.core.GuiElement;
-import ml.core.gui.core.SlotManager;
 import ml.core.gui.event.EventMouseClicked;
 import ml.core.gui.event.GuiEvent;
 import ml.core.vec.Vector2i;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Slot;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 public class ControlSlot extends GuiControl {
 
@@ -34,7 +33,7 @@ public class ControlSlot extends GuiControl {
 		RenderHelper.enableGUIStandardItemLighting();
 		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
 		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240.0F, 240.0F);
-		getSlotManager().drawSlotInventory(1, 1, slot);
+		//getSlotManager().drawSlotInventory(1, 1, slot);
 		GL11.glDisable(GL11.GL_LIGHTING);
 
 		if (hasHover()) {
@@ -45,20 +44,30 @@ public class ControlSlot extends GuiControl {
 
 		super.drawBackground();
 	}
+	
+	@Override
+	public void guiTick() {
+		Vector2i abPos = getAbsolutePosition().minus(getTopParent().getPosition());
+		slot.xDisplayPosition = abPos.x+1;
+		slot.yDisplayPosition = abPos.y+1;
+		super.guiTick();
+	}
 
 	@Override
 	public void handleEvent(GuiEvent evt) {
 		if (slot != null && evt instanceof EventMouseClicked && evt.origin == this) {
 			EventMouseClicked evmc = (EventMouseClicked)evt;
-			getSlotManager().slotClicked(slot, evmc.button.ordinal());
+			//getSlotManager().slotClicked(slot, evmc.button.ordinal());
 		}
 		super.handleEvent(evt);
 	}
 
-	public SlotManager getSlotManager() {
-		return getTopParent().getSlotManager();
+//	public SlotManager getSlotManager() {
+//		return getTopParent().getSlotManager();
+//	}
+
+	public Slot getSlot() {
+		return slot;
 	}
-
-
 
 }
