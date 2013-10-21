@@ -99,8 +99,16 @@
 		</exec>
 	</target>
 
+	<target name="createAT" depends="buildenvsetup">
+		<exec executable="${python.exe}" dir="${build.env}" failonerror="true">
+			<arg value="${build.env}/make_at.py" />
+			<arg value="${mcp.home}" />
+		</exec>
+	</target>
+	
 	<target name="build" depends="clean,loadForge,initVersion,merge,recompile,reobfuscate">
 		<antcall target="writeversion" />
+		<antcall target="createAT" />
 		<antcall target="extract-built-jar"/>
 	</target>
 

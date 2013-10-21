@@ -40,7 +40,7 @@ public abstract class TopParentGuiElement extends GuiElement {
 	}
 	
 	/**
-	 * This will cause a refresh of the Gui (x|y)Size and position fields
+	 * This will cause a refresh of the Gui (x|y)Size and position fields. Automatically called by {@link #setSize(Vector2i)}
 	 */
 	public void refreshGuiSize() {
 		if (side == Side.CLIENT)
