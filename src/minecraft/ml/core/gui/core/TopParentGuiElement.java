@@ -18,8 +18,6 @@ public abstract class TopParentGuiElement extends GuiElement {
 	protected MLContainer container;
 	@SideOnly(Side.CLIENT)
 	protected MLGuiClient gui;
-	//@SideOnly(Side.CLIENT)
-	//protected SlotManager slotManager;
 	
 	public Vector2i gmousePos = new Vector2i();
 	public GuiElement hoverElement;
@@ -66,10 +64,6 @@ public abstract class TopParentGuiElement extends GuiElement {
 	public MLContainer getContainer() {
 		return container;
 	}
-	
-//	public SlotManager getSlotManager() {
-//		return slotManager;
-//	}
 	
 	public abstract void initControls();
 	

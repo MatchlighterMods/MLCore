@@ -69,13 +69,6 @@ public class MLGuiClient extends GuiContainer {
 		return null;
 	}
 	
-	@Override
-	public void initGui() {
-		super.initGui();
-		//if (priElemement.slotManager == null)
-			//priElemement.slotManager = new SlotManager(priElemement);
-	}
-	
 	/**
 	 * Calls {@link TopParentGuiElement#drawElement(RenderStage)} wrapped in a new GL Matrix<br/>
 	 * Mostly just for DRY code
