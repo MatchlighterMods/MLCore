@@ -64,12 +64,8 @@ public class ControlTabManager extends GuiElement {
 		}
 
 		@Override
-		public boolean pointInElement(Vector2i pos) {
-			return TabManager.getTabAt(pos) == this;
-		}
-		
-		@Override
 		public void drawBackground() {
+			getPosition().glTranslate();
 			float red = ((tabColor >> 16) & 0xFF) /255F;
 			float green = ((tabColor >> 8) & 0xFF) /255F;
 			float blue = (tabColor & 0xFF) /255F;
@@ -96,8 +92,6 @@ public class ControlTabManager extends GuiElement {
 				break;
 			}
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			
-			super.drawBackground();
 		}
 	}
 
@@ -131,30 +125,6 @@ public class ControlTabManager extends GuiElement {
 		super.guiTick();
 	}
 	
-	@Override
-	public void drawBackground() {
-//		int offset = tabMargin;
-//		Minecraft mc = getTopParent().getGui().getMinecraft();
-//		for (GuiTab gt : tabs) {
-//			switch (side) {
-//			case Left:
-//			case Right:
-//				int x = side==NaturalSide.Left ? -gt.size.x : cgui.getSize().x;
-//				gt.renderAt(mc, x, offset, mouseX-x, mouseY-offset);
-//				offset += gt.size.y;
-//				break;
-//			case Top:
-//			case Bottom:
-//				int y = side==NaturalSide.Top ? -gt.size.y : cgui.getSize().y;
-//				gt.renderAt(mc, offset, y, mouseX-offset, mouseY-y);
-//				offset =+ gt.size.x;
-//				break;	
-//			}
-//		}
-		
-		super.drawBackground();
-	}
-
 	public Rectangle getTabBounds(GuiTab iTab) {
 		int offset = tabMargin;
 		for (GuiTab gt : tabs) {

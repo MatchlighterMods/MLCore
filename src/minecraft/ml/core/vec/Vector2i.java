@@ -1,5 +1,10 @@
 package ml.core.vec;
 
+import org.lwjgl.opengl.GL11;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class Vector2i {
 
 	public int x, y;
@@ -88,6 +93,11 @@ public class Vector2i {
 		this.x = -x;
 		this.y = -y;
 		return this;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void glTranslate() {
+		GL11.glTranslatef(x, y, 0);
 	}
 
 }

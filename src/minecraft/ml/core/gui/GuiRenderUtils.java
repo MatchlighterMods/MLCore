@@ -95,12 +95,28 @@ public class GuiRenderUtils {
 	}
 
 	public static void drawTexturedModelRectFromIcon(int par1, int par2, Icon par3Icon, int par4, int par5) {
+		drawTexturedModelRect(par1, par2, par3Icon.getMinU(), par3Icon.getMinV(), par3Icon.getMaxU(), par3Icon.getMaxV(), par4, par5);
+	}
+	
+	public static void drawSlicedRectFromIcon(int x, int y, int w, int h, Icon i, int tBord, int rBord, int bBord, int lBord) {
+		double dtBord = (double)tBord / (double)i.getIconHeight();
+		double dbBord = (double)bBord / (double)i.getIconHeight();
+		double drBord = (double)tBord / (double)i.getIconWidth();
+		double dlBord = (double)lBord / (double)i.getIconWidth();
+		
+		drawTexturedModelRect(x, y, i.getMinU(), i.getMinV(), i.getMaxU()-drBord, i.getMaxV()-dbBord, w-rBord, h-bBord);
+		drawTexturedModelRect(x+lBord, y, i.getMinU()+dlBord, i.getMinV(), i.getMaxU(), i.getMaxV()-dbBord, w-lBord, h-bBord);
+		drawTexturedModelRect(x+lBord, y+tBord, i.getMinU()+dlBord, i.getMinV()+dtBord, i.getMaxU(), i.getMaxV(), w-lBord, h-tBord);
+		drawTexturedModelRect(x, y+tBord, i.getMinU(), i.getMinV()+dtBord, i.getMaxU()-drBord, i.getMaxV(), w-rBord, h-tBord);
+	}
+	
+	public static void drawTexturedModelRect(int x, int y, double u, double v, double uM, double vM, int w, int h) {
 		Tessellator tessellator = Tessellator.instance;
 		tessellator.startDrawingQuads();
-		tessellator.addVertexWithUV((double)(par1 + 0), (double)(par2 + par5), (double)zLevel, (double)par3Icon.getMinU(), (double)par3Icon.getMaxV());
-		tessellator.addVertexWithUV((double)(par1 + par4), (double)(par2 + par5), (double)zLevel, (double)par3Icon.getMaxU(), (double)par3Icon.getMaxV());
-		tessellator.addVertexWithUV((double)(par1 + par4), (double)(par2 + 0), (double)zLevel, (double)par3Icon.getMaxU(), (double)par3Icon.getMinV());
-		tessellator.addVertexWithUV((double)(par1 + 0), (double)(par2 + 0), (double)zLevel, (double)par3Icon.getMinU(), (double)par3Icon.getMinV());
+		tessellator.addVertexWithUV((double)(x + 0), (double)(y + h), (double)zLevel, u, vM);
+		tessellator.addVertexWithUV((double)(x + w), (double)(y + h), (double)zLevel, uM, vM);
+		tessellator.addVertexWithUV((double)(x + w), (double)(y + 0), (double)zLevel, uM, v);
+		tessellator.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)zLevel, u, v);
 		tessellator.draw();
 	}
 }

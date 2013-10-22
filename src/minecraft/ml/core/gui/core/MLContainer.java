@@ -1,17 +1,16 @@
 package ml.core.gui.core;
 
+import ml.core.gui.event.EventGuiClosing;
 import ml.core.internal.PacketContainerData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import cpw.mods.fml.relauncher.Side;
 
 public class MLContainer extends Container {
 
-	//protected List<Slot> slots = new ArrayList<Slot>();
 	protected TopParentGuiElement priElemement;
 
 	public MLContainer(TopParentGuiElement elm) {
@@ -23,6 +22,12 @@ public class MLContainer extends Container {
 		return priElemement.canInteractWith(entityplayer);
 	}
 
+	@Override
+	public void onContainerClosed(EntityPlayer par1EntityPlayer) {
+		priElemement.injectEvent(new EventGuiClosing(priElemement));
+		super.onContainerClosed(par1EntityPlayer);
+	}
+	
 	/**
 	 * For data transmission when 2 shorts isn't enough
 	 */
@@ -35,78 +40,11 @@ public class MLContainer extends Container {
 		// TODO Send packet to using players
 	}
 
-	@Override
-	public void putStackInSlot(int par1, ItemStack par2ItemStack) {
-		// TODO Put stack in the slot ?
-		// Called by network code. Override may not be necessary w/ getSlot() overridden
-		super.putStackInSlot(par1, par2ItemStack);
-	}
-	
-	public Slot addSlotToContainer(Slot par1Slot) {
-		return super.addSlotToContainer(par1Slot);
-	}
-
-//	@Override
-//	public Slot getSlot(int par1) {
-//		return slots.get(par1);
-//	}
-//
-//	@Override
-//	public void detectAndSendChanges() {
-//		for (int i = 0; i < slots.size(); ++i) {
-//			ItemStack itemstack = ((Slot)this.slots.get(i)).getStack();
-//			ItemStack itemstack1 = (ItemStack)this.inventoryItemStacks.get(i);
-//
-//			if (!ItemStack.areItemStacksEqual(itemstack1, itemstack)) {
-//				itemstack1 = itemstack == null ? null : itemstack.copy();
-//				this.inventoryItemStacks.set(i, itemstack1);
-//
-//				for (int j = 0; j < this.crafters.size(); ++j) {
-//					((ICrafting)this.crafters.get(j)).sendSlotContents(this, i, itemstack1);
-//				}
-//			}
-//		}
-//	}
-//
-//	CustomSlotClick csc = new CustomSlotClick(slots) {
-//		public void detectAndSendChanges() {
-//			MLContainer.this.detectAndSendChanges();
-//		};
-//		
-//		@Override
-//		public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2) {
-//			// TODO Auto-generated method stub
-//			return null;
-//		}
-//	};
-//	
-//	@Override
-//	public ItemStack slotClick(int par1, int par2, int par3,
-//			EntityPlayer par4EntityPlayer) {
-//		return csc.slotClick(par1, par2, par3, par4EntityPlayer);
-//	}
-
 	/**
 	 * DO NOT call dynamically. Call once per slot on init. Not again. Must be synced between Client and server. <br/>
 	 * <b>Note:</b> ControlSlot automatically handles this on instantiation.
 	 */
-//	@Override
-//	public Slot addSlotToContainer(Slot slt) {
-//		if (!slots.contains(slt))
-//			slots.add(slt);
-//		slt.slotNumber = slots.indexOf(slt);
-//		this.inventoryItemStacks.add((Object)null);
-//		return super.addSlotToContainer(slt);
-//	}
-	
-//	@Override
-//	public List getInventory() {
-//		ArrayList arraylist = new ArrayList();
-//
-//		for (int i = 0; i < this.slots.size(); ++i) {
-//			arraylist.add(((Slot)this.slots.get(i)).getStack());
-//		}
-//
-//		return arraylist;
-//	}
+	public Slot addSlotToContainer(Slot par1Slot) {
+		return super.addSlotToContainer(par1Slot);
+	}
 }

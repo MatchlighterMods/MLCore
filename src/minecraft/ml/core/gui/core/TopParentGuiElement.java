@@ -1,7 +1,10 @@
 package ml.core.gui.core;
 
+import ml.core.gui.core.style.GuiStyle;
+import ml.core.gui.core.style.StyleManager;
 import ml.core.vec.Vector2i;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -18,6 +21,8 @@ public abstract class TopParentGuiElement extends GuiElement {
 	protected MLContainer container;
 	@SideOnly(Side.CLIENT)
 	protected MLGuiClient gui;
+	@SideOnly(Side.CLIENT)
+	public final ResourceLocation controlSheet = new ResourceLocation("MLCore:textures/gui/controls.png");
 	
 	public Vector2i gmousePos = new Vector2i();
 	public GuiElement hoverElement;
@@ -27,9 +32,10 @@ public abstract class TopParentGuiElement extends GuiElement {
 		super(null);
 		this.side = side;
 		this.player = epl;
-		container = new MLContainer(this);
+		this.container = new MLContainer(this);
 		if (side == Side.CLIENT) {
-			gui = new MLGuiClient(this);
+			this.gui = new MLGuiClient(this);
+			this.style = StyleManager.defaultStyle;
 		}
 	}
 	
@@ -37,6 +43,12 @@ public abstract class TopParentGuiElement extends GuiElement {
 	public Vector2i getPosition() {
 		if (gui == null) return super.getPosition();
 		return gui.getPosition();
+	}
+	
+	@Override
+	public GuiStyle getStyle() {
+		if (style == null) return StyleManager.defaultStyle;
+		return super.getStyle();
 	}
 	
 	/**
@@ -56,7 +68,7 @@ public abstract class TopParentGuiElement extends GuiElement {
 		return side;
 	}
 	
-	@SideOnly(Side.CLIENT)
+	@Override
 	public MLGuiClient getGui() {
 		return gui;
 	}

@@ -13,17 +13,21 @@ import net.minecraft.item.ItemStack;
 
 /**
  * I frequently find myself having to rewrite {@link Container#slotClick(int, int, int, EntityPlayer)}
- * just to point it to a custom implementation of a slot list. So I decided to make a breakout class, intended for use as a singleton
+ * just to point it to a custom implementation of a slot list. So I decided to make a breakout class, intended for use as an anonymous inner class
  * @author Matchlighter
  */
 public abstract class CustomSlotClick {
 
-	protected List<Slot> inventorySlots;
+	public List<Slot> inventorySlots;
 
+	public CustomSlotClick() {
+		
+	}
+	
 	public CustomSlotClick(List<Slot> slts) {
 		inventorySlots = slts;
 	}
-
+	
 	protected int field_94535_f = -1;
 	protected int field_94536_g = 0;
 	protected final Set field_94537_h = new HashSet();

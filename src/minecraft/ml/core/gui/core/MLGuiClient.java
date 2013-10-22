@@ -77,6 +77,7 @@ public class MLGuiClient extends GuiContainer {
 	private void matrixAndDraw(RenderStage stage) {
 		GL11.glPushMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glDisable(GL11.GL_LIGHTING);
 		priElemement.drawElement(stage);
 		GL11.glPopMatrix();
 	}
@@ -93,20 +94,12 @@ public class MLGuiClient extends GuiContainer {
 	}
 	
 	@Override
-	protected void drawSlotInventory(Slot par1Slot) {
+	protected void drawSlotInventory(Slot par1Slot) {}
+	
+	public void drawSpecialSlotInventory(ControlSlot slt) {
 		GL11.glPushMatrix();
-		for (GuiElement c : priElemement.getDescendants()) {
-			if (c instanceof ControlSlot && ((ControlSlot)c).getSlot()==par1Slot) {
-				Vector2i absPos = c.getAbsolutePosition().minus(getPosition());
-				float xfact = ((float)c.getSize().x-2F)/16F;
-				float yfact = ((float)c.getSize().y-2F)/16F;
-				GL11.glTranslatef(absPos.x, absPos.y, 0F); // Which is faster?
-				//GL11.glTranslatef(-absPos.x*(xfact-1F), -absPos.y*(yfact-1F), 0F);
-				GL11.glScalef(xfact, yfact, 1F);
-				GL11.glTranslatef(-absPos.x, -absPos.y, 0F);
-			}
-		}
-		super.drawSlotInventory(par1Slot);
+		GL11.glTranslatef(-slt.getSlot().xDisplayPosition+1, -slt.getSlot().yDisplayPosition+1, 0F);
+		super.drawSlotInventory(slt.getSlot());
 		GL11.glPopMatrix();
 	}
 

@@ -6,9 +6,12 @@ import ml.core.gui.core.GuiElement;
 import ml.core.gui.event.EventMouseClicked;
 import ml.core.gui.event.GuiEvent;
 import ml.core.vec.Vector2i;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Slot;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 public class ControlSlot extends GuiControl {
 
@@ -25,17 +28,24 @@ public class ControlSlot extends GuiControl {
 	public void drawBackground() {
 		GL11.glTranslatef(getPosition().x, getPosition().y, 0);
 		GL11.glScalef(((float)getSize().x-2F)/16F, ((float)getSize().y-2F)/16F, 1F);
-		// TODO Draw background
 
-		if (hasHover()) {
+		drawStyledObject(0, 0, "slot", 18, 18);
+
+		RenderHelper.enableGUIStandardItemLighting();
+		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float)240 / 1.0F, (float)240 / 1.0F);
+		getGui().drawSpecialSlotInventory(this);
+		GL11.glDisable(GL11.GL_LIGHTING);
+
+		if (hasHover() && !slot.func_111238_b()) {
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 			GuiRenderUtils.drawGradientRect(1, 1, 1 + 16, 1 + 16, hoverColor, hoverColor);
-			GL11.glEnable(GL11.GL_LIGHTING);
 		}
 
 		super.drawBackground();
 	}
-	
+
 	@Override
 	public void guiTick() {
 		Vector2i abPos = getAbsolutePosition().minus(getTopParent().getPosition());

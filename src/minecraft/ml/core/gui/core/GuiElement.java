@@ -3,6 +3,8 @@ package ml.core.gui.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import ml.core.gui.GuiRenderUtils;
+import ml.core.gui.core.style.GuiStyle;
 import ml.core.gui.event.EventFocusLost;
 import ml.core.gui.event.GuiEvent;
 import ml.core.vec.Vector2i;
@@ -20,6 +22,7 @@ public abstract class GuiElement {
 	protected List<GuiElement> childObjects = new ArrayList<GuiElement>();
 	private Vector2i position;
 	private Vector2i size;
+	public GuiStyle style;
 	
 	public GuiElement(GuiElement parent) {
 		parentObject = parent;
@@ -73,6 +76,19 @@ public abstract class GuiElement {
 			lst.addAll(c.getDescendants());
 		}
 		return lst;
+	}
+	
+	/**
+	 * Returns whether the supplied element is an ancestor of this element
+	 * @param ans
+	 * @return
+	 */
+	public boolean isAncestor(GuiElement ans) {
+		return ans==getParent() || (getParent() != null && getParent().isAncestor(ans));
+	}
+	
+	public boolean isDescendant(GuiElement des) {
+		return des.isAncestor(this);
 	}
 	
 	/**
@@ -189,6 +205,10 @@ public abstract class GuiElement {
 		return getTopParent().hoverElement == this;
 	}
 	
+	public boolean treeHasHover() {
+		return hasHover() || (getTopParent().hoverElement != null && getTopParent().hoverElement.isAncestor(this));
+	}
+	
 	/**
 	 * The equivalent of {@link GuiScreen#updateScreen()}. Will only be called client-side, once per tick
 	 */
@@ -256,6 +276,8 @@ public abstract class GuiElement {
 		for (GuiElement el : childObjects) {
 			GL11.glPushMatrix();
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			GL11.glDisable(GL11.GL_LIGHTING);
+
 			GL11.glTranslatef(pos.x, pos.y, 0.0F);
 			el.drawElement(stage);
 			GL11.glPopMatrix();
@@ -263,10 +285,45 @@ public abstract class GuiElement {
 	}
 	
 	@SideOnly(Side.CLIENT)
+	public void bindStyleTexture() {
+		GuiStyle stl = getStyle();
+		bindTexture(stl.resourceLoc);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void drawStyledObject(int x, int y, String key, int w, int h) {
+		GuiStyle stl = getStyle();
+		bindTexture(stl.resourceLoc);
+		GuiRenderUtils.drawTexturedModelRectFromIcon(x, y, stl.getIconFor(key), w, h);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public GuiStyle getStyle() {
+		if (style == null) return getParent().getStyle();
+		return style;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void setStyle(GuiStyle stl) {
+		for (GuiElement element : childObjects) {
+			if (element.style == null || element.style == this.style) {
+				element.setStyle(stl);
+			}
+		}
+		this.style = stl;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public MLGuiClient getGui() {
+		return getParent().getGui();
+	}
+	
+	@SideOnly(Side.CLIENT)
 	public static enum RenderStage {
 		Background,
 		//Foreground,
-		Overlay;
+		Overlay,
+		SlotInventory;
 	}
 	
 }
