@@ -17,17 +17,22 @@ public class GuiRenderUtils {
 	public static RenderItem renderItem = new RenderItem();
 	public static int zLevel = 0;
 
-	public static void drawTexturedModalRect(int x, int y, int u, int v, int width, int height)
-	{
-		float var7 = 0.00390625F;
-		float var8 = 0.00390625F;
-		Tessellator var9 = Tessellator.instance;
-		var9.startDrawingQuads();
-		var9.addVertexWithUV((double)(x + 0), (double)(y + height), (double)zLevel, (double)((float)(u + 0) * var7), (double)((float)(v + height) * var8));
-		var9.addVertexWithUV((double)(x + width), (double)(y + height), (double)zLevel, (double)((float)(u + width) * var7), (double)((float)(v + height) * var8));
-		var9.addVertexWithUV((double)(x + width), (double)(y + 0), (double)zLevel, (double)((float)(u + width) * var7), (double)((float)(v + 0) * var8));
-		var9.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)zLevel, (double)((float)(u + 0) * var7), (double)((float)(v + 0) * var8));
-		var9.draw();
+	public static void drawTexturedModelRect(int x, int y, double u, double v, double uM, double vM, int w, int h) {
+		Tessellator tessellator = Tessellator.instance;
+		tessellator.startDrawingQuads();
+		tessellator.addVertexWithUV((double)(x + 0), (double)(y + h), (double)zLevel, u, vM);
+		tessellator.addVertexWithUV((double)(x + w), (double)(y + h), (double)zLevel, uM, vM);
+		tessellator.addVertexWithUV((double)(x + w), (double)(y + 0), (double)zLevel, uM, v);
+		tessellator.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)zLevel, u, v);
+		tessellator.draw();
+	}
+	
+	public static void drawTexturedModalRect(int x, int y, int u, int v, int width, int height, int tw, int th) {
+		drawTexturedModelRect(x, y, (float)u/(float)tw, (float)v/(float)th, (float)(u+width)/(float)tw, (float)(v+height)/(float)th, width, height);
+	}
+	
+	public static void drawTexturedModalRect(int x, int y, int u, int v, int width, int height) {
+		drawTexturedModalRect(x, y, u, v, width, height, 256, 256);
 	}
 
 	public static void drawGradientRect(int par1, int par2, int par3, int par4, int par5, int par6)
@@ -110,13 +115,4 @@ public class GuiRenderUtils {
 		drawTexturedModelRect(x, y+tBord, i.getMinU(), i.getMinV()+dtBord, i.getMaxU()-drBord, i.getMaxV(), w-rBord, h-tBord);
 	}
 	
-	public static void drawTexturedModelRect(int x, int y, double u, double v, double uM, double vM, int w, int h) {
-		Tessellator tessellator = Tessellator.instance;
-		tessellator.startDrawingQuads();
-		tessellator.addVertexWithUV((double)(x + 0), (double)(y + h), (double)zLevel, u, vM);
-		tessellator.addVertexWithUV((double)(x + w), (double)(y + h), (double)zLevel, uM, vM);
-		tessellator.addVertexWithUV((double)(x + w), (double)(y + 0), (double)zLevel, uM, v);
-		tessellator.addVertexWithUV((double)(x + 0), (double)(y + 0), (double)zLevel, u, v);
-		tessellator.draw();
-	}
 }

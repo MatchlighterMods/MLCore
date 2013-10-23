@@ -9,7 +9,6 @@ import ml.core.gui.core.GuiElement;
 import ml.core.gui.core.Window;
 import ml.core.vec.Rectangle;
 import ml.core.vec.Vector2i;
-import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
@@ -19,7 +18,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ControlTabManager extends GuiElement {
 	
-	protected static ResourceLocation ledgerRes = new ResourceLocation("MLCore:textures/gui/ledger.png");
+	//protected static ResourceLocation ledgerRes = new ResourceLocation("MLCore:textures/gui/ledger.png");
 	
 	/**
 	 * The margin between Tabs and the edge of the Window
@@ -71,7 +70,7 @@ public class ControlTabManager extends GuiElement {
 			float blue = (tabColor & 0xFF) /255F;
 
 			GL11.glColor4f(red, green, blue, 1.0F);
-			bindTexture(ledgerRes);
+			bindTexture(getStyle().getResource("ledger"));
 
 			switch (TabManager.side){
 			case Left:

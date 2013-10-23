@@ -1,7 +1,6 @@
 package ml.core.gui.core;
 
 import ml.core.gui.core.style.GuiStyle;
-import ml.core.gui.core.style.StyleManager;
 import ml.core.vec.Vector2i;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -35,7 +34,7 @@ public abstract class TopParentGuiElement extends GuiElement {
 		this.container = new MLContainer(this);
 		if (side == Side.CLIENT) {
 			this.gui = new MLGuiClient(this);
-			this.style = StyleManager.defaultStyle;
+			this.style = GuiStyle.defaultStyle;
 		}
 	}
 	
@@ -47,7 +46,7 @@ public abstract class TopParentGuiElement extends GuiElement {
 	
 	@Override
 	public GuiStyle getStyle() {
-		if (style == null) return StyleManager.defaultStyle;
+		if (style == null) return GuiStyle.defaultStyle;
 		return super.getStyle();
 	}
 	

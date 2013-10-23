@@ -13,10 +13,19 @@ import net.minecraft.inventory.Slot;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class ControlSlot extends GuiControl {
 
 	protected Slot slot;
+	
+	@SideOnly(Side.CLIENT)
 	public int hoverColor = -2130706433;
+	@SideOnly(Side.CLIENT)
+	public boolean renderBackground = true;
+	@SideOnly(Side.CLIENT)
+	public boolean renderHover = true;
 
 	public ControlSlot(GuiElement par, Slot slt, Vector2i pos, Vector2i size) {
 		super(par, pos, size);
@@ -29,7 +38,10 @@ public class ControlSlot extends GuiControl {
 		GL11.glTranslatef(getPosition().x, getPosition().y, 0);
 		GL11.glScalef(((float)getSize().x-2F)/16F, ((float)getSize().y-2F)/16F, 1F);
 
-		drawStyledObject(0, 0, "slot", 18, 18);
+		if (renderBackground) {
+			bindTexture(getStyle().getResource("slot"));
+			GuiRenderUtils.drawTexturedModelRect(0, 0, 0, 0, 1, 1, 18, 18);
+		}
 
 		RenderHelper.enableGUIStandardItemLighting();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -38,7 +50,7 @@ public class ControlSlot extends GuiControl {
 		getGui().drawSpecialSlotInventory(this);
 		GL11.glDisable(GL11.GL_LIGHTING);
 
-		if (hasHover() && !slot.func_111238_b()) {
+		if (hasHover() && !slot.func_111238_b() && renderHover) {
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 			GuiRenderUtils.drawGradientRect(1, 1, 1 + 16, 1 + 16, hoverColor, hoverColor);
 		}

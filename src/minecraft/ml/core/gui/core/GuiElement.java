@@ -3,7 +3,6 @@ package ml.core.gui.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import ml.core.gui.GuiRenderUtils;
 import ml.core.gui.core.style.GuiStyle;
 import ml.core.gui.event.EventFocusLost;
 import ml.core.gui.event.GuiEvent;
@@ -282,19 +281,6 @@ public abstract class GuiElement {
 			el.drawElement(stage);
 			GL11.glPopMatrix();
 		}
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public void bindStyleTexture() {
-		GuiStyle stl = getStyle();
-		bindTexture(stl.resourceLoc);
-	}
-	
-	@SideOnly(Side.CLIENT)
-	public void drawStyledObject(int x, int y, String key, int w, int h) {
-		GuiStyle stl = getStyle();
-		bindTexture(stl.resourceLoc);
-		GuiRenderUtils.drawTexturedModelRectFromIcon(x, y, stl.getIconFor(key), w, h);
 	}
 	
 	@SideOnly(Side.CLIENT)
