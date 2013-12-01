@@ -88,11 +88,15 @@ public class GuiRenderUtils {
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 
+	public static void drawSlicedRect(int x, int y, int w, int h, int uBase, int vBase, int uW, int uH, int tBord, int rBord, int bBord, int lBord, int tw, int th){
+		drawTexturedModalRect(x, y, uBase, vBase, w-rBord, h-bBord, tw, th);
+		drawTexturedModalRect(x+lBord, y, uBase+uW-(w-lBord), vBase, w-lBord, h-bBord, tw, th);
+		drawTexturedModalRect(x+lBord, y+tBord, uBase+uW-(w-lBord), vBase+uH-(h-tBord), w-lBord, h-tBord, tw, th);
+		drawTexturedModalRect(x, y+tBord, uBase, vBase+uH-(h-tBord), w-rBord, h-tBord, tw, th);
+	}
+	
 	public static void drawSlicedRect(int x, int y, int w, int h, int uBase, int vBase, int uW, int uH, int tBord, int rBord, int bBord, int lBord){
-		drawTexturedModalRect(x, y, uBase, vBase, w-rBord, h-bBord);
-		drawTexturedModalRect(x+lBord, y, uBase+uW-(w-lBord), vBase, w-lBord, h-bBord);
-		drawTexturedModalRect(x+lBord, y+tBord, uBase+uW-(w-lBord), vBase+uH-(h-tBord), w-lBord, h-tBord);
-		drawTexturedModalRect(x, y+tBord, uBase, vBase+uH-(h-tBord), w-rBord, h-tBord);
+		drawSlicedRect(x, y, w, h, uBase, vBase, uW, uH, tBord, rBord, bBord, lBord, 256, 256);
 	}
 
 	public static void drawSlicedRect(int x, int y, int w, int h, int uBase, int vBase, int uW, int uH, int bord){

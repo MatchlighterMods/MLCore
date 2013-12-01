@@ -64,8 +64,9 @@ public class MLGuiClient extends GuiContainer {
 	
 	@Override
 	public Slot getSlotAtPosition(int par1, int par2) {
-		if (priElemement.hoverElement instanceof ControlSlot)
-			return ((ControlSlot)priElemement.hoverElement).getSlot();
+		GuiElement ge = priElemement.findElementAtLocal(new Vector2i(par1, par2).minus(getPosition()));
+		if (ge instanceof ControlSlot)
+			return ((ControlSlot)ge).getSlot();
 		return null;
 	}
 	

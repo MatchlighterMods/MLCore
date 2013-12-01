@@ -3,7 +3,6 @@ package ml.core.gui.core;
 import ml.core.gui.core.style.GuiStyle;
 import ml.core.vec.Vector2i;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -20,9 +19,7 @@ public abstract class TopParentGuiElement extends GuiElement {
 	protected MLContainer container;
 	@SideOnly(Side.CLIENT)
 	protected MLGuiClient gui;
-	@SideOnly(Side.CLIENT)
-	public final ResourceLocation controlSheet = new ResourceLocation("MLCore:textures/gui/controls.png");
-	
+	@SideOnly(Side.CLIENT)	
 	public Vector2i gmousePos = new Vector2i();
 	public GuiElement hoverElement;
 	public GuiElement focusedElement;

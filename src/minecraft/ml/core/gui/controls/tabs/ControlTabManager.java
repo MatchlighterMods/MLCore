@@ -18,8 +18,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class ControlTabManager extends GuiElement {
 	
-	//protected static ResourceLocation ledgerRes = new ResourceLocation("MLCore:textures/gui/ledger.png");
-	
 	/**
 	 * The margin between Tabs and the edge of the Window
 	 */

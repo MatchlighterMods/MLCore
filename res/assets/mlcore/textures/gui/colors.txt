@@ -1,0 +1,16 @@
+
+text.default.normal=E0E0E0
+text.default.disabled=A0A0A0
+
+#Button Color Values
+button.text.normal=@text.default.normal
+button.text.disabled=@text.default.disabled
+button.text.hover=FFFFA0
+
+#TextBox Color Values
+textbox.text.active=@text.default.normal
+textbox.text.inactive=@text.default.disabled
+textbox.text.disabled=@text.default.disabled
+
+#Slot Color Values
+slot.hover = 80ffffff

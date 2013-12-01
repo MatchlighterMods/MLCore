@@ -1,5 +1,6 @@
 package ml.core.gui.core;
 
+import ml.core.gui.event.EventDataPacketReceived;
 import ml.core.gui.event.EventGuiClosing;
 import ml.core.internal.PacketContainerData;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,7 +33,7 @@ public class MLContainer extends Container {
 	 * For data transmission when 2 shorts isn't enough
 	 */
 	public void handleDataPacket(NBTTagCompound pload, Side side) {
-		// TODO Relay to priElement
+		priElemement.injectEvent(new EventDataPacketReceived(priElemement, pload, side)); // TODO Test this stuff
 	}
 
 	public void sendPacket(NBTTagCompound payload) {

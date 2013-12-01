@@ -3,6 +3,7 @@ package ml.core.gui.controls.inventory;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 
 import ml.core.gui.controls.GuiControl;
@@ -32,17 +33,34 @@ public class ControlSlotGrid extends GuiControl {
 		}
 	}
 	
+	public ControlSlotGrid(GuiElement par, Vector2i pos, int perRow, IInventory inv) {
+		super(par, pos, new Vector2i());
+		rowLength = perRow;
+		
+		for (int i=0; i<inv.getSizeInventory(); i++) {
+			addSlot(new Slot(inv, i, 0, 0));
+		}
+	}
+	
+	
 	@Override
 	public void guiTick() {
 		super.guiTick();
 	}
 
-	private Vector2i positionSlot(int idx) {
+	protected Vector2i positionSlot(int idx) {
 		return new Vector2i((idx%rowLength)*18, idx/rowLength*18);
 	}
 	
 	public void addSlot(Slot slot) {
-		slots.add(new ControlSlot(this, slot, positionSlot(slots.size()), new Vector2i(18,18)));
+		slots.add(makeControlSlot(slot));
+	}
+	
+	/**
+	 * Override this to create non-standard ControlSlots.
+	 */
+	protected ControlSlot makeControlSlot(Slot slot) {
+		return new ControlSlot(this, slot, positionSlot(slots.size()), new Vector2i(18,18));
 	}
 	
 	/**

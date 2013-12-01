@@ -21,6 +21,10 @@ public abstract class GuiElement {
 	protected List<GuiElement> childObjects = new ArrayList<GuiElement>();
 	private Vector2i position;
 	private Vector2i size;
+	
+	/**
+	 * Use {@link GuiElement#getStyle()} for getting. It checks for null and defaults to the parent.
+	 */
 	public GuiStyle style;
 	
 	public GuiElement(GuiElement parent) {
@@ -217,6 +221,10 @@ public abstract class GuiElement {
 		}
 	}
 	
+	protected void bindStyleTexture(String feature) {
+		bindTexture(getStyle().getResource(feature));
+	}
+	
 	protected void bindTexture(ResourceLocation res) {
 		getTopParent().getGui().getMinecraft().getTextureManager().bindTexture(res);
 	}
@@ -250,6 +258,7 @@ public abstract class GuiElement {
 	 */
 	@SideOnly(Side.CLIENT)
 	public void drawElement(RenderStage stage) {
+		GL11.glPushMatrix();
 		switch (stage) {
 		case Background:
 			drawBackground();
@@ -261,6 +270,7 @@ public abstract class GuiElement {
 			drawOverlay();
 			break;
 		}
+		GL11.glPopMatrix();
 		drawChilds(stage);
 	}
 	

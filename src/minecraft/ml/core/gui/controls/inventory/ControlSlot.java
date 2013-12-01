@@ -21,7 +21,7 @@ public class ControlSlot extends GuiControl {
 	protected Slot slot;
 	
 	@SideOnly(Side.CLIENT)
-	public int hoverColor = -2130706433;
+	public int hoverColor = 0x80ffffff; //TODO Try and link this with GuiStyle. Possibly a @StyleLink annotation.
 	@SideOnly(Side.CLIENT)
 	public boolean renderBackground = true;
 	@SideOnly(Side.CLIENT)
@@ -39,7 +39,7 @@ public class ControlSlot extends GuiControl {
 		GL11.glScalef(((float)getSize().x-2F)/16F, ((float)getSize().y-2F)/16F, 1F);
 
 		if (renderBackground) {
-			bindTexture(getStyle().getResource("slot"));
+			bindStyleTexture("slot");
 			GuiRenderUtils.drawTexturedModelRect(0, 0, 0, 0, 1, 1, 18, 18);
 		}
 
