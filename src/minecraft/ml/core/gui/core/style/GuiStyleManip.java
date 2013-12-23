@@ -28,11 +28,15 @@ public class GuiStyleManip extends GuiStyle {
 		resOverrides.put(feat, npath);
 	}
 
+	public void addPropertyOverride(String ident, String color) {
+		this.props.put(ident, color);
+	}
+	
 	/**
 	 * @param color Is expected to be a link to another color, a hex string prefixed with # (#RRGGBB), or an integer
 	 */
 	public void addColorOverride(String ident, String color) {
-		this.pcolors.put(ident, color);
+		addPropertyOverride(ident+".color", color);
 	}
 	
 	@Override

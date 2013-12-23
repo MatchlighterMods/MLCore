@@ -22,6 +22,7 @@
 		<property name="modname" value="MLCore" />
 		
 		<condition property="build.env" value="${env.WORKSPACE}" else="${default}">
+		<condition property="build.env" value="${env.WORKSPACE}" else="${default}">
 			<isset property="env.WORKSPACE" />
 		</condition>
 		
@@ -43,6 +44,7 @@
 		<property name="mcp.srcdir" location="${mcp.home}/src" />
 		
 		<property name="code.src.dir" location="${build.env}/src" />
+		<property name="res.dir" location="${build.env}/res" />
 		<property name="build.dest" location="${build.env}/build" />
 		
 		<!--<property name="resource.dir" location="${build.env}/resources" />-->
@@ -117,7 +119,8 @@
 		<mkdir dir="${build.dest}" />
 		<jar destfile="${build.dest}/${jarname}.jar">
 			<fileset dir="${mcp.obfoutput.classes}" includes="**/ml/core/**/*.class" />
-			<fileset dir="${code.src.dir}/minecraft" includes="**/ml/core/res/**/*" erroronmissingdir="false"/>
+			
+			<fileset dir="${res.dir}" includes="**" />
 			
 			<zipfileset dir="${build.env}" includes="version.properties"/>
 			<zipfileset dir="${build.env}" includes="mlcore_at.cfg"/>
@@ -138,7 +141,8 @@
 		</jar>
 		<jar destfile="${build.dest}/${jarname}-dev.jar">
 			<fileset dir="${mcp.binoutput.classes}" includes="**/ml/core/**/*.class" />
-			<fileset dir="${code.src.dir}/minecraft" includes="**/ml/core/res/**/*" erroronmissingdir="false"/>
+			
+			<fileset dir="${res.dir}" includes="**" />
 			
 			<zipfileset dir="${build.env}" includes="version.properties"/>
 			<zipfileset dir="${build.env}" includes="mlcore_at.cfg"/>

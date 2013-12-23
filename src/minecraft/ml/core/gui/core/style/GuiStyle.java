@@ -28,8 +28,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class GuiStyle implements ResourceManagerReloadListener {
 
-	public static final String defaultDomain = "MLCore";
-	public static final String defaultBasePath = "textures/gui";
+	public static final String defaultDomain = "mlcontrols";
+	public static final String defaultBasePath = "default";
 	
 	public static GuiStyle defaultStyle = new GuiStyle(defaultDomain, defaultBasePath, null);
 	
@@ -42,7 +42,7 @@ public class GuiStyle implements ResourceManagerReloadListener {
 	protected GuiStyle parentStyle;
 	
 	protected Map<String, ResourceLocation> cachedLocations = new HashMap<String, ResourceLocation>();
-	protected Properties pcolors = new Properties();
+	protected Properties props = new Properties();
 	
 	public GuiStyle(String domain, String basePath, GuiStyle parent) {
 		this.domain = domain;
@@ -80,10 +80,21 @@ public class GuiStyle implements ResourceManagerReloadListener {
 		return cachedLocations.get(feat);
 	}
 	
+	public String getProperty(String feat) {
+		if (props.containsKey(feat)) {
+			return props.getProperty(feat);
+		} else if (parentStyle != null) {
+			return parentStyle.getProperty(feat);
+		} else {
+			return null;
+		}
+	}
+	
 	private int getRealColorValue(String feat, String ofeat) {
 		try {
-			if (pcolors.containsKey(feat)) {
-				String cv = pcolors.getProperty(feat);
+			String afeat = feat+".color";
+			if (props.containsKey(afeat)) {
+				String cv = props.getProperty(afeat);
 				if (cv.startsWith("@")) { //Link
 					cv = cv.substring(1);
 					if (cv != ofeat) { //Prevent infinite loops
@@ -123,13 +134,13 @@ public class GuiStyle implements ResourceManagerReloadListener {
 	public void onResourceManagerReload(ResourceManager resourcemanager) {
 		clearCache();
 		
-		//Load Colors
+		//Load Properties and Colors
 		ResourceManager rm = FMLClientHandler.instance().getClient().getResourceManager();
-		pcolors.clear();
+		props.clear();
 		try {
-			List<Resource> robjs = rm.getAllResources(getResourceManual("colors.txt")); //TODO 1.7.2: Make sure these load in the correct order
+			List<Resource> robjs = rm.getAllResources(getResourceManual("properties.txt")); //TODO 1.7.2: Make sure these load in the correct order
 			for (Resource res : robjs) {
-				pcolors.load(res.getInputStream());
+				props.load(res.getInputStream());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

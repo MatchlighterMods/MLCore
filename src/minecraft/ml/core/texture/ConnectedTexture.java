@@ -16,7 +16,7 @@ public abstract class ConnectedTexture {
 	
 	public int getTextureData(IBlockAccess iba, int x, int y, int z, int face) {
 		ForgeDirection fface = ForgeDirection.getOrientation(face);
-		int data = 0; //0b00000000
+		byte data = 0; //0b00000000
 		for (int s=0; s<sides.length; s++) {
 			SpatialRelation sr = sides[s];
 			ForgeDirection mside = BlockUtils.getFDFromFaceRelation(fface, sr);
@@ -35,10 +35,13 @@ public abstract class ConnectedTexture {
 	 * Maps data to an index of the sprite it is associated with.
 	 * Typical use cases can use {@link ConnectedTexture#ctmMap} for mapping.
 	 */
-	public abstract int mapTexture(int data);
+	public int mapTexture(byte data) {
+		return ctmMap[data];
+	}
+	
 	public abstract boolean faceCanConnectOnSide(IBlockAccess iba, BlockCoord co, ForgeDirection side, int face);
 	
-	protected static int[] ctmMap = new int[256];
+	protected static byte[] ctmMap = new byte[256];
 	static { //Why does it need Java 7 for binary literals...? Anyone need a script for converting binary literals found in a file? I've got one.
 		ctmMap[0] = 17;
 		ctmMap[255] = 51; //0b11111111

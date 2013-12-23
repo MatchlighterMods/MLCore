@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -19,6 +20,10 @@ import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
+/**
+ * A class that can load icons off of a TextureSheet. Particularly useful for connected textures.
+ * @author Matchlighter
+ */
 @SideOnly(Side.CLIENT)
 public class TextureSheet {
 
@@ -67,6 +72,9 @@ public class TextureSheet {
 		sprites = new TextureSprite[tilesX*tilesY];
 	}
 	
+	/**
+	 * Call in your code (e.g. on {@link Block#registerIcons(IconRegister)})
+	 */
 	public void registerIcons(IconRegister reg) {
 		TextureMap tmap = (TextureMap)reg;
 		if (TextureUtils.shouldReloadTexture(tmap, texFile)) {

@@ -29,7 +29,7 @@ public class ControlSlot extends GuiControl {
 	@Override
 	public void drawBackground() {
 		GL11.glTranslatef(getPosition().x, getPosition().y, 0);
-		GL11.glScalef(((float)getSize().x-2F)/16F, ((float)getSize().y-2F)/16F, 1F);
+		GL11.glScalef((float)getSize().x/18F, (float)getSize().y/18F, 1F);
 
 		if (renderBackground) {
 			bindStyleTexture("slot");
