@@ -22,7 +22,6 @@
 		<property name="modname" value="MLCore" />
 		
 		<condition property="build.env" value="${env.WORKSPACE}" else="${default}">
-		<condition property="build.env" value="${env.WORKSPACE}" else="${default}">
 			<isset property="env.WORKSPACE" />
 		</condition>
 		
