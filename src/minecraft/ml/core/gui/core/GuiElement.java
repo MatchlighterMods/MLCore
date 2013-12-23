@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ml.core.gui.core.style.GuiStyle;
+import ml.core.gui.core.style.GuiStyleManip;
 import ml.core.gui.event.EventFocusLost;
 import ml.core.gui.event.GuiEvent;
 import ml.core.vec.Vector2i;
@@ -116,6 +117,7 @@ public abstract class GuiElement {
 		return getPosition().copy();
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public Vector2i getLocalMousePos() {
 		return localizeGlobal(getTopParent().gmousePos);
 	}
@@ -307,6 +309,23 @@ public abstract class GuiElement {
 			}
 		}
 		this.style = stl;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public void setCustomResource(String feat, String npath) {
+		if (!(this.style instanceof GuiStyleManip))
+			this.style = new GuiStyleManip(style);
+		((GuiStyleManip)style).addResourceOverride(feat, npath);
+	}
+	
+	/**
+	 * @param color Is expected to be a link to another color, a hex string prefixed with # (#RRGGBB), or an integer
+	 */
+	@SideOnly(Side.CLIENT)
+	public void setCustomColor(String feat, String color) {
+		if (!(this.style instanceof GuiStyleManip))
+			this.style = new GuiStyleManip(style);
+		((GuiStyleManip)style).addColorOverride(feat, color);
 	}
 	
 	@SideOnly(Side.CLIENT)

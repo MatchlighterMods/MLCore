@@ -13,18 +13,11 @@ import net.minecraft.inventory.Slot;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 public class ControlSlot extends GuiControl {
 
 	protected Slot slot;
 	
-	@SideOnly(Side.CLIENT)
-	public int hoverColor = 0x80ffffff; //TODO Try and link this with GuiStyle. Possibly a @StyleLink annotation.
-	@SideOnly(Side.CLIENT)
 	public boolean renderBackground = true;
-	@SideOnly(Side.CLIENT)
 	public boolean renderHover = true;
 
 	public ControlSlot(GuiElement par, Slot slt, Vector2i pos, Vector2i size) {
@@ -52,6 +45,7 @@ public class ControlSlot extends GuiControl {
 
 		if (hasHover() && !slot.func_111238_b() && renderHover) {
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
+			int hoverColor = getStyle().getColorValue("slot.hover");
 			GuiRenderUtils.drawGradientRect(1, 1, 1 + 16, 1 + 16, hoverColor, hoverColor);
 		}
 

@@ -12,6 +12,8 @@ import net.minecraft.client.resources.ResourceManager;
 import net.minecraft.client.resources.ResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Apply custom styles to Guis without re-writing controls.<br/>
@@ -23,6 +25,7 @@ import cpw.mods.fml.client.FMLClientHandler;
  * Intended for use as per-style singletons. i.e. Every Gui with the same style will reference the same GuiStyle instance. 
  * @author Matchlighter
  */
+@SideOnly(Side.CLIENT)
 public class GuiStyle implements ResourceManagerReloadListener {
 
 	public static final String defaultDomain = "MLCore";
@@ -52,11 +55,11 @@ public class GuiStyle implements ResourceManagerReloadListener {
 	}
 	
 	public ResourceLocation getResourceManual(String name) {
-		return new ResourceLocation(defaultDomain.toLowerCase(), String.format("%s/%s", basePath, name));
+		return new ResourceLocation(domain.toLowerCase(), String.format("%s/%s", basePath, name));
 	}
 	
 	protected ResourceLocation findResource(String feat) {
-		ResourceLocation rl = new ResourceLocation(domain.toLowerCase(), String.format("%s/%s.png", basePath, feat));
+		ResourceLocation rl = getResourceManual(feat+".png");
 		try {
 			FMLClientHandler.instance().getClient().getResourceManager().getResource(rl); //Verify existence
 			return rl;
@@ -81,15 +84,18 @@ public class GuiStyle implements ResourceManagerReloadListener {
 		try {
 			if (pcolors.containsKey(feat)) {
 				String cv = pcolors.getProperty(feat);
-				if (cv.startsWith("@")) {
+				if (cv.startsWith("@")) { //Link
 					cv = cv.substring(1);
 					if (cv != ofeat) { //Prevent infinite loops
 						return getRealColorValue(cv, ofeat);
 					} else {
 						return 0;
 					}
+				} else if (cv.startsWith("#")) { //HEX
+					cv = cv.substring(1);
+					return (int)Long.parseLong(cv, 16);
 				} else {
-					return Integer.parseInt(cv, 16);
+					return Integer.parseInt(cv); //Decimal
 				}
 			} else if (parentStyle != null) {
 				return parentStyle.getColorValue(feat);

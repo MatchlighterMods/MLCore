@@ -3,12 +3,12 @@ package ml.core.gui.controls.inventory;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
-
+import ml.core.gui.MLSlot;
 import ml.core.gui.controls.GuiControl;
 import ml.core.gui.core.GuiElement;
 import ml.core.vec.Vector2i;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 
 /**
  * A control for an auto-arranged grid of slots of rowLength width
@@ -38,7 +38,7 @@ public class ControlSlotGrid extends GuiControl {
 		rowLength = perRow;
 		
 		for (int i=0; i<inv.getSizeInventory(); i++) {
-			addSlot(new Slot(inv, i, 0, 0));
+			addSlot(new MLSlot(inv, i, 0, 0));
 		}
 	}
 	

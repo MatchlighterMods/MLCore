@@ -17,10 +17,13 @@ public abstract class TopParentGuiElement extends GuiElement {
 	
 	protected Side side;
 	protected MLContainer container;
+	
 	@SideOnly(Side.CLIENT)
 	protected MLGuiClient gui;
-	@SideOnly(Side.CLIENT)	
-	public Vector2i gmousePos = new Vector2i();
+	
+	@SideOnly(Side.CLIENT)
+	public Vector2i gmousePos;
+	
 	public GuiElement hoverElement;
 	public GuiElement focusedElement;
 
@@ -32,6 +35,7 @@ public abstract class TopParentGuiElement extends GuiElement {
 		if (side == Side.CLIENT) {
 			this.gui = new MLGuiClient(this);
 			this.style = GuiStyle.defaultStyle;
+			this.gmousePos = new Vector2i();
 		}
 	}
 	
@@ -42,6 +46,7 @@ public abstract class TopParentGuiElement extends GuiElement {
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public GuiStyle getStyle() {
 		if (style == null) return GuiStyle.defaultStyle;
 		return super.getStyle();

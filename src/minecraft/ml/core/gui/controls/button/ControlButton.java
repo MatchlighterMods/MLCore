@@ -1,6 +1,5 @@
 package ml.core.gui.controls.button;
 
-import net.minecraft.client.gui.FontRenderer;
 import ml.core.gui.GuiRenderUtils;
 import ml.core.gui.controls.GuiControl;
 import ml.core.gui.core.GuiElement;
@@ -8,10 +7,8 @@ import ml.core.gui.event.EventButtonPressed;
 import ml.core.gui.event.EventMouseClicked;
 import ml.core.gui.event.GuiEvent;
 import ml.core.vec.Vector2i;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.FontRenderer;
 
-@SideOnly(Side.CLIENT)
 public class ControlButton extends GuiControl {
 
 	public String text;

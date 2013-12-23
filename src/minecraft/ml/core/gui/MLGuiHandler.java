@@ -6,14 +6,15 @@ import net.minecraft.world.World;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public abstract class MLGuiHandler implements IGuiHandler {
 
-	public abstract TopParentGuiElement getTopElement(int ID, EntityPlayer player, World world, int x, int y, int z);
+	public abstract TopParentGuiElement getTopElement(int ID, EntityPlayer player, World world, int x, int y, int z, Side side);
 	
 	@Override
 	public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
-		TopParentGuiElement tel = getTopElement(ID, player, world, x, y, z);
+		TopParentGuiElement tel = getTopElement(ID, player, world, x, y, z, Side.SERVER);
 		if (tel == null)
 			return null;
 		
@@ -23,11 +24,12 @@ public abstract class MLGuiHandler implements IGuiHandler {
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z) {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 			return getServerGuiElement(ID, player, world, x, y, z);
 		
-		TopParentGuiElement tel = getTopElement(ID, player, world, x, y, z);
+		TopParentGuiElement tel = getTopElement(ID, player, world, x, y, z, Side.CLIENT);
 		if (tel == null)
 			return null;
 		
