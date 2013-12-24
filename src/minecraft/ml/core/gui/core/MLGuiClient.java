@@ -8,6 +8,7 @@ import ml.core.gui.controls.inventory.ControlSlot;
 import ml.core.gui.core.GuiElement.RenderStage;
 import ml.core.gui.event.EventKeyPressed;
 import ml.core.gui.event.EventMouseClicked;
+import ml.core.gui.event.EventMouseDown;
 import ml.core.gui.event.EventMouseEntered;
 import ml.core.gui.event.EventMouseLeave;
 import ml.core.gui.event.EventMouseMove;
@@ -76,11 +77,11 @@ public class MLGuiClient extends GuiContainer {
 	 * @param stage
 	 */
 	private void matrixAndDraw(RenderStage stage) {
-		GL11.glPushMatrix();
+		//GL11.glPushMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_LIGHTING);
 		priElemement.drawElement(stage);
-		GL11.glPopMatrix();
+		//GL11.glPopMatrix();
 	}
 
 	@Override
@@ -104,16 +105,27 @@ public class MLGuiClient extends GuiContainer {
 		GL11.glPopMatrix();
 	}
 
+	private GuiElement mouseDownEl;
+	private long mouseDownTime;
+	
 	@Override
 	protected void mouseClicked(int mX, int mY, int btn) {
-		if (!priElemement.injectEvent(new EventMouseClicked(priElemement.hoverElement, new Vector2i(mX, mY), MouseButton.get(btn))).cancelled)
+		if (!priElemement.injectEvent(new EventMouseDown(priElemement.hoverElement, new Vector2i(mX, mY), MouseButton.get(btn))).cancelled) {
+			if (priElemement.hoverElement != null) {
+				mouseDownEl = priElemement.hoverElement;
+				mouseDownTime = Minecraft.getSystemTime();
+			}
 			super.mouseClicked(mX, mY, btn);
+		}
 	}
 	
 	@Override
 	protected void mouseMovedOrUp(int mX, int mY, int which) {
 		if (which > -1) {
 			priElemement.injectEvent(new EventMouseUp(priElemement, new Vector2i(mX, mY), MouseButton.get(which)));
+			if (mouseDownEl == priElemement.hoverElement) {
+				priElemement.injectEvent(new EventMouseClicked(mouseDownEl, new Vector2i(mX, mY), MouseButton.get(which), (int)(Minecraft.getSystemTime()-mouseDownTime)));
+			}
 		} else {
 			
 		}

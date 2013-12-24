@@ -3,7 +3,7 @@ package ml.core.gui.controls.inventory;
 import ml.core.gui.GuiRenderUtils;
 import ml.core.gui.controls.GuiControl;
 import ml.core.gui.core.GuiElement;
-import ml.core.gui.event.EventMouseClicked;
+import ml.core.gui.event.EventMouseDown;
 import ml.core.gui.event.GuiEvent;
 import ml.core.vec.Vector2i;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -28,7 +28,6 @@ public class ControlSlot extends GuiControl {
 
 	@Override
 	public void drawBackground() {
-		GL11.glTranslatef(getPosition().x, getPosition().y, 0);
 		GL11.glScalef((float)getSize().x/18F, (float)getSize().y/18F, 1F);
 
 		if (renderBackground) {
@@ -62,8 +61,8 @@ public class ControlSlot extends GuiControl {
 
 	@Override
 	public void handleEvent(GuiEvent evt) {
-		if (slot != null && evt instanceof EventMouseClicked && evt.origin == this) {
-			EventMouseClicked evmc = (EventMouseClicked)evt;
+		if (slot != null && evt instanceof EventMouseDown && evt.origin == this) {
+			EventMouseDown evmc = (EventMouseDown)evt;
 		}
 		super.handleEvent(evt);
 	}

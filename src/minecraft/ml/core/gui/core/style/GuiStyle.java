@@ -22,7 +22,10 @@ import cpw.mods.fml.relauncher.SideOnly;
  * <li>Register it as a {@link ResourceManagerReloadListener} with {@link #registerAsReloadListener()}</li>
  * <li>Set it as the style for your Gui</li>
  * </ol>
- * Intended for use as per-style singletons. i.e. Every Gui with the same style will reference the same GuiStyle instance. 
+ * Intended for use as per-style singletons. i.e. Every Gui with the same style will reference the same GuiStyle instance.
+ * <br/><br/>
+ * <b>To modders adding controls:</b> Resources specific to your control should go in <i>assets/mlcontrols/{{pack_name}}/{{your_name or your_mod_name}}/{{resource}}</i>.
+ * This prevents conflicts and keeps things clean.
  * @author Matchlighter
  */
 @SideOnly(Side.CLIENT)

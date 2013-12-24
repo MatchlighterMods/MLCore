@@ -2,7 +2,7 @@ package ml.core.gui.controls.tabs;
 
 import ml.core.enums.MouseButton;
 import ml.core.gui.controls.tabs.ControlTabManager.GuiTab;
-import ml.core.gui.event.EventMouseClicked;
+import ml.core.gui.event.EventMouseDown;
 import ml.core.gui.event.GuiEvent;
 import ml.core.vec.Vector2i;
 import cpw.mods.fml.relauncher.Side;
@@ -45,7 +45,7 @@ public abstract class TabLedger extends GuiTab {
 	
 	@Override
 	public void handleEvent(GuiEvent evt) {
-		if (evt.origin==this && evt instanceof EventMouseClicked && ((EventMouseClicked)evt).button==MouseButton.Left) {
+		if (evt.origin==this && evt instanceof EventMouseDown && ((EventMouseDown)evt).button==MouseButton.Left) {
 			if (openState) closeLedger(); else openLedger();
 		}
 		super.handleEvent(evt);

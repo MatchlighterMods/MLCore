@@ -1,17 +1,15 @@
 package ml.core.gui.controls;
 
-import org.lwjgl.opengl.GL11;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.gui.GuiTextField;
 import ml.core.gui.core.GuiElement;
 import ml.core.gui.event.EventChanged;
 import ml.core.gui.event.EventFocusLost;
 import ml.core.gui.event.EventKeyPressed;
-import ml.core.gui.event.EventMouseClicked;
+import ml.core.gui.event.EventMouseDown;
 import ml.core.gui.event.GuiEvent;
 import ml.core.vec.Vector2i;
+import net.minecraft.client.gui.GuiTextField;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Note that this does NOT handle sending data to the server. It is up to you to decide when and how to do that.
@@ -32,19 +30,19 @@ public class ControlTextInput extends GuiControl {
 	
 	@Override
 	public void drawBackground() {
-		GL11.glTranslatef(getPosition().x, getPosition().y, 0);
+		//GL11.glTranslatef(getPosition().x, getPosition().y, 0);
 		//TODO Render TB background
 		textBox.drawTextBox();
 	}
 
 	@Override
 	public void handleEvent(GuiEvent evt) {
-		if (evt.origin == this && evt instanceof EventMouseClicked) {
+		if (evt.origin == this && evt instanceof EventMouseDown) {
 			if (!hasFocus()) {
 				takeFocus();
 				textBox.setFocused(true);
 			}
-			EventMouseClicked msev = (EventMouseClicked)evt;
+			EventMouseDown msev = (EventMouseDown)evt;
 			textBox.mouseClicked(msev.mPos.x, msev.mPos.y, msev.button.ordinal());
 			
 		} else if (evt.origin == this && evt instanceof EventFocusLost && getSide() == Side.CLIENT) {

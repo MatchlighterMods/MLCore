@@ -256,7 +256,7 @@ public abstract class GuiElement {
 	/**
 	 * Always make a super call or a call to drawChilds() as your last call. It will render children.<br/>
 	 * Your matrix will be localized to the parent element, so you need to shift by your local position.</br>
-	 * You can also just override draw[Background|Foreground|Overlay]() instead
+	 * You can also just override draw[Background|Overlay]() instead
 	 */
 	@SideOnly(Side.CLIENT)
 	public void drawElement(RenderStage stage) {
@@ -284,15 +284,15 @@ public abstract class GuiElement {
 	@SideOnly(Side.CLIENT)
 	protected void drawChilds(RenderStage stage) {
 		Vector2i pos = getPosition();
+		GL11.glPushMatrix();
+		GL11.glTranslatef(pos.x, pos.y, 0.0F);
 		for (GuiElement el : childObjects) {
-			GL11.glPushMatrix();
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			GL11.glDisable(GL11.GL_LIGHTING);
 
-			GL11.glTranslatef(pos.x, pos.y, 0.0F);
 			el.drawElement(stage);
-			GL11.glPopMatrix();
 		}
+		GL11.glPopMatrix();
 	}
 	
 	@SideOnly(Side.CLIENT)
