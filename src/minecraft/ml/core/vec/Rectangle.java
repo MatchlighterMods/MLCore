@@ -1,5 +1,7 @@
 package ml.core.vec;
 
+import java.util.Arrays;
+
 public class Rectangle {
 	public int xCoord;
 	public int yCoord;
@@ -22,5 +24,19 @@ public class Rectangle {
 	
 	public boolean isPointInside(int pntX, int pntY) {
 		return GeoMath.pointInRect(pntX, pntY, this.xCoord, this.yCoord, this.width, this.height);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Rectangle){
+			Rectangle asRct = (Rectangle)obj;
+			return asRct.xCoord == xCoord && asRct.yCoord == yCoord && asRct.width == width && asRct.height == height;
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(new double[]{xCoord, yCoord, width, height});
 	}
 }

@@ -46,4 +46,19 @@ public class Cuboid6 {
 		
 		return this;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Cuboid6){
+			Cuboid6 asC6 = (Cuboid6)obj;
+			return (asC6.min.equals(min)) && (asC6.max.equals(max));
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return min.hashCode()*31 + max.hashCode();
+	}
+
 }

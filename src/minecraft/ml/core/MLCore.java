@@ -4,14 +4,20 @@ import java.util.Map;
 
 import ml.core.internal.CommonProxy;
 import ml.core.internal.PacketHandler;
+import ml.core.world.WorldGenHandler;
+import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
+import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
+import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid="MLCore", name="MLCore")
 @NetworkMod(clientSideRequired=false, serverSideRequired=false, channels={PacketHandler.defChan}, packetHandler=PacketHandler.class)
@@ -23,6 +29,15 @@ public class MLCore implements IFMLLoadingPlugin {
 	
 	@SidedProxy(serverSide="ml.core.internal.CommonProxy", clientSide="ml.core.internal.ClientProxy")
 	public static CommonProxy proxy;
+	
+	@EventHandler
+	public void preInit(FMLPreInitializationEvent evt) {
+		proxy.prInit();
+		
+		MinecraftForge.EVENT_BUS.register(WorldGenHandler.instance);
+		TickRegistry.registerTickHandler(WorldGenHandler.instance, Side.SERVER);
+		GameRegistry.registerWorldGenerator(WorldGenHandler.instance);
+	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent evt) {

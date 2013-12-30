@@ -1,5 +1,7 @@
 package ml.core.vec;
 
+import java.util.Arrays;
+
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
@@ -38,6 +40,11 @@ public class Vector2i {
 			return asV2.x == x && asV2.y == y;
 		}
 		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(new int[]{x,y});
 	}
 
 	public double dotProd(Vector2i ov2) {

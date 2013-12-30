@@ -1,5 +1,7 @@
 package ml.core.vec;
 
+import java.util.Arrays;
+
 import ml.core.math.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeDirection;
@@ -39,6 +41,11 @@ public class Vector3d {
 			return asV3.x == x && asV3.y == y && asV3.z == z;
 		}
 		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(new double[]{x,y,z});
 	}
 
 	public double dotProd(Vector3d ov3) {
