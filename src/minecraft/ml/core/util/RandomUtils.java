@@ -1,4 +1,4 @@
-package ml.core;
+package ml.core.util;
 
 public class RandomUtils {
 

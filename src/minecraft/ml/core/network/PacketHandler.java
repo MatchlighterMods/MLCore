@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.logging.Level;
 
+import ml.core.internal.CoreLogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet250CustomPayload;
@@ -14,7 +15,6 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.IPacketHandler;
 import cpw.mods.fml.common.network.Player;
 
@@ -48,12 +48,12 @@ public class PacketHandler implements IPacketHandler {
 				onError(e, mlPkt);
 			}
 		} else {
-			FMLLog.severe("%s received unknown packet", this.getClass().toString());
+			CoreLogger.severe("("+this.getClass().toString()+") received unknown packet");
 		}
 	}
 	
 	protected void onError(Throwable e, MLPacket mlPkt) {
-		FMLLog.log("Packet|"+mlPkt.channel, Level.SEVERE, e, "Error handling packet");
+		CoreLogger.log(Level.SEVERE, "Error handling packet in channel ("+mlPkt.channel+")", e);
 	}
 
 	private static MLPacket tryCastPacket(Packet250CustomPayload pkt, EntityPlayer pl){

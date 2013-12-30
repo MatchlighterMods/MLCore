@@ -2,7 +2,7 @@ package ml.core.vec;
 
 import java.util.Arrays;
 
-import ml.core.math.MathHelper;
+import ml.core.math.MathUtils;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeDirection;
 
@@ -121,7 +121,7 @@ public class Vector3d {
 		if (delX == 0) return null;
 		double d = (tX - x) / delX;
 
-		if (MathHelper.between(-1E-5, delX, 1E-5))
+		if (MathUtils.between(-1E-5, delX, 1E-5))
 			return this;
 
 		return new Vector3d(tX, this.y + delY * d, this.z + delZ * d);
@@ -139,7 +139,7 @@ public class Vector3d {
 		if (delY == 0) return null;
 		double d = (tY - y) / delY;
 
-		if (MathHelper.between(-1E-5, delY, 1E-5))
+		if (MathUtils.between(-1E-5, delY, 1E-5))
 			return this;
 
 		return new Vector3d(this.x + delX * d, tY, this.z + delZ * d);
@@ -157,7 +157,7 @@ public class Vector3d {
 		if (delZ == 0) return null;
 		double d = (tZ - z) / delZ;
 
-		if (MathHelper.between(-1E-5, delZ, 1E-5))
+		if (MathUtils.between(-1E-5, delZ, 1E-5))
 			return this;
 
 		return new Vector3d(this.x + delX * d, this.y + delY * d, tZ);

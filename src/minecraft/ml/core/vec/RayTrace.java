@@ -1,9 +1,6 @@
-package ml.core.trace;
+package ml.core.vec;
 
-import ml.core.math.MathHelper;
-import ml.core.vec.BlockCoord;
-import ml.core.vec.Cuboid6;
-import ml.core.vec.Vector3d;
+import ml.core.math.MathUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -58,17 +55,17 @@ public class RayTrace {
 		switch (face) {
 		case 0:
 		case 1:
-			if (!MathHelper.between(cuboid.min.x, hit.x, cuboid.max.x) || !MathHelper.between(cuboid.min.z, hit.z, cuboid.max.z))
+			if (!MathUtils.between(cuboid.min.x, hit.x, cuboid.max.x) || !MathUtils.between(cuboid.min.z, hit.z, cuboid.max.z))
 				return null;
 			break;
 		case 2:
 		case 3:
-			if (!MathHelper.between(cuboid.min.x, hit.x, cuboid.max.x) || !MathHelper.between(cuboid.min.y, hit.y, cuboid.max.y))
+			if (!MathUtils.between(cuboid.min.x, hit.x, cuboid.max.x) || !MathUtils.between(cuboid.min.y, hit.y, cuboid.max.y))
 				return null;
 			break;
 		case 4:
 		case 5:
-			if (!MathHelper.between(cuboid.min.y, hit.y, cuboid.max.y) || !MathHelper.between(cuboid.min.z, hit.z, cuboid.max.z))
+			if (!MathUtils.between(cuboid.min.y, hit.y, cuboid.max.y) || !MathUtils.between(cuboid.min.z, hit.z, cuboid.max.z))
 				return null;
 			break;
 		}
@@ -116,6 +113,9 @@ public class RayTrace {
 		return mop;
 	}
 
+	/**
+	 * Traces the specified segment. Looks for collision on the specified cuboids. If a collision is found and blk is specified, blk's bounds will be set to the hit cuboid.
+	 */
 	public MovingObjectPosition traceCuboids(Vector3d strt, Vector3d end, BiMap<Integer, Cuboid6> cuboids, BlockCoord blv3, Block blk){
 		MovingObjectPosition mop = traceCuboids(strt, end, cuboids);
 		if (mop != null){
@@ -124,7 +124,7 @@ public class RayTrace {
 			mop.blockZ = blv3.z;
 			mop.typeOfHit = EnumMovingObjectType.TILE;
 			if (blk != null)
-				c_cuboid.translate(new Vector3d(blv3.x, blv3.y, blv3.z)).setToBlockBounds(blk);
+				c_cuboid.translate(new Vector3d(-blv3.x, -blv3.y, -blv3.z)).setToBlockBounds(blk);
 		}
 		return mop;
 	}

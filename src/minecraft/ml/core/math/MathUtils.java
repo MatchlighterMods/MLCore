@@ -1,6 +1,6 @@
 package ml.core.math;
 
-public class MathHelper {
+public class MathUtils {
 
 	/**
 	 * @return a<=x<=b

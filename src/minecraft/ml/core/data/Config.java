@@ -1,4 +1,4 @@
-package ml.core;
+package ml.core.data;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,11 +11,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
-import ml.core.Config.Prop.Renamed;
+import ml.core.data.Config.Prop.Renamed;
+import ml.core.internal.CoreLogger;
+import ml.core.util.StringUtils;
 import net.minecraftforge.common.ConfigCategory;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
-import cpw.mods.fml.common.FMLLog;
 
 public abstract class Config {
 
@@ -161,7 +162,7 @@ public abstract class Config {
 					loadModule(null, (Class)mod);
 				else loadModule(mod, mod.getClass());
 		} catch(Exception e) {
-			FMLLog.log(Level.SEVERE, e, "Failed to load the configuration properly");
+			CoreLogger.log(Level.SEVERE, "Failed to load the configuration properly", e);
 		} finally {
 			fcfg.save();
 		}
@@ -203,7 +204,7 @@ public abstract class Config {
 				else saveModule(mod, mod.getClass());
 			
 		} catch(Exception e) {
-			FMLLog.log(Level.SEVERE, e, "Failed to save all of the configuration");
+			CoreLogger.log(Level.SEVERE, "Failed to save all of the configuration", e);
 		} finally {
 			fcfg.save();
 		}

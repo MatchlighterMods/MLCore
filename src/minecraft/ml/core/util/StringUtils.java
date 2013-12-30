@@ -1,4 +1,4 @@
-package ml.core;
+package ml.core.util;
 
 import net.minecraft.item.ItemDye;
 import net.minecraft.util.StatCollector;

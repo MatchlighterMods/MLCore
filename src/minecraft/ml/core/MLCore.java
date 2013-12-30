@@ -24,6 +24,8 @@ import cpw.mods.fml.relauncher.Side;
 @TransformerExclusions({"ml"})
 public class MLCore implements IFMLLoadingPlugin {
 	
+	public static final String mlcore_name = "MLCore";
+	
 	@Instance("MLCore")
 	public static MLCore instance;
 	

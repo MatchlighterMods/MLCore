@@ -1,4 +1,4 @@
-package ml.core.render;
+package ml.core.world;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class WorldRenderLib {
+public class WorldRenderUtils {
 	
 	private static RenderBlocks renderBlocks = new RenderBlocks();
 	private static EntityItem renderEnt;

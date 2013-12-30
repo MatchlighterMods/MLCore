@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
+import ml.core.internal.CoreLogger;
 import ml.core.vec.Vector2i;
 import ml.core.world.feature.IFeatureGenerator;
 import net.minecraft.nbt.NBTTagCompound;
@@ -16,7 +17,6 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
-import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.IWorldGenerator;
 import cpw.mods.fml.common.TickType;
@@ -50,15 +50,17 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 		int dimid = w.provider.dimensionId;
 		ArrayList<RetroQueueItem> rqis = retroGenQueue.get(dimid);
 		if (rqis == null)
-			rqis = new ArrayList<WorldGenHandler.RetroQueueItem>();
+			rqis = new ArrayList<RetroQueueItem>();
 		
 		for (String mId : featGenerators.keySet()) {
 			RetroDataBase rdb = getRetroDataBase(w, mId);
 			for (IFeatureGenerator feat : featGenerators.get(mId)) {
 				if (rdb.shouldPerformRetroJob(x, z, feat.getSubIdentifier(), feat.getFeatureVersion()) && feat.allowRetroGen()) {
-					FMLLog.info("Chunk @ ("+x+","+z+",DIM"+w.provider.dimensionId+") has been marked for retroactive feature generation for ("+mId+":"+feat.getSubIdentifier()+")");
-					rqis.add(new RetroQueueItem(x, z, w, feat, rdb.getLastFeatureVesrion(x, z, feat.getSubIdentifier()), rdb));
-					rdb.markRetroJobDone(x, z, feat.getSubIdentifier(), feat.getFeatureVersion());
+					RetroQueueItem rqi = new RetroQueueItem(x, z, w, feat, rdb.getLastFeatureVesrion(x, z, feat.getSubIdentifier()), rdb);
+					if (!rqis.contains(rqi)) {
+						CoreLogger.info("Chunk @ ("+x+","+z+",DIM"+w.provider.dimensionId+") has been marked for retroactive feature generation for ("+mId+":"+feat.getSubIdentifier()+")");
+						rqis.add(rqi);
+					}
 				}
 			}
 		}
@@ -74,7 +76,6 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 			ArrayList<IFeatureGenerator> features = featGenerators.get(modId);
 			RetroDataBase rdb = getRetroDataBase(world, modId);
 			for (IFeatureGenerator feature : features) {
-				System.out.println("Natural Gen");
 				feature.doGeneration(rand, chunkX, chunkZ, world, false, -1);
 				rdb.markRetroJobDone(chunkX, chunkZ, feature.getSubIdentifier(), feature.getFeatureVersion());
 			}
@@ -86,7 +87,7 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 		if (rdb == null) {
 			rdb = new RetroDataBase(rdb_base+modId);
 			w.perWorldStorage.setData(rdb_base+modId, rdb);
-			FMLLog.info("Created retro generation database for DIM"+w.provider.dimensionId);
+			CoreLogger.info("Created retro generation database for DIM"+w.provider.dimensionId);
 		}
 		return rdb;
 	}
@@ -116,7 +117,7 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 				rand.setSeed(chunkSeed);
 				
 				rqi.feature.doGeneration(rand, rqi.chunkX, rqi.chunkZ, world, true, rqi.lastVer);
-					//rqi.rdb.markRetroJobDone(rqi.chunkX, rqi.chunkZ, rqi.feature.getSubIdentifier(), rqi.feature.getFeatureVersion());
+				rqi.rdb.markRetroJobDone(rqi.chunkX, rqi.chunkZ, rqi.feature.getSubIdentifier(), rqi.feature.getFeatureVersion());
 				
 				removing_rqis.add(rqi);
 				count++;
@@ -124,7 +125,7 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 					break;
 			}
 			retroGenQueue.get(dimid).removeAll(removing_rqis);
-			FMLLog.info(count+" chunks have been retro-generated. "+retroGenQueue.get(dimid).size()+" more left.");
+			CoreLogger.info(count+" chunks have been retro-generated. "+retroGenQueue.get(dimid).size()+" more left.");
 		}
 	}
 
@@ -154,6 +155,15 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 			this.feature = feature;
 			this.lastVer = lastVer;
 			this.rdb = rdb;
+		}
+		
+		@Override
+		public boolean equals(Object obj) {
+			if (obj instanceof RetroQueueItem) {
+				RetroQueueItem r = (RetroQueueItem)obj;
+				return r.chunkX == chunkX && r.chunkZ == chunkZ && r.feature == feature && r.w == w;
+			}
+			return false;
 		}
 	}
 	
