@@ -116,7 +116,7 @@
 	<target name="extract-built-jar">
 		<property name="jarname" value="${modname}-${version.minecraft}-${version}" /> 
 		<mkdir dir="${build.dest}" />
-		<jar destfile="${build.dest}/${jarname}.jar">
+		<jar destfile="${build.dest}/${jarname}.jar"> <!-- Release -->
 			<fileset dir="${mcp.obfoutput.classes}" includes="**/ml/core/**/*.class" />
 			
 			<fileset dir="${res.dir}" includes="**" />
@@ -138,7 +138,7 @@
 				<mergemapper to="mcmod.info" />
 			</mappedresources>
 		</jar>
-		<jar destfile="${build.dest}/${jarname}-dev.jar">
+		<jar destfile="${build.dest}/${jarname}-dev.jar"> <!-- Unobfuscated -->
 			<fileset dir="${mcp.binoutput.classes}" includes="**/ml/core/**/*.class" />
 			
 			<fileset dir="${res.dir}" includes="**" />
@@ -160,5 +160,10 @@
 				<mergemapper to="mcmod.info" />
 			</mappedresources>
 		</jar>
+		<zip destfile="${build.dest}/${jarname}-src.zip"> <!-- Source Zip -->
+			<fileset dir="${build.env}/src" includes="**" />
+			<fileset dir="${build.env}/res" includes="**" />
+			<zipfileset dir="${build.env}" includes="mlcore_at.cfg"/>
+		</zip>
 	</target>
 </project>
