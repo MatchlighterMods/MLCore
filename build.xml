@@ -161,8 +161,8 @@
 			</mappedresources>
 		</jar>
 		<zip destfile="${build.dest}/${jarname}-src.zip"> <!-- Source Zip -->
-			<fileset dir="${build.env}/src" includes="**" />
-			<fileset dir="${build.env}/res" includes="**" />
+			<fileset dir="${build.env}" includes="src/**" />
+			<fileset dir="${build.env}" includes="res/**" />
 			<zipfileset dir="${build.env}" includes="mlcore_at.cfg"/>
 		</zip>
 	</target>
