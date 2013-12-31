@@ -13,7 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BasicCustomTextureMap extends CustomTextureMap {
 
-	public static final BasicCustomTextureMap GUI = new BasicCustomTextureMap(CustomTextureMapManager.getNextMapId(), "textures/gui/", "MLCore:textures/atlas/icons.png");
+	public static final BasicCustomTextureMap GUI = new BasicCustomTextureMap(CustomTextureMapManager.getNextMapId(), "textures/gui", "MLCore:textures/atlas/icons.png");
 	
 	
 	public List<IIconProvider> providers = new ArrayList<IIconProvider>();
