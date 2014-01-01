@@ -10,11 +10,16 @@ public abstract class CustomTextureMap extends TextureMap {
 
 	public ResourceLocation resourceLoc;
 	
-	public CustomTextureMap(int par1, String par2Str, ResourceLocation resLoc) {
-		super(par1, par2Str);
+	public CustomTextureMap(int textureType, String par2Str, ResourceLocation resLoc) {
+		super(textureType, par2Str);
 		resourceLoc = resLoc;
 	}
 
+	public CustomTextureMap(String par2Str, ResourceLocation resLoc) {
+		this(CustomTextureMapManager.custom_map_type, par2Str, resLoc);
+	}
+	
+	
 	/**
 	 * Called by MLCore. You code should find whatever is using this TextureMap and re-register the icons into its list.
 	 */

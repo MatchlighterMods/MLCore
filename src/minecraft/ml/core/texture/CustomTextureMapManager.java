@@ -1,8 +1,7 @@
 package ml.core.texture;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -13,20 +12,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class CustomTextureMapManager {
 	
-	private static int lastId = 1;
-	public static int getNextMapId() {
-		return ++lastId;
-	}
+	public static final int custom_map_type = 21; 
 	
 	public static CustomTextureMapManager instance = new CustomTextureMapManager();
-
-	protected final Map<Integer, CustomTextureMap> maps = new HashMap<Integer, CustomTextureMap>();
+	protected final ArrayList<CustomTextureMap> maps = new ArrayList<CustomTextureMap>();
 	
 	public void registerMap(CustomTextureMap map) {
-		if (map.textureType < 2 || maps.containsKey(map.textureType))
+		if (maps.contains(map))
 			throw new RuntimeException("TextureMap type " + map.textureType + " is already registered.");
 		
-		maps.put(map.textureType, map);
+		maps.add(map);
 		Minecraft mc = Minecraft.getMinecraft();
 		
 		mc.renderEngine.loadTextureMap(map.resourceLoc, map);
@@ -39,14 +34,14 @@ public class CustomTextureMapManager {
 	public void reregisterIcons(TextureStitchEvent.Pre evt) {
 		Minecraft mc = Minecraft.getMinecraft();
 		if (evt.map.textureType==0) {
-			for (CustomTextureMap map : maps.values()) {
+			for (CustomTextureMap map : maps) {
 				try {
 					map.loadTexture(mc.getResourceManager());
 				} catch (IOException e) {}
 			}
 		}
-		if (maps.containsKey(evt.map.textureType)) {
-			maps.get(evt.map.textureType).reregisterIcons();
+		if (evt.map instanceof CustomTextureMap) {
+			((CustomTextureMap)evt.map).reregisterIcons();
 		}
 	}
 }

@@ -13,7 +13,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class BasicCustomTextureMap extends CustomTextureMap {
 
-	public static final BasicCustomTextureMap GUI = new BasicCustomTextureMap(CustomTextureMapManager.getNextMapId(), "textures/gui", "MLCore:textures/atlas/icons.png");
+	public static final BasicCustomTextureMap GUI = new BasicCustomTextureMap("textures/gui", "MLCore:textures/atlas/icons.png");
 	
 	
 	public List<IIconProvider> providers = new ArrayList<IIconProvider>();
@@ -22,14 +22,18 @@ public class BasicCustomTextureMap extends CustomTextureMap {
 		providers.add(pvdr);
 	}
 	
-	public BasicCustomTextureMap(int par1, String basePath, ResourceLocation resLoc) {
-		super(par1, basePath, resLoc);
+	public BasicCustomTextureMap(int textureType, String basePath, ResourceLocation resLoc) {
+		super(textureType, basePath, resLoc);
 		
 		CustomTextureMapManager.instance.registerMap(this);
 	}
 	
-	public BasicCustomTextureMap(int par1, String basePath, String resLoc) {
-		this(par1, basePath, new ResourceLocation(resLoc));
+	public BasicCustomTextureMap(String basePath, ResourceLocation resLoc) {
+		this(CustomTextureMapManager.custom_map_type, basePath, resLoc);
+	}
+	
+	public BasicCustomTextureMap(String basePath, String resLoc) {
+		this(CustomTextureMapManager.custom_map_type, basePath, new ResourceLocation(resLoc));
 	}
 	
 	@Override
