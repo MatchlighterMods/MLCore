@@ -103,6 +103,12 @@ public class TextureSheet {
 		return sprites[i];
 	}
 	
+	public void initSpriteList(int[] indices) {
+		for (int i=0; i<indices.length; i++) {
+			initSprite(i);
+		}
+	}
+	
 	public Icon getSprite(int i) {
 		return sprites[i];
 	}
