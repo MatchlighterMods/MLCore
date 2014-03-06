@@ -16,6 +16,6 @@ public class EventMouseDown extends GuiEvent {
 	}
 	
 	public Vector2i localizePosition() {
-		return origin.localizeGlobal(mPos);
+		return origin.localizeGlobalPos(mPos);
 	}
 }

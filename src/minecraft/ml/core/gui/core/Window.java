@@ -14,7 +14,7 @@ public abstract class Window extends TopParentGuiElement {
 	@Override
 	public void drawBackground() {
 		bindStyleTexture("window");
-		GuiRenderUtils.drawSlicedRect(this.getPosition().x, this.getPosition().y, this.getSize().x, this.getSize().y, 0, 0, 256, 256, 6);
+		GuiRenderUtils.drawSlicedRect(this.getLocalPosition().x, this.getLocalPosition().y, this.getSize().x, this.getSize().y, 0, 0, 256, 256, 6);
 		super.drawBackground();
 	}
 	

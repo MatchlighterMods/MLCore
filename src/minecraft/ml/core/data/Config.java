@@ -51,6 +51,17 @@ public abstract class Config {
 		}
 	}
 	
+	/**
+	 * Thanks to monoxide0184 for the idea of add category comments
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.FIELD)
+	public static @interface Category {
+		public String category() default Configuration.CATEGORY_GENERAL;
+		public String comment() default "";
+
+	}
+	
 	protected Configuration fcfg;
 	private List<Object> mods = new ArrayList<Object>();
 	
@@ -77,79 +88,98 @@ public abstract class Config {
 	
 	protected void loadModule(Object modInst, Class modCls) throws IllegalAccessException {
 		for (Field fld : modCls.getFields()){
-			Prop ann = fld.getAnnotation(Prop.class);
-			if ((modInst != null || Modifier.isStatic(fld.getModifiers())) && ann != null){
-				Class type = fld.getType();
-				String fldName = fld.getName();
-				
-				String[] cats = ann.category().split("\\.");
-				for (int i=cats.length-1; i>=0; i--) {
-					String cccat = cats[i].toLowerCase();
-					for (int j=i+1; j<cats.length; j++) {
-						cccat += cats[j].substring(0, 1).toUpperCase() + cats[j].substring(1);
-					}
-					cccat+="_";
-					if (fldName.startsWith(cccat))
-						fldName = fldName.substring(cccat.length());
-				}
-				fldName = fldName.substring(0, 1).toLowerCase() + fldName.substring(1);
-				
-				String propName = ann.inFileName().isEmpty() ? fldName : ann.inFileName();
-				Property cProp = null;
-				
-				Property.Type forgeTyp = getForgeType(type);
-				
-				Renamed oldNames = fld.getAnnotation(Renamed.class);
-				if (oldNames != null)
-					for (int i=0; i<oldNames.value().length; i++) {
-						String onm = oldNames.value()[i];
-						
-						if (onm.endsWith(".")) onm += propName;
-						String[] path = onm.split("\\"+Configuration.CATEGORY_SPLITTER);
-						onm = path[path.length-1];
-						ConfigCategory cat = fcfg.getCategory(path.length>1 ? StringUtils.join(Arrays.copyOf(path, path.length-1), ".") : ann.category());
-						if (cat != null && cat.containsKey(onm)) {
-							cProp = cat.get(onm);
-							cat.remove(onm);
+			if (modInst != null || Modifier.isStatic(fld.getModifiers())) {
+				Category cat_ann = fld.getAnnotation(Category.class);
+				if (cat_ann != null) {
+					String catn = cat_ann.category();
+					String com = cat_ann.comment().isEmpty() ? null : cat_ann.comment();
+					if (catn.isEmpty()) {
+						if (fld.getType() == String.class && (String)fld.get(modInst)!=null) {
+							catn = (String)fld.get(modInst);
+						} else {
+							catn = fld.getName();
 						}
 					}
-				
-				if (type.isArray()) {
-					cProp = fcfg.get(ann.category(), propName, cProp!=null ? cProp.getStringList() : (String[])fld.get(modInst), null, forgeTyp);
-					switch (forgeTyp) {
-					case INTEGER:
-						fld.set(modInst, cProp.getIntList());
-						break;
-					case BOOLEAN:
-						fld.set(modInst, cProp.getBooleanList());
-						break;
-					case DOUBLE:
-						fld.set(modInst, cProp.getDoubleList());
-						break;
-					case STRING:
-						fld.set(modInst, cProp.getStringList());
-						break;
-					}
-				} else {
-					cProp = fcfg.get(ann.category(), propName, cProp!=null ? cProp.getString() : fld.get(modInst).toString(), null, forgeTyp);
-					switch (forgeTyp) {
-					case INTEGER:
-						fld.set(modInst, cProp.getInt(fld.getInt(this)));
-						break;
-					case BOOLEAN:
-						fld.set(modInst, cProp.getBoolean(fld.getBoolean(this)));
-						break;
-					case DOUBLE:
-						fld.set(modInst, cProp.getDouble(fld.getDouble(this)));
-						break;
-					case STRING:
-						fld.set(modInst, cProp.getString());
-						break;
+					fcfg.addCustomCategoryComment(catn, com);
+					if (fld.getType() == ConfigCategory.class) {
+						fld.set(modInst, fcfg.getCategory(catn));
 					}
 				}
-									
-				if (cProp != null && !ann.comment().isEmpty())
-					cProp.comment = ann.comment();
+				
+				Prop prop_ann = fld.getAnnotation(Prop.class);
+				if (prop_ann != null){
+					Class type = fld.getType();
+					String fldName = fld.getName();
+					
+					String[] cats = prop_ann.category().split("\\.");
+					for (int i=cats.length-1; i>=0; i--) {
+						String cccat = cats[i].toLowerCase();
+						for (int j=i+1; j<cats.length; j++) {
+							cccat += cats[j].substring(0, 1).toUpperCase() + cats[j].substring(1);
+						}
+						cccat+="_";
+						if (fldName.startsWith(cccat))
+							fldName = fldName.substring(cccat.length());
+					}
+					fldName = fldName.substring(0, 1).toLowerCase() + fldName.substring(1);
+					
+					String propName = prop_ann.inFileName().isEmpty() ? fldName : prop_ann.inFileName();
+					Property cProp = null;
+					
+					Property.Type forgeTyp = getForgeType(type);
+					
+					Renamed oldNames = fld.getAnnotation(Renamed.class);
+					if (oldNames != null)
+						for (int i=0; i<oldNames.value().length; i++) {
+							String onm = oldNames.value()[i];
+							
+							if (onm.endsWith(".")) onm += propName;
+							String[] path = onm.split("\\"+Configuration.CATEGORY_SPLITTER);
+							onm = path[path.length-1];
+							ConfigCategory cat = fcfg.getCategory(path.length>1 ? StringUtils.join(Arrays.copyOf(path, path.length-1), ".") : prop_ann.category());
+							if (cat != null && cat.containsKey(onm)) {
+								cProp = cat.get(onm);
+								cat.remove(onm);
+							}
+						}
+					
+					if (type.isArray()) {
+						cProp = fcfg.get(prop_ann.category(), propName, cProp!=null ? cProp.getStringList() : (String[])fld.get(modInst), null, forgeTyp);
+						switch (forgeTyp) {
+						case INTEGER:
+							fld.set(modInst, cProp.getIntList());
+							break;
+						case BOOLEAN:
+							fld.set(modInst, cProp.getBooleanList());
+							break;
+						case DOUBLE:
+							fld.set(modInst, cProp.getDoubleList());
+							break;
+						case STRING:
+							fld.set(modInst, cProp.getStringList());
+							break;
+						}
+					} else {
+						cProp = fcfg.get(prop_ann.category(), propName, cProp!=null ? cProp.getString() : fld.get(modInst).toString(), null, forgeTyp);
+						switch (forgeTyp) {
+						case INTEGER:
+							fld.set(modInst, cProp.getInt(fld.getInt(this)));
+							break;
+						case BOOLEAN:
+							fld.set(modInst, cProp.getBoolean(fld.getBoolean(this)));
+							break;
+						case DOUBLE:
+							fld.set(modInst, cProp.getDouble(fld.getDouble(this)));
+							break;
+						case STRING:
+							fld.set(modInst, cProp.getString());
+							break;
+						}
+					}
+										
+					if (cProp != null && !prop_ann.comment().isEmpty())
+						cProp.comment = prop_ann.comment();
+				}
 			}
 		}
 	}

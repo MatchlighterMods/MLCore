@@ -18,6 +18,10 @@ public class MLContainer extends Container {
 		priElemement = elm;
 	}
 
+	public TopParentGuiElement getPrimaryElement() {
+		return priElemement;
+	}
+	
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer) {
 		return priElemement.canInteractWith(entityplayer);

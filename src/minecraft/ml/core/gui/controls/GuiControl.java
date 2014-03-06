@@ -14,7 +14,7 @@ public abstract class GuiControl extends GuiElement {
 
 	public GuiControl(GuiElement parent, Vector2i position, Vector2i size) {
 		super(parent);
-		this.setPosition(position);
+		this.setLocalPosition(position);
 		this.setSize(size);
 	}
 
@@ -38,7 +38,7 @@ public abstract class GuiControl extends GuiElement {
 	@SideOnly(Side.CLIENT)
 	public void drawElement(RenderStage stage) {
 		GL11.glPushMatrix();
-		GL11.glTranslatef(getPosition().x, getPosition().y, 0);
+		GL11.glTranslatef(getLocalPosition().x, getLocalPosition().y, 0);
 		switch (stage) {
 		case Background:
 			drawBackground();

@@ -7,6 +7,7 @@ import ml.core.gui.core.style.GuiStyle;
 import ml.core.gui.core.style.GuiStyleManip;
 import ml.core.gui.event.EventFocusLost;
 import ml.core.gui.event.GuiEvent;
+import ml.core.vec.Rectangle;
 import ml.core.vec.Vector2i;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
@@ -32,18 +33,12 @@ public abstract class GuiElement {
 		parentObject = parent;
 		if (parent != null)
 			parent.addChild(this);
-		setPosition(new Vector2i());
+		setLocalPosition(new Vector2i());
 		setSize(new Vector2i());
 	}
+
 	
-	public Vector2i getPosition() {
-		return position;
-	}
-
-	public void setPosition(Vector2i position) {
-		this.position = position;
-	}
-
+	// ------------------------ Tree Model ------------------------ //
 	public void clearChildren() {
 		childObjects.clear();
 	}
@@ -102,6 +97,7 @@ public abstract class GuiElement {
 		return getTopParent().getSide();
 	}
 	
+	// ------------------------ Size Stuff ------------------------ //
 	public Vector2i getSize() { return size; }
 	
 	public void setSize(Vector2i size) {
@@ -112,25 +108,49 @@ public abstract class GuiElement {
 		setSize(new Vector2i(w, h));
 	}
 	
-	public Vector2i getAbsolutePosition() {
-		if (!isTopParentElem()) return getParent().getAbsolutePosition().add(getPosition());
-		return getPosition().copy();
+	// ------------------------ Position Stuff ------------------------ //
+	public Vector2i getLocalPosition() {
+		return position;
+	}
+
+	public void setLocalPosition(Vector2i position) {
+		this.position = position;
+	}
+	
+	public Vector2i getGlobalPosition() {
+		if (!isTopParentElem()) return getParent().getGlobalPosition().add(getLocalPosition());
+		return getLocalPosition().copy();
 	}
 	
 	@SideOnly(Side.CLIENT)
 	public Vector2i getLocalMousePos() {
-		return localizeGlobal(getTopParent().gmousePos);
+		return localizeGlobalPos(getTopParent().gmousePos);
 	}
 	
-	public Vector2i localizeGlobal(Vector2i g) {
-		return g.copy().minus(getAbsolutePosition());
+	/**
+	 * Localizes a point that is not localized.
+	 */
+	public Vector2i localizeGlobalPos(Vector2i g) {
+		return g.copy().minus(getGlobalPosition());
 	}
 	
 	/**
 	 * Localizes a point that is presently localized to the parent element.
 	 */
-	public Vector2i localizeParent(Vector2i g) {
-		return g.copy().minus(getPosition());
+	public Vector2i localizeParentPos(Vector2i g) {
+		return g.copy().minus(getLocalPosition());
+	}
+	
+	public Rectangle getLocalBounds() {
+		Vector2i pos = getLocalPosition();
+		Vector2i sz = getSize();
+		return new Rectangle(pos.x, pos.y, sz.x, sz.y);
+	}
+	
+	public Rectangle getGlobalBounds() {
+		Vector2i pos = getGlobalPosition();
+		Vector2i sz = getSize();
+		return new Rectangle(pos.x, pos.y, sz.x, sz.y);
 	}
 	
 	public GuiEvent injectEvent(GuiEvent evt, boolean injectAtTop) {
@@ -162,7 +182,7 @@ public abstract class GuiElement {
 	public GuiElement findElementAtLocal(Vector2i pos) {
 		for (GuiElement el : childObjects) {
 			if (el.pointInElement(pos)) {
-				GuiElement sel = el.findElementAtLocal(pos.copy().minus(el.getPosition()));
+				GuiElement sel = el.findElementAtLocal(pos.copy().minus(el.getLocalPosition()));
 				if (sel != null)
 					return sel;
 			}
@@ -174,8 +194,8 @@ public abstract class GuiElement {
 	 * Point is localized to the parent element
 	 */
 	public boolean pointInElement(Vector2i pos) {
-		return (pos.x>=getPosition().x && pos.y>=getPosition().y &&
-				pos.x<=getPosition().x+getSize().x && pos.y<=getPosition().y+getSize().y);
+		return (pos.x>=getLocalPosition().x && pos.y>=getLocalPosition().y &&
+				pos.x<=getLocalPosition().x+getSize().x && pos.y<=getLocalPosition().y+getSize().y);
 	}
 	
 	public void handleEvent(GuiEvent evt) {}
@@ -283,7 +303,7 @@ public abstract class GuiElement {
 	 */
 	@SideOnly(Side.CLIENT)
 	protected void drawChilds(RenderStage stage) {
-		Vector2i pos = getPosition();
+		Vector2i pos = getLocalPosition();
 		GL11.glPushMatrix();
 		GL11.glTranslatef(pos.x, pos.y, 0.0F);
 		for (GuiElement el : childObjects) {
@@ -301,6 +321,10 @@ public abstract class GuiElement {
 		return style;
 	}
 	
+	/**
+	 * Sets the style of this element and any child elements with the same style.
+	 * @param stl
+	 */
 	@SideOnly(Side.CLIENT)
 	public void setStyle(GuiStyle stl) {
 		for (GuiElement element : childObjects) {
@@ -311,6 +335,12 @@ public abstract class GuiElement {
 		this.style = stl;
 	}
 	
+	/**
+	 * Creates a {@link GuiStyleManip} and assigns it to this element if the current style is a {@link GuiStyleManip}
+	 * Adds the resource to the {@link GuiStyleManip}
+	 * @param feat
+	 * @param npath
+	 */
 	@SideOnly(Side.CLIENT)
 	public void setCustomResource(String feat, String npath) {
 		if (!(this.style instanceof GuiStyleManip))
@@ -319,6 +349,8 @@ public abstract class GuiElement {
 	}
 	
 	/**
+	 * Creates a {@link GuiStyleManip} and assigns it to this element if the current style is a {@link GuiStyleManip}
+	 * Adds the color to the {@link GuiStyleManip}
 	 * @param color Is expected to be a link to another color, a hex string prefixed with # (#RRGGBB), or an integer
 	 */
 	@SideOnly(Side.CLIENT)

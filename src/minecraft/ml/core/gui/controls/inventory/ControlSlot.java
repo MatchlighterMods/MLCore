@@ -53,7 +53,7 @@ public class ControlSlot extends GuiControl {
 
 	@Override
 	public void guiTick() {
-		Vector2i abPos = getAbsolutePosition().minus(getTopParent().getPosition());
+		Vector2i abPos = getGlobalPosition().minus(getTopParent().getLocalPosition());
 		slot.xDisplayPosition = abPos.x+1;
 		slot.yDisplayPosition = abPos.y+1;
 		super.guiTick();

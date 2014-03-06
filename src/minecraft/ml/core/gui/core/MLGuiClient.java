@@ -30,6 +30,10 @@ public class MLGuiClient extends GuiContainer {
 		priElemement = elm;
 	}
 	
+	public TopParentGuiElement getPrimaryElement() {
+		return priElemement;
+	}
+	
 	private List<Slot> eSlots = new ArrayList<Slot>();
 	@Override
 	public void drawScreen(int mX, int mY, float par3) {
@@ -37,7 +41,7 @@ public class MLGuiClient extends GuiContainer {
 			priElemement.injectEvent(new EventMouseMove(priElemement, new Vector2i(mX, mY).minus(priElemement.gmousePos)));
 			priElemement.gmousePos.set(mX, mY);
 			
-			GuiElement newHover = priElemement.findElementAtLocal(new Vector2i(mX, mY).minus(priElemement.getPosition()));
+			GuiElement newHover = priElemement.findElementAtLocal(new Vector2i(mX, mY).minus(priElemement.getLocalPosition()));
 
 			if (newHover != priElemement.hoverElement) {
 				priElemement.injectEvent(new EventMouseLeave(priElemement.hoverElement));

@@ -40,8 +40,8 @@ public abstract class TopParentGuiElement extends GuiElement {
 	}
 	
 	@Override
-	public Vector2i getPosition() {
-		if (gui == null) return super.getPosition();
+	public Vector2i getLocalPosition() {
+		if (gui == null) return super.getLocalPosition();
 		return gui.getPosition();
 	}
 	

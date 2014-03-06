@@ -69,7 +69,7 @@ public class ControlSlotGrid extends GuiControl {
 	 */
 	public void reCalculatePositions() {
 		for (int s=0; s<slots.size(); s++) {
-			slots.get(s).setPosition(positionSlot(s));
+			slots.get(s).setLocalPosition(positionSlot(s));
 		}
 	}
 	

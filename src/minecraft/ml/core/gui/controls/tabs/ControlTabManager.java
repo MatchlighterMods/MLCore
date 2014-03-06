@@ -51,14 +51,14 @@ public class ControlTabManager extends GuiElement {
 		}
 		
 		@Override
-		public Vector2i getPosition() {
+		public Vector2i getLocalPosition() {
 			Rectangle tb = TabManager.getTabBounds(this);
 			return new Vector2i(tb.xCoord, tb.yCoord);
 		}
 
 		@Override
 		public void drawBackground() {
-			getPosition().glTranslate();
+			getLocalPosition().glTranslate();
 			float red = ((tabColor >> 16) & 0xFF) /255F;
 			float green = ((tabColor >> 8) & 0xFF) /255F;
 			float blue = (tabColor & 0xFF) /255F;
