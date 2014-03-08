@@ -25,14 +25,14 @@ public abstract class Config {
 	 * 
 	 * If you prefix a field name with the camelCased category name and an '_', the prefix will be removed when saved to file.<br/>
 	 * <b>Ex:</b> "generalChild_property" will be saved as simply "property" if it is in the category "general.child"<br/>
-	 * In this scenario, "child_property" will also become just "property" in the config file; you can go as deep or challow into the category ancestory as you want.
+	 * In this scenario, "child_property" will also become just "property" in the config file; you can go as deep or shallow into the category ancestory as you want.
 	 * 
 	 * @author Matchlighter
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.FIELD)
 	public static @interface Prop {
-		public String category() default Configuration.CATEGORY_GENERAL;
+		public String category() default ""; //Configuration.CATEGORY_GENERAL;
 		public String comment() default "";
 		public String inFileName() default "";
 		
@@ -52,12 +52,12 @@ public abstract class Config {
 	}
 	
 	/**
-	 * Thanks to monoxide0184 for the idea of add category comments
+	 * Thanks to monoxide0184 for the idea of adding category comments
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.FIELD)
 	public static @interface Category {
-		public String category() default Configuration.CATEGORY_GENERAL;
+		public String category() default ""; //Configuration.CATEGORY_GENERAL;
 		public String comment() default "";
 
 	}
@@ -86,65 +86,78 @@ public abstract class Config {
 		return null;
 	}
 	
+	private String getPropertyName(Field fld, Prop prop_ann, String category) {
+		String fldName = fld.getName();
+		
+		// Strip Category Prefix
+		String[] cats = category.split("\\.");
+		for (int i=cats.length-1; i>=0; i--) {
+			String cccat = cats[i].toLowerCase();
+			for (int j=i+1; j<cats.length; j++) {
+				cccat += cats[j].substring(0, 1).toUpperCase() + cats[j].substring(1);
+			}
+			cccat+="_";
+			if (fldName.startsWith(cccat))
+				fldName = fldName.substring(cccat.length());
+		}
+		fldName = fldName.substring(0, 1).toLowerCase() + fldName.substring(1);
+		
+		return prop_ann.inFileName().isEmpty() ? fldName : prop_ann.inFileName();
+	}
+	
+	private String testGetCategory(Field fld, String last) {
+		Category cat_ann = fld.getAnnotation(Category.class);
+		if (cat_ann != null) {
+			String catn = cat_ann.category();
+			String com = cat_ann.comment().isEmpty() ? null : cat_ann.comment();
+			if (catn.isEmpty()) {
+				catn = fld.getName();
+			}
+			
+			fcfg.addCustomCategoryComment(catn, com);
+			return catn;
+		}
+		return last;
+	}
+	
 	protected void loadModule(Object modInst, Class modCls) throws IllegalAccessException {
+		String lastCategory = fcfg.CATEGORY_GENERAL;
+		
 		for (Field fld : modCls.getFields()){
 			if (modInst != null || Modifier.isStatic(fld.getModifiers())) {
-				Category cat_ann = fld.getAnnotation(Category.class);
-				if (cat_ann != null) {
-					String catn = cat_ann.category();
-					String com = cat_ann.comment().isEmpty() ? null : cat_ann.comment();
-					if (catn.isEmpty()) {
-						if (fld.getType() == String.class && (String)fld.get(modInst)!=null) {
-							catn = (String)fld.get(modInst);
-						} else {
-							catn = fld.getName();
-						}
-					}
-					fcfg.addCustomCategoryComment(catn, com);
-					if (fld.getType() == ConfigCategory.class) {
-						fld.set(modInst, fcfg.getCategory(catn));
-					}
-				}
+				lastCategory = testGetCategory(fld, lastCategory);
 				
 				Prop prop_ann = fld.getAnnotation(Prop.class);
 				if (prop_ann != null){
-					Class type = fld.getType();
-					String fldName = fld.getName();
 					
-					String[] cats = prop_ann.category().split("\\.");
-					for (int i=cats.length-1; i>=0; i--) {
-						String cccat = cats[i].toLowerCase();
-						for (int j=i+1; j<cats.length; j++) {
-							cccat += cats[j].substring(0, 1).toUpperCase() + cats[j].substring(1);
-						}
-						cccat+="_";
-						if (fldName.startsWith(cccat))
-							fldName = fldName.substring(cccat.length());
-					}
-					fldName = fldName.substring(0, 1).toLowerCase() + fldName.substring(1);
+					String propCategory = prop_ann.category().isEmpty() ? lastCategory : prop_ann.category();
+					String propName = getPropertyName(fld, prop_ann, propCategory);
+					System.out.println(propCategory+"."+propName);
 					
-					String propName = prop_ann.inFileName().isEmpty() ? fldName : prop_ann.inFileName();
 					Property cProp = null;
 					
-					Property.Type forgeTyp = getForgeType(type);
-					
+					// Find Old Names. Names at the end of the list take priority
 					Renamed oldNames = fld.getAnnotation(Renamed.class);
-					if (oldNames != null)
-						for (int i=0; i<oldNames.value().length; i++) {
-							String onm = oldNames.value()[i];
+					if (oldNames != null) {
+						for (int i=oldNames.value().length-1; i>=0; i--) {
+							String oldName = oldNames.value()[i];
 							
-							if (onm.endsWith(".")) onm += propName;
-							String[] path = onm.split("\\"+Configuration.CATEGORY_SPLITTER);
-							onm = path[path.length-1];
-							ConfigCategory cat = fcfg.getCategory(path.length>1 ? StringUtils.join(Arrays.copyOf(path, path.length-1), ".") : prop_ann.category());
-							if (cat != null && cat.containsKey(onm)) {
-								cProp = cat.get(onm);
-								cat.remove(onm);
+							if (oldName.endsWith(Configuration.CATEGORY_SPLITTER)) oldName += propName; // Category changed, but same name
+							String[] oldCatPath = oldName.split("\\"+Configuration.CATEGORY_SPLITTER);
+							oldName = oldCatPath[oldCatPath.length-1];
+							ConfigCategory oldCategory = fcfg.getCategory(oldCatPath.length>1 ? StringUtils.join(Arrays.copyOf(oldCatPath, oldCatPath.length-1), Configuration.CATEGORY_SPLITTER) : propCategory);
+							if (oldCategory != null && oldCategory.containsKey(oldName)) {
+								cProp = oldCategory.get(oldName);
+								oldCategory.remove(oldName);
+								break;
 							}
 						}
+					}
 					
+					Class type = fld.getType();
+					Property.Type forgeTyp = getForgeType(type);
 					if (type.isArray()) {
-						cProp = fcfg.get(prop_ann.category(), propName, cProp!=null ? cProp.getStringList() : (String[])fld.get(modInst), null, forgeTyp);
+						cProp = fcfg.get(propCategory, propName, cProp!=null ? cProp.getStringList() : (String[])fld.get(modInst), null, forgeTyp);
 						switch (forgeTyp) {
 						case INTEGER:
 							fld.set(modInst, cProp.getIntList());
@@ -160,7 +173,7 @@ public abstract class Config {
 							break;
 						}
 					} else {
-						cProp = fcfg.get(prop_ann.category(), propName, cProp!=null ? cProp.getString() : fld.get(modInst).toString(), null, forgeTyp);
+						cProp = fcfg.get(propCategory, propName, cProp!=null ? cProp.getString() : fld.get(modInst).toString(), null, forgeTyp);
 						switch (forgeTyp) {
 						case INTEGER:
 							fld.set(modInst, cProp.getInt(fld.getInt(this)));
@@ -184,6 +197,10 @@ public abstract class Config {
 		}
 	}
 	
+	/**
+	 * Populates the Config's Fields with data from the config file, using each Field's value as the default
+	 * @return
+	 */
 	public Config load() {
 		try {
 			loadModule(this, this.getClass());
@@ -200,31 +217,40 @@ public abstract class Config {
 	}
 	
 	protected void saveModule(Object modInst, Class modCls) throws IllegalAccessException {
-		for (Field fld : modInst.getClass().getFields()){
-			Prop ann = fld.getAnnotation(Prop.class);
-			if ((modInst != null || Modifier.isStatic(fld.getModifiers())) && ann != null){
-				Class type = fld.getType();
-				String fldName = fld.getName();
+		String lastCategory = fcfg.CATEGORY_GENERAL;
+		
+		for (Field fld : modCls.getFields()){
+			if (modInst != null || Modifier.isStatic(fld.getModifiers())) {
+				lastCategory = testGetCategory(fld, lastCategory);
 				
-				String propName = ann.inFileName().isEmpty() ? fldName : ann.inFileName();
-				Property cProp = null;
-				
-				Property.Type forgeTyp = getForgeType(type);
-				
-				if (type.isArray()) {
-					cProp = fcfg.get(ann.category(), propName, (String[])fld.get(modInst), null, forgeTyp);
-					cProp.set((String[])fld.get(modInst));
-				} else {
-					cProp = fcfg.get(ann.category(), propName, fld.get(modInst).toString(), null, forgeTyp);
-					cProp.set((String)fld.get(modInst));
+				Prop prop_ann = fld.getAnnotation(Prop.class);
+				if (prop_ann != null){
+					
+					String propCategory = prop_ann.category().isEmpty() ? lastCategory : prop_ann.category();
+					String propName = getPropertyName(fld, prop_ann, propCategory);
+					
+					Property cProp = null;
+					
+					Class type = fld.getType();
+					Property.Type forgeTyp = getForgeType(type);
+					if (type.isArray()) {
+						cProp = fcfg.get(propCategory, propName, (String[])fld.get(modInst), null, forgeTyp);
+						cProp.set((String[])fld.get(modInst));
+					} else {
+						cProp = fcfg.get(propCategory, propName, fld.get(modInst).toString(), null, forgeTyp);
+						cProp.set((String)fld.get(modInst));
+					}
+										
+					if (cProp != null && !prop_ann.comment().isEmpty())
+						cProp.comment = prop_ann.comment();
 				}
-									
-				if (cProp != null && !ann.comment().isEmpty())
-					cProp.comment = ann.comment();
 			}
 		}
 	}
 	
+	/**
+	 * Writes the content of the Config's Fields to the config file.
+	 */
 	public void save() {
 		try {
 			saveModule(this, this.getClass());
