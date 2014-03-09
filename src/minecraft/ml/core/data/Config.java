@@ -35,6 +35,7 @@ public abstract class Config {
 		public String category() default ""; //Configuration.CATEGORY_GENERAL;
 		public String comment() default "";
 		public String inFileName() default "";
+		public int version() default 0;
 		
 		/**
 		 * If you rename a property, add this annotation with any old names.<br/>
@@ -59,7 +60,6 @@ public abstract class Config {
 	public static @interface Category {
 		public String category() default ""; //Configuration.CATEGORY_GENERAL;
 		public String comment() default "";
-
 	}
 	
 	protected Configuration fcfg;
@@ -132,7 +132,6 @@ public abstract class Config {
 					
 					String propCategory = prop_ann.category().isEmpty() ? lastCategory : prop_ann.category();
 					String propName = getPropertyName(fld, prop_ann, propCategory);
-					System.out.println(propCategory+"."+propName);
 					
 					Property cProp = null;
 					
@@ -156,45 +155,65 @@ public abstract class Config {
 					
 					Class type = fld.getType();
 					Property.Type forgeTyp = getForgeType(type);
+					Object fldValue = null;
 					if (type.isArray()) {
-						cProp = fcfg.get(propCategory, propName, cProp!=null ? cProp.getStringList() : (String[])fld.get(modInst), null, forgeTyp);
 						switch (forgeTyp) {
 						case INTEGER:
-							fld.set(modInst, cProp.getIntList());
+							cProp = fcfg.get(propCategory, propName, cProp!=null ? cProp.getIntList() : (int[])fld.get(modInst), null);
+							fldValue = cProp.getIntList();
 							break;
 						case BOOLEAN:
-							fld.set(modInst, cProp.getBooleanList());
+							cProp = fcfg.get(propCategory, propName, cProp!=null ? cProp.getBooleanList() : (boolean[])fld.get(modInst), null);
+							fldValue = cProp.getBooleanList();
 							break;
 						case DOUBLE:
-							fld.set(modInst, cProp.getDoubleList());
+							cProp = fcfg.get(propCategory, propName, cProp!=null ? cProp.getDoubleList() : (double[])fld.get(modInst), null);
+							fldValue = cProp.getDoubleList();
 							break;
 						case STRING:
-							fld.set(modInst, cProp.getStringList());
+							cProp = fcfg.get(propCategory, propName, cProp!=null ? cProp.getStringList() : (String[])fld.get(modInst), null);
+							fldValue = cProp.getStringList();
 							break;
 						}
 					} else {
 						cProp = fcfg.get(propCategory, propName, cProp!=null ? cProp.getString() : fld.get(modInst).toString(), null, forgeTyp);
 						switch (forgeTyp) {
 						case INTEGER:
-							fld.set(modInst, cProp.getInt(fld.getInt(this)));
+							fldValue = cProp.getInt(fld.getInt(this));
 							break;
 						case BOOLEAN:
-							fld.set(modInst, cProp.getBoolean(fld.getBoolean(this)));
+							fldValue = cProp.getBoolean(fld.getBoolean(this));
 							break;
 						case DOUBLE:
-							fld.set(modInst, cProp.getDouble(fld.getDouble(this)));
+							fldValue = cProp.getDouble(fld.getDouble(this));
 							break;
 						case STRING:
-							fld.set(modInst, cProp.getString());
+							fldValue = cProp.getString();
 							break;
 						}
 					}
-										
+					
+					if (prop_ann.version() > 0) {
+						String propVName = propName+"_version";
+						Property oldV = fcfg.get(propCategory, propVName, 0); 
+						if (oldV.getInt() < prop_ann.version()) {
+							fldValue = updateProperty(fld, fldValue, oldV.getInt(), prop_ann.version());
+							oldV.set(prop_ann.version());
+						}
+					}
+					
+					fld.set(modInst, fldValue);
+					
 					if (cProp != null && !prop_ann.comment().isEmpty())
 						cProp.comment = prop_ann.comment();
 				}
 			}
 		}
+	}
+	
+	protected Object updateProperty(Field fld, Object readVal, int oldV, int newV) {
+		System.out.println("Update: "+fld.getName());
+		return readVal;
 	}
 	
 	/**
