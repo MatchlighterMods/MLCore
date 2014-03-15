@@ -5,6 +5,7 @@ import ml.core.vec.Vector2i;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -78,6 +79,18 @@ public abstract class TopParentGuiElement extends GuiElement {
 
 	public MLContainer getContainer() {
 		return container;
+	}
+	
+	public void sendPacket(NBTTagCompound payload, Side sendTo) {
+		this.container.sendPacket(payload, sendTo);
+	}
+	
+	public void sendPacket(NBTTagCompound payload) {
+		if (side == Side.CLIENT) {
+			sendPacket(payload, Side.SERVER);
+		} else {
+			sendPacket(payload, Side.CLIENT);
+		}
 	}
 	
 	public abstract ItemStack transferStackFromSlot(EntityPlayer epl, Slot slot);

@@ -10,11 +10,12 @@ import ml.core.vec.Vector2i;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-public class ControlSlot extends GuiControl {
+public class ControlSlot extends GuiControl implements ISlotControl {
 
 	protected Slot slot;
 	
@@ -72,6 +73,12 @@ public class ControlSlot extends GuiControl {
 
 	public Slot getSlot() {
 		return slot;
+	}
+
+	@Override
+	public boolean mergeStackInto(ItemStack is) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

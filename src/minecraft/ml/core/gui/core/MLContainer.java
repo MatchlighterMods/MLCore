@@ -43,9 +43,9 @@ public class MLContainer extends Container {
 		priElemement.injectEvent(new EventDataPacketReceived(priElemement, pload, side)); // TODO Test this stuff
 	}
 
-	public void sendPacket(NBTTagCompound payload) {
+	public void sendPacket(NBTTagCompound payload, Side sendTo) {
 		Packet250CustomPayload pkt = new PacketContainerData(windowId, payload).convertToPkt250();
-		if (priElemement.side == Side.CLIENT) {
+		if (sendTo == Side.SERVER) {
 			PacketDispatcher.sendPacketToServer(pkt);
 		} else {
 			PacketDispatcher.sendPacketToPlayer(pkt, (Player)priElemement.player);

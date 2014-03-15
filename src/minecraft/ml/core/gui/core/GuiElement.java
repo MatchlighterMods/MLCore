@@ -230,6 +230,9 @@ public abstract class GuiElement {
 		return getTopParent().hoverElement == this;
 	}
 	
+	/**
+	 * Determine whether this element or any of its children is the hoverElement
+	 */
 	public boolean treeHasHover() {
 		return hasHover() || (getTopParent().hoverElement != null && getTopParent().hoverElement.isAncestor(this));
 	}
@@ -243,6 +246,10 @@ public abstract class GuiElement {
 		}
 	}
 	
+	/**
+	 * Gets a texture resource from the current style and binds it.
+	 * @param feature
+	 */
 	protected void bindStyleTexture(String feature) {
 		bindTexture(getStyle().getResource(feature));
 	}

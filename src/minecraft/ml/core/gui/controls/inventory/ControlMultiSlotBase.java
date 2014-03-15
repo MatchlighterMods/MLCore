@@ -11,7 +11,7 @@ import ml.core.gui.core.GuiElement;
 import ml.core.item.StackUtils;
 import ml.core.vec.Vector2i;
 
-public abstract class ControlMultiSlotBase extends GuiControl {
+public abstract class ControlMultiSlotBase extends GuiControl implements ISlotControl {
 
 	public List<ControlSlot> slots = new ArrayList<ControlSlot>();
 	
