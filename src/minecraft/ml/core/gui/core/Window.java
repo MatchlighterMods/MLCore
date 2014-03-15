@@ -23,6 +23,10 @@ public abstract class Window extends TopParentGuiElement {
 		// Don't need Closing KeyHandler; GuiContainer will do it if the event isn't cancelled
 	}
 	
+	public void close() {
+		this.player.closeScreen();
+	}
+	
 	public static enum WindowSide {
 		Top,
 		Right,

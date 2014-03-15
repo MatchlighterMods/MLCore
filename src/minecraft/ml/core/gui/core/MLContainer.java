@@ -6,8 +6,11 @@ import ml.core.internal.PacketContainerData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 
 public class MLContainer extends Container {
@@ -42,11 +45,20 @@ public class MLContainer extends Container {
 
 	public void sendPacket(NBTTagCompound payload) {
 		Packet250CustomPayload pkt = new PacketContainerData(windowId, payload).convertToPkt250();
-		// TODO Send packet to using players
+		if (priElemement.side == Side.CLIENT) {
+			PacketDispatcher.sendPacketToServer(pkt);
+		} else {
+			PacketDispatcher.sendPacketToPlayer(pkt, (Player)priElemement.player);
+		}
+	}
+	
+	@Override
+	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2) {
+		return priElemement.transferStackFromSlot(par1EntityPlayer, par2);
 	}
 
 	/**
-	 * DO NOT call dynamically. Call once per slot on init. Not again. Must be synced between Client and server. <br/>
+	 * <u>DO NOT</u> call dynamically. Call once per slot on init. Not again. Must be synced between Client and server. <br/>
 	 * <b>Note:</b> ControlSlot automatically handles this on instantiation.
 	 */
 	public Slot addSlotToContainer(Slot par1Slot) {

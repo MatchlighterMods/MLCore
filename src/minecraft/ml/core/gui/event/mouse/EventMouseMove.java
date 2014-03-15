@@ -1,6 +1,7 @@
-package ml.core.gui.event;
+package ml.core.gui.event.mouse;
 
 import ml.core.gui.core.GuiElement;
+import ml.core.gui.event.GuiEvent;
 import ml.core.vec.Vector2i;
 
 public class EventMouseMove extends GuiEvent {

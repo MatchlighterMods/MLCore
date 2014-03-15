@@ -46,7 +46,6 @@ public abstract class MLPacket {
 	// Incoming
 	
 	public MLPacket(EntityPlayer pl, ByteArrayDataInput dataIn) {
-		
 		try {
 			Field[] flds = this.getClass().getFields();
 			Arrays.sort(flds, fldComparator);

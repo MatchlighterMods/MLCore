@@ -1,5 +1,10 @@
 package ml.core.item;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
 import ml.core.data.NBTUtils;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -32,25 +37,19 @@ public class StackUtils {
 	}
 	
 	/**
-	 * mergeItemStack function that respects getSlotStackLimit() and isItemValid()
+	 * Attempts to merge the given {@link ItemStack} into one or multiple of the given {@link Slot}s
+	 * @return There was partial success
 	 */
-	public static boolean mergeItemStack(ItemStack is, int lbound, int ubound, boolean reverse, Container cont) {
+	public static boolean mergeItemStack(ItemStack is, List<Slot> targets) {
 		boolean didSomething = false;
-		int itI = lbound;
 
-		if (reverse) {
-			itI = ubound - 1;
-		}
-
-		Slot slot;
 		ItemStack stackOn;
 
 		if (is.isStackable()) {
-			while (is.stackSize > 0 && (!reverse && itI < ubound || reverse && itI >= lbound)) {
-				slot = (Slot)cont.inventorySlots.get(itI);
+			for (Slot slot : targets) {
 				stackOn = slot.getStack();
-
-				if (stackOn != null && stackOn.itemID == is.itemID && (!is.getHasSubtypes() || is.getItemDamage() == stackOn.getItemDamage()) && ItemStack.areItemStackTagsEqual(is, stackOn)) {
+				
+				if (stackOn != null && stackOn.getItem() == is.getItem() && (!is.getHasSubtypes() || is.getItemDamage() == stackOn.getItemDamage()) && ItemStack.areItemStackTagsEqual(is, stackOn)) {
 					int var9 = stackOn.stackSize + is.stackSize;
 
 					int mSize = Math.min(is.getMaxStackSize(), slot.getSlotStackLimit());
@@ -66,26 +65,13 @@ public class StackUtils {
 						didSomething = true;
 					}
 				}
-
-				if (reverse) {
-					--itI;
-				} else {
-					++itI;
-				}
+				if (is.stackSize <= 0) break;
 			}
 		}
 
 		if (is.stackSize > 0) {
-			if (reverse) {
-				itI = ubound - 1;
-			} else {
-				itI = lbound;
-			}
-
-			while (is.stackSize > 0 && (!reverse && itI < ubound || reverse && itI >= lbound)) {
-				slot = (Slot)cont.inventorySlots.get(itI);
+			for (Slot slot : targets) {
 				stackOn = slot.getStack();
-
 				if (stackOn == null && slot.isItemValid(is)) {
 					int delta = Math.min(is.stackSize, slot.getSlotStackLimit());
 					ItemStack cpy = is.copy();
@@ -95,16 +81,27 @@ public class StackUtils {
 					is.stackSize -= delta;
 					didSomething = true;
 				}
-
-				if (reverse) {
-					--itI;
-				} else {
-					++itI;
-				}
+				if (is.stackSize <= 0) break;
 			}
 		}
 
 		return didSomething;
+	}
+	
+	/**
+	 * mergeItemStack function that respects getSlotStackLimit() and isItemValid()
+	 */
+	public static boolean mergeItemStack(ItemStack is, int lbound, int ubound, boolean reverse, Container cont) {
+		
+		List<Slot> targets = new ArrayList<Slot>();
+		for (int i=lbound; i<ubound; i++) {
+			targets.add(cont.getSlot(i));
+		}
+		if (reverse) {
+			targets = Lists.reverse(targets);
+		}
+		
+		return mergeItemStack(is, targets);
 	}
 	
 	/**

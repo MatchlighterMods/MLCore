@@ -9,6 +9,7 @@ public class MLSlot extends Slot {
 		super(par1iInventory, par2, par3, par4);
 	}
 
+	// Disable MC hover effect; leave that to the ControlSlot
 	@Override
 	public boolean func_111238_b() {
 		return false;

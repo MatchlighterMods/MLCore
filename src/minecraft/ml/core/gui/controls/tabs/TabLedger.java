@@ -2,8 +2,8 @@ package ml.core.gui.controls.tabs;
 
 import ml.core.enums.MouseButton;
 import ml.core.gui.controls.tabs.ControlTabManager.GuiTab;
-import ml.core.gui.event.EventMouseDown;
 import ml.core.gui.event.GuiEvent;
+import ml.core.gui.event.mouse.EventMouseDown;
 import ml.core.vec.Vector2i;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

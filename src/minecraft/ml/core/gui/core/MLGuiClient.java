@@ -7,17 +7,19 @@ import ml.core.enums.MouseButton;
 import ml.core.gui.controls.inventory.ControlSlot;
 import ml.core.gui.core.GuiElement.RenderStage;
 import ml.core.gui.event.EventKeyPressed;
-import ml.core.gui.event.EventMouseClicked;
-import ml.core.gui.event.EventMouseDown;
-import ml.core.gui.event.EventMouseEntered;
-import ml.core.gui.event.EventMouseLeave;
-import ml.core.gui.event.EventMouseMove;
-import ml.core.gui.event.EventMouseUp;
+import ml.core.gui.event.mouse.EventMouseClicked;
+import ml.core.gui.event.mouse.EventMouseDown;
+import ml.core.gui.event.mouse.EventMouseEntered;
+import ml.core.gui.event.mouse.EventMouseLeave;
+import ml.core.gui.event.mouse.EventMouseMove;
+import ml.core.gui.event.mouse.EventMouseScroll;
+import ml.core.gui.event.mouse.EventMouseUp;
 import ml.core.vec.Vector2i;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 // All this could be a lot cleaner, but that is the cost of trying to maintain universal compatibility with things such as NEI
@@ -139,6 +141,18 @@ public class MLGuiClient extends GuiContainer {
 	@Override
 	protected void mouseClickMove(int mX, int mY, int lastButtonClicked, long timeSinceMouseClick) {
 		super.mouseClickMove(mX, mY, lastButtonClicked, timeSinceMouseClick);
+	}
+	
+	@Override
+	public void handleMouseInput() {
+		super.handleMouseInput();
+		
+		int i = Mouse.getEventX() * this.width / this.mc.displayWidth;
+        int j = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+		int dWheel = Mouse.getDWheel();
+		if (dWheel != 0) {
+			priElemement.injectEvent(new EventMouseScroll(priElemement.hoverElement, new Vector2i(i, j), dWheel));
+		}
 	}
 	
 	@Override

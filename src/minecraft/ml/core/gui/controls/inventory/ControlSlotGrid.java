@@ -1,10 +1,8 @@
 package ml.core.gui.controls.inventory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ml.core.gui.MLSlot;
-import ml.core.gui.controls.GuiControl;
 import ml.core.gui.core.GuiElement;
 import ml.core.vec.Vector2i;
 import net.minecraft.inventory.IInventory;
@@ -14,10 +12,9 @@ import net.minecraft.inventory.Slot;
  * A control for an auto-arranged grid of slots of rowLength width
  * @author Matchlighter
  */
-public class ControlSlotGrid extends GuiControl {
+public class ControlSlotGrid extends ControlMultiSlotBase {
 
 	private int rowLength;
-	public List<ControlSlot> slots = new ArrayList<ControlSlot>();
 	
 	public ControlSlotGrid(GuiElement par, Vector2i pos, int perRow) {
 		super(par, pos, new Vector2i());
@@ -52,13 +49,6 @@ public class ControlSlotGrid extends GuiControl {
 		return new Vector2i((idx%rowLength)*18, idx/rowLength*18);
 	}
 	
-	public void addSlot(Slot slot) {
-		slots.add(makeControlSlot(slot));
-	}
-	
-	/**
-	 * Override this to create non-standard ControlSlots.
-	 */
 	protected ControlSlot makeControlSlot(Slot slot) {
 		return new ControlSlot(this, slot, positionSlot(slots.size()), new Vector2i(18,18));
 	}

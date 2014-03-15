@@ -1,21 +1,14 @@
-package ml.core.gui.event;
+package ml.core.gui.event.mouse;
 
 import ml.core.enums.MouseButton;
 import ml.core.gui.core.GuiElement;
 import ml.core.vec.Vector2i;
 
-public class EventMouseUp extends GuiEvent {
-	
-	public final Vector2i mPos;
+public class EventMouseUp extends EventMousePositioned {
 	public final MouseButton button;
 	
 	public EventMouseUp(GuiElement origin, Vector2i m, MouseButton btn) {
-		super(origin);
-		this.mPos = m;
+		super(origin, m);
 		this.button = btn;
-	}
-
-	public Vector2i localizePosition() {
-		return origin.localizeGlobalPos(mPos);
 	}
 }
