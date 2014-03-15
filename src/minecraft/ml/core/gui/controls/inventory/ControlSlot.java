@@ -4,6 +4,7 @@ import ml.core.gui.GuiRenderUtils;
 import ml.core.gui.MLSlot;
 import ml.core.gui.controls.GuiControl;
 import ml.core.gui.core.GuiElement;
+import ml.core.gui.core.SlotCycler.IStackMergeTarget;
 import ml.core.gui.event.GuiEvent;
 import ml.core.gui.event.mouse.EventMouseDown;
 import ml.core.vec.Vector2i;
@@ -15,7 +16,7 @@ import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 
-public class ControlSlot extends GuiControl implements ISlotControl {
+public class ControlSlot extends GuiControl implements IStackMergeTarget {
 
 	protected Slot slot;
 	

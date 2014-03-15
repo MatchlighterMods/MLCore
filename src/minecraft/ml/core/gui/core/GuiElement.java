@@ -68,6 +68,15 @@ public abstract class GuiElement {
 		return getParent().getTopParent();
 	}
 	
+	public List<GuiElement> getAncestors() {
+		List<GuiElement> lst = new ArrayList<GuiElement>();
+		if (getParent() != null) {
+			lst.add(getParent());
+			lst.addAll(getParent().getAncestors());
+		}
+		return lst;
+	}
+	
 	public List<GuiElement> getDescendants() {
 		List<GuiElement> lst = new ArrayList<GuiElement>();
 		for (GuiElement c : childObjects) {

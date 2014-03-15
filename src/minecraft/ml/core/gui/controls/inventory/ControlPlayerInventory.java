@@ -2,13 +2,13 @@ package ml.core.gui.controls.inventory;
 
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 import ml.core.gui.MLSlot;
 import ml.core.gui.core.GuiElement;
 import ml.core.vec.Vector2i;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+
+import com.google.common.collect.Lists;
 
 public class ControlPlayerInventory extends ControlMultiSlotBase {
 

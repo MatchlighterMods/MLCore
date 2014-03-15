@@ -3,15 +3,15 @@ package ml.core.gui.controls.inventory;
 import java.util.ArrayList;
 import java.util.List;
 
+import ml.core.gui.controls.GuiControl;
+import ml.core.gui.core.GuiElement;
+import ml.core.gui.core.SlotCycler.IStackMergeTarget;
+import ml.core.item.StackUtils;
+import ml.core.vec.Vector2i;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-import ml.core.gui.controls.GuiControl;
-import ml.core.gui.core.GuiElement;
-import ml.core.item.StackUtils;
-import ml.core.vec.Vector2i;
-
-public abstract class ControlMultiSlotBase extends GuiControl implements ISlotControl {
+public abstract class ControlMultiSlotBase extends GuiControl implements IStackMergeTarget {
 
 	public List<ControlSlot> slots = new ArrayList<ControlSlot>();
 	
