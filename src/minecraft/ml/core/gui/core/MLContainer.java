@@ -54,7 +54,8 @@ public class MLContainer extends Container {
 	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2) {
-		return priElemement.transferStackFromSlot(par1EntityPlayer, par2);
+		Slot slt = getSlot(par2);
+		return priElemement.transferStackFromSlot(par1EntityPlayer, slt);
 	}
 
 	/**

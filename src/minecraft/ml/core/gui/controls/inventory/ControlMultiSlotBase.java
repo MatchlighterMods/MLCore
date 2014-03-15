@@ -18,7 +18,6 @@ public abstract class ControlMultiSlotBase extends GuiControl {
 	public ControlMultiSlotBase(GuiElement parent, Vector2i position,
 			Vector2i size) {
 		super(parent, position, size);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void addSlot(Slot slot) {

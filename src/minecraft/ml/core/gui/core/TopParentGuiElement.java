@@ -3,6 +3,7 @@ package ml.core.gui.core;
 import ml.core.gui.core.style.GuiStyle;
 import ml.core.vec.Vector2i;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -79,7 +80,7 @@ public abstract class TopParentGuiElement extends GuiElement {
 		return container;
 	}
 	
-	public abstract ItemStack transferStackFromSlot(EntityPlayer epl, int slot);
+	public abstract ItemStack transferStackFromSlot(EntityPlayer epl, Slot slot);
 	
 	public abstract void initControls();
 	

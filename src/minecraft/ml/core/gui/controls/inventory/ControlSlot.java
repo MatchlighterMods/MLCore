@@ -1,6 +1,7 @@
 package ml.core.gui.controls.inventory;
 
 import ml.core.gui.GuiRenderUtils;
+import ml.core.gui.MLSlot;
 import ml.core.gui.controls.GuiControl;
 import ml.core.gui.core.GuiElement;
 import ml.core.gui.event.GuiEvent;
@@ -23,6 +24,8 @@ public class ControlSlot extends GuiControl {
 	public ControlSlot(GuiElement par, Slot slt, Vector2i pos, Vector2i size) {
 		super(par, pos, size);
 		slot = slt;
+		if (slot instanceof MLSlot)
+			((MLSlot)slot).controlSlot = this;
 		getTopParent().getContainer().addSlotToContainer(slt);
 	}
 

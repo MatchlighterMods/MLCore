@@ -1,13 +1,14 @@
 package ml.core.gui.controls.inventory;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 import ml.core.gui.MLSlot;
 import ml.core.gui.core.GuiElement;
 import ml.core.vec.Vector2i;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 
 public class ControlPlayerInventory extends ControlMultiSlotBase {
 
@@ -28,5 +29,10 @@ public class ControlPlayerInventory extends ControlMultiSlotBase {
 	@Override
 	public Vector2i getSize() {
 		return new Vector2i(9*18, 4*18+4);
+	}
+	
+	@Override
+	public List<ControlSlot> getMergeTargets(ItemStack is) {
+		return Lists.reverse(super.getMergeTargets(is));
 	}
 }

@@ -39,7 +39,8 @@ public class NBTUtils {
 		(value instanceof Byte)		{return new NBTTagByte(name,		(Byte)value);}		else if
 		(value instanceof String)	{return new NBTTagString(name,		(String)value);}	else if
 		(value instanceof int[])	{return new NBTTagIntArray(name,	(int[])value);}		else if
-		(value instanceof byte[])	{return new NBTTagByteArray(name,	(byte[])value);}
+		(value instanceof byte[])	{return new NBTTagByteArray(name,	(byte[])value);}	else if
+		(value instanceof NBTBase)	{return (NBTBase)value;}
 		return null;
 	}
 	
@@ -67,7 +68,9 @@ public class NBTUtils {
 				parent.setCompoundTag(tagName, new NBTTagCompound(tagName));
 			parent = parent.getCompoundTag(tagName);
 		}
-		parent.setTag(tagName, createTag(tagName, value));
+		NBTBase ntag = createTag(tagName, value);
+		if (ntag != null)
+			parent.setTag(tagName, ntag);
 	}
 	
 	public static boolean hasTagAt(NBTTagCompound parent, String...tagPath) {
