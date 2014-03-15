@@ -1,6 +1,6 @@
 package ml.core.item.recipe;
 
-import ml.core.item.ItemUtils;
+import ml.core.item.StackUtils;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -52,7 +52,7 @@ public abstract class RecipeShapedVariable extends CRecipeShapedBase implements 
 			if ((target == null && is != null) || (target != null && is == null))
 				return false;
 			
-			if (!ItemUtils.checkItemEquals(target, is))
+			if (!StackUtils.checkItemEquals(target, is))
 				return false;
 		}
 		return true;

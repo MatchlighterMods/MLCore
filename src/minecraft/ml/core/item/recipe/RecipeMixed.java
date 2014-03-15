@@ -3,7 +3,7 @@ package ml.core.item.recipe;
 import java.util.ArrayList;
 import java.util.List;
 
-import ml.core.item.ItemUtils;
+import ml.core.item.StackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
@@ -57,7 +57,7 @@ public abstract class RecipeMixed extends CRecipeShapedBase implements IRecipe {
 				ItemStack slot = inv.getStackInRowAndColumn(x, y);
 
 				if (target != null) {
-					if (!ItemUtils.checkItemEquals(target, slot)) return false;
+					if (!StackUtils.checkItemEquals(target, slot)) return false;
 				} else if (slot!=null) {
 					shapelessStacks.add(slot);
 				}
