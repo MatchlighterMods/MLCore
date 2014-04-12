@@ -1,2 +1,0 @@
-
-public func_74187_b #GuiContainer.getSlotAtPosition(int, int)

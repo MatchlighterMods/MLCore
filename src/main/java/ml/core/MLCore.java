@@ -45,11 +45,6 @@ public class MLCore implements IFMLLoadingPlugin {
 	public void init(FMLInitializationEvent evt) {
 		proxy.load();
 	}
-	
-	@Override
-	public String[] getLibraryRequestClass() {
-		return null;
-	}
 
 	@Override
 	public String[] getASMTransformerClass() {
