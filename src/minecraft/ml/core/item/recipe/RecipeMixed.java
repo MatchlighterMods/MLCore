@@ -10,10 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 
-/**
- * Thanks to copyboy for the idea on how to implement this.
- * @author Matchlighter
- */
+
 public abstract class RecipeMixed extends CRecipeShapedBase implements IRecipe {
 
 	protected ItemStack output = null;
@@ -27,6 +24,8 @@ public abstract class RecipeMixed extends CRecipeShapedBase implements IRecipe {
 
 	public abstract boolean shapelessItemsValid(InventoryCrafting inv, List<ItemStack> items);
 
+	public void addShapelessItemsToNEI(List<Object[]> lst) {}
+	
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inventorycrafting) {
 		return output.copy();

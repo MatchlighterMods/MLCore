@@ -12,6 +12,11 @@ import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.nbt.NBTTagString;
 
+/**
+ * A powerful way of reading NBT data.<br/>
+ * NB: Things are not type safe. If you request a string from an IntegerTag, you will get a ClassCastException (Call the toString() function Java!) >:(
+ * @author Matchlighter
+ */
 public class NBTUtils {
 
 	public static <T> T getTagValue(NBTBase tag) {
@@ -22,6 +27,7 @@ public class NBTUtils {
 		(tag instanceof NBTTagLong)			{return (T)(Object)((NBTTagLong)tag).data;}		else if
 		(tag instanceof NBTTagDouble)		{return (T)(Object)((NBTTagDouble)tag).data;}	else if
 		(tag instanceof NBTTagByte)			{return (T)(Object)((NBTTagByte)tag).data;}		else if
+		
 		(tag instanceof NBTTagString)		{return (T)((NBTTagString)tag).data;}			else if
 		(tag instanceof NBTTagIntArray)		{return (T)((NBTTagIntArray)tag).intArray;}		else if
 		(tag instanceof NBTTagByteArray)	{return (T)((NBTTagByteArray)tag).byteArray;}	else if
@@ -44,6 +50,9 @@ public class NBTUtils {
 		return null;
 	}
 	
+	/**
+	 * You CAN get a string from any NBTTag type with this method - if the defaultVal is a String, toString() will be called on the returning Object.
+	 */
 	public static <T> T getTagValue(NBTTagCompound parent, T defaultVal, String...tagPath) {
 		try {
 			String tagName = null;
@@ -53,7 +62,11 @@ public class NBTUtils {
 				if (i==tagPath.length-1) break;
 				parent = parent.getCompoundTag(tagName);
 			}
-			return NBTUtils.getTagValue(parent.getTag(tagName));
+			Object value = NBTUtils.getTagValue(parent.getTag(tagName));
+			if (defaultVal instanceof String)
+				return (T)value.toString();
+			
+			return (T)value;
 		} catch (Exception ex) {
 			return defaultVal;
 		}
@@ -78,6 +91,8 @@ public class NBTUtils {
 		for (int i=0; i<tagPath.length; i++) {
 			tagName = tagPath[i];
 			if (!parent.hasKey(tagName)) return false;
+			if (i == tagPath.length-1) return true;
+			if (!(parent.getTag(tagName) instanceof NBTTagCompound)) return false;
 			parent = parent.getCompoundTag(tagName);
 		}
 		return true;

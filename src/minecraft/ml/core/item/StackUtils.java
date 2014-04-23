@@ -3,9 +3,8 @@ package ml.core.item;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 import ml.core.data.NBTUtils;
+import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
@@ -16,8 +15,24 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.oredict.OreDictionary;
 
+import com.google.common.collect.Lists;
+
 public class StackUtils {
 
+	public static ItemStack create(int itemID, int count, int meta, NBTTagCompound nbt) {
+		ItemStack stack = new ItemStack(itemID, count, meta);
+		stack.setTagCompound(nbt);
+		return stack;
+	}
+	
+	public static ItemStack create(Item item, int count, int meta, NBTTagCompound nbt) {
+		return create(item.itemID, count, meta, nbt);
+	}
+	
+	public static ItemStack create(Block block, int count, int meta, NBTTagCompound nbt) {
+		return create(block.blockID, count, meta, nbt);
+	}
+	
 	/**
 	 * Drops an {@link EntityItem} of the specified {@link ItemStack} in the specified {@link World} at the specified coordinates.
 	 */
@@ -159,23 +174,11 @@ public class StackUtils {
 			}
 		} else if (target instanceof ItemStack) {
 			ItemStack trgIS = (ItemStack)target;
-			return (trgIS.getItem() == input.getItem() && (trgIS.getItemDamage() == OreDictionary.WILDCARD_VALUE|| trgIS.getItemDamage() == input.getItemDamage()));
+			return (trgIS.getItem() == input.getItem() && (trgIS.getItemDamage() == OreDictionary.WILDCARD_VALUE || trgIS.getItemDamage() == input.getItemDamage()));
 		} else if (target instanceof Item) {
 			return (((Item)target).itemID == input.itemID);
 		}
 		return false;
-	}
-	
-	/**
-	 * Takes an ItemStack of OreDictionary dye and returns the vanilla Dye Id for that color
-	 */
-	public static int getVanillaColorId(ItemStack mOre) {
-		for (int i=0; i<16; i++){
-			if (OreDictionary.getOreID(new ItemStack(Item.dyePowder, 1, i)) == OreDictionary.getOreID(mOre)){
-				return i;
-			}
-		}
-		return 0;
 	}
 	
 	/**

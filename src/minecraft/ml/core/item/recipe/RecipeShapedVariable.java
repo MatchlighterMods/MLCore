@@ -16,7 +16,7 @@ public abstract class RecipeShapedVariable extends CRecipeShapedBase implements 
 		super(w,h);
 	}
 	
-    public RecipeShapedVariable(Object[] recipe) {
+    public RecipeShapedVariable(Object... recipe) {
 		super(recipe);
     }
 
@@ -30,7 +30,7 @@ public abstract class RecipeShapedVariable extends CRecipeShapedBase implements 
 				ItemStack itemstack1 = inv.getStackInRowAndColumn(x, y);
 				
 				if (lx>=0 && lx<this.width && ly>=0 && ly<this.height) {
-					if (!itemMatchesAt(mirror ? this.width-lx-1 : lx, ly, itemstack1))
+					if (!itemMatchesAt(mirror ? this.width-lx-1 : lx, ly, itemstack1, inv))
 						return false;
 				} else if (itemstack1 != null)
 					return false;
@@ -42,11 +42,11 @@ public abstract class RecipeShapedVariable extends CRecipeShapedBase implements 
 	
 	/**
 	 * @param lx Localized x-position. Falls within 0&le;x&lt;width
-	 * @param ly Localized y-position. Falls within 0&le;y&lt;hight
+	 * @param ly Localized y-position. Falls within 0&le;y&lt;height
 	 * @param is {@link ItemStack} in the slot
 	 * @return
 	 */
-	public boolean itemMatchesAt(int lx, int ly, ItemStack is) {
+	public boolean itemMatchesAt(int lx, int ly, ItemStack is, InventoryCrafting ic) {
 		Object target = pattern[lx+ly*width];
 		if (is != null || target != null) {
 			if ((target == null && is != null) || (target != null && is == null))
