@@ -1,13 +1,13 @@
 package ml.core.gui.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import ml.core.gui.MLSlot;
 import ml.core.gui.controls.inventory.ControlSlot;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import scala.actors.threadpool.Arrays;
 
 /**
  * A simple class for handling Shift+Clicking in MLGuis. You can use it to setup predefined cycles between Slots and SlotGroups 

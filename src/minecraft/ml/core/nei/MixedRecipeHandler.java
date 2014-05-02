@@ -1,6 +1,7 @@
 package ml.core.nei;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,7 +10,6 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
-import scala.actors.threadpool.Arrays;
 import codechicken.nei.InventoryCraftingDummy;
 import codechicken.nei.NEIServerUtils;
 import codechicken.nei.PositionedStack;
