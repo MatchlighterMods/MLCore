@@ -30,7 +30,7 @@ public class MLShapedRecipeHandler extends ShapedRecipeHandler {
 			List<PositionedStack> ingreds = super.getIngredients();
 			for (int i=0; i<9; i++) {
 				int x = i%3, y = i/3;
-				invCrafter.setInventorySlotContents(x*3+y, (ingreds.get(i) != null) ? ingreds.get(i).item : null);
+				invCrafter.setInventorySlotContents(x*3+y, (ingreds.size() > i && ingreds.get(i) != null) ? ingreds.get(i).item : null);
 			}
 			
 			if (recipe.matches(invCrafter, null))
