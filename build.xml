@@ -2,16 +2,6 @@
 
 <project name="MLCore" default="build">
 	<description>MLCore</description>
-	<target name="writeversion" depends="buildenvsetup">
-		<exec executable="${python.exe}" dir="${build.env}" failonerror="true">
-			<arg value="${build.env}/getversion.py" />
-			<arg value="${mcp.home}" />
-		</exec>
-		<propertyfile file="version.properties">
-			<entry key="MLCore.build.number" type="int" value="${version.build}"/>
-			<entry key="MLCore.version" type="string" value="${version}"/>
-		</propertyfile>
-	</target>
 
 	<target name="buildenvsetup">
 		<tstamp>
@@ -50,19 +40,9 @@
 		<condition property="version.build" value="${env.BUILD_NUMBER}" else="1">
 			<isset property="env.BUILD_NUMBER" />
 		</condition>
-	</target>
-
-	<target name="initVersion" depends="buildenvsetup">
-		<antcall target="writeversion" />
+		
 		<property file="version.properties" />
-		<property name="build.number" value="${MLCore.build.major.number}.${MLCore.build.minor.number}.${MLCore.build.revision.number}" />
-		<property name="version.minecraft" value="${MLCore.build.mcversion}" />
-		<property name="version.major" value="${MLCore.build.major.number}" />
-		<property name="version.minor" value="${MLCore.build.minor.number}" />
-		<property name="version.rev" value="${MLCore.build.revision.number}" />
-		<property name="version.info" value="${MLCore.build.info}" />
-		<property name="version" value="${version.major}.${version.minor}.${version.rev}.${version.build}${version.info}" />
-		<antcall target="writeversion" />
+		<property name="version" value="${MLCore.version}.${version.build}" />
 	</target>
 
 	<target name="clean" depends="buildenvsetup">
@@ -80,19 +60,19 @@
 		</copy>
 	</target>
 	
-	<target name="merge" depends="initVersion">
+	<target name="merge" depends="">
 		<copy todir="${mcp.srcdir}" overwrite="true" verbose="true">
 			<fileset dir="${code.src.dir}" includes="**/*.java" />
 		</copy>
 	</target>
 	
-	<target name="recompile" depends="initVersion">
+	<target name="recompile" depends="">
 		<exec executable="${python.exe}" dir="${mcp.home}" failonerror="true">
 			<arg value="${mcp.home}/runtime/recompile.py" />
 		</exec>
 	</target>
 
-	<target name="reobfuscate" depends="initVersion">
+	<target name="reobfuscate" depends="">
 		<exec executable="${python.exe}" dir="${mcp.home}">
 			<arg value="${mcp.home}/runtime/reobfuscate.py" />
 			<arg value="--srgnames"/> 
@@ -106,21 +86,19 @@
 		</exec>
 	</target>
 	
-	<target name="build" depends="clean,loadForge,initVersion,merge,recompile,reobfuscate">
-		<antcall target="writeversion" />
+	<target name="build" depends="clean,loadForge,merge,recompile,reobfuscate">
 		<antcall target="createAT" />
 		<antcall target="extract-built-jar"/>
 	</target>
 
 	<target name="extract-built-jar">
-		<property name="jarname" value="${modname}-${version.minecraft}-${version}" /> 
+		<property name="jarname" value="${modname}-${minecraft.version}-${version}" /> 
 		<mkdir dir="${build.dest}" />
 		<jar destfile="${build.dest}/${jarname}.jar"> <!-- Release -->
 			<fileset dir="${mcp.obfoutput.classes}" includes="**/ml/core/**/*.class" />
 			
 			<fileset dir="${res.dir}" includes="**" />
 			
-			<zipfileset dir="${build.env}" includes="version.properties"/>
 			<zipfileset dir="${build.env}" includes="mlcore_at.cfg"/>
 			<mappedresources>
 				<concat>
@@ -130,7 +108,7 @@
 							<token key="VERSION" value="${version}" />
 						</replacetokens>
 						<replacetokens>
-							<token key="MCVERSION" value="${version.minecraft}" />
+							<token key="MCVERSION" value="${minecraft.version}" />
 						</replacetokens>
 					</filterchain>
 				</concat>
@@ -142,7 +120,6 @@
 			
 			<fileset dir="${res.dir}" includes="**" />
 			
-			<zipfileset dir="${build.env}" includes="version.properties"/>
 			<zipfileset dir="${build.env}" includes="mlcore_at.cfg"/>
 			<mappedresources>
 				<concat>
@@ -152,7 +129,7 @@
 							<token key="VERSION" value="${version}" />
 						</replacetokens>
 						<replacetokens>
-							<token key="MCVERSION" value="${version.minecraft}" />
+							<token key="MCVERSION" value="${minecraft.version}" />
 						</replacetokens>
 					</filterchain>
 				</concat>
