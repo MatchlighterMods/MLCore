@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class Matrix4d extends Transformation {
+public class TransformationMatrix extends Transformation {
 
 	private DoubleBuffer store = ByteBuffer.allocateDirect(128).order(ByteOrder.nativeOrder()).asDoubleBuffer();
 	
@@ -36,15 +36,15 @@ public class Matrix4d extends Transformation {
 	public double m32;
 	public double m33;
 	
-	public Matrix4d() {
+	public TransformationMatrix() {
 		this.m00 = this.m11 = this.m22 = this.m33 = 1D;
 	}
 	
-	public Matrix4d(Matrix4d m) {
+	public TransformationMatrix(TransformationMatrix m) {
 		set(m);
 	}
 	
-	public Matrix4d(double n00,double n01,double n02,double n03,double n10,double n11,double n12,double n13,double n20,double n21,double n22,double n23,double n30,double n31,double n32,double n33) {
+	public TransformationMatrix(double n00,double n01,double n02,double n03,double n10,double n11,double n12,double n13,double n20,double n21,double n22,double n23,double n30,double n31,double n32,double n33) {
 		this.m00 = n00;
 		this.m01 = n01;
 		this.m02 = n02;
@@ -63,7 +63,7 @@ public class Matrix4d extends Transformation {
 		this.m33 = n33;
 	}
 	
-	public Matrix4d(double[][] d) {
+	public TransformationMatrix(double[][] d) {
 		if (d.length !=4 || d[0].length != 4) throw new IllegalArgumentException("Matrix4d construction from an Array requires a 4x4 2D array.");
 		
 		this.m00 = d[0][0];
@@ -84,9 +84,9 @@ public class Matrix4d extends Transformation {
 		this.m33 = d[3][3];
 	}
 	
-	public static Matrix4d fromMatrix(Matrix matr) {
+	public static TransformationMatrix fromMatrix(Matrix matr) {
 		if (matr.M != 4 || matr.N != 4) throw new IllegalArgumentException("Matrix must be 4x4 for conversion.");
-		return new Matrix4d(matr.matr);
+		return new TransformationMatrix(matr.matr);
 	}
 	
 	public Matrix toGenMatrix() {
@@ -98,20 +98,20 @@ public class Matrix4d extends Transformation {
 		});
 	}
 	
-	public Matrix4d setIdentity() {
+	public TransformationMatrix setIdentity() {
 		this.m00 = this.m11 = this.m22 = this.m33 = 1D;
 		this.m01 = this.m02 = this.m03 = this.m10 = this.m12 = this.m13 = this.m20 = this.m21 = this.m23 = this.m30 = this.m31 = this.m32 = 0D;
 		
 		return this;
 	}
 	
-	public Matrix4d setZero() {
+	public TransformationMatrix setZero() {
 		this.m00 = this.m01 = this.m02 = this.m03 = this.m10 = this.m11 = this.m12 = this.m13 = this.m20 = this.m21 = this.m22 = this.m23 = this.m30 = this.m31 = this.m32 = this.m33 = 0D;
 		
 		return this;
 	}
 	
-	public Matrix4d mult(Matrix4d r) {
+	public TransformationMatrix mult(TransformationMatrix r) {
 		double n00 = (this.m00*r.m00) + (this.m01*r.m10) + (this.m02*r.m20) + (this.m03*r.m30);
 		double n01 = (this.m00*r.m01) + (this.m01*r.m11) + (this.m02*r.m21) + (this.m03*r.m31);
 		double n02 = (this.m00*r.m02) + (this.m01*r.m12) + (this.m02*r.m22) + (this.m03*r.m32);
@@ -152,7 +152,7 @@ public class Matrix4d extends Transformation {
 		return this;
 	}
 	
-	public Matrix4d transpose() {
+	public TransformationMatrix transpose() {
 		double n00 = m00;
 		double n01 = m10;
 		double n02 = m20;
@@ -192,7 +192,7 @@ public class Matrix4d extends Transformation {
 		return this;
 	}
 	
-	public Matrix4d add(Matrix4d m) {
+	public TransformationMatrix add(TransformationMatrix m) {
 		this.m00 = m00 + m.m00;
 		this.m01 = m01 + m.m01;
 		this.m02 = m02 + m.m02;
@@ -216,7 +216,7 @@ public class Matrix4d extends Transformation {
 		return this;
 	}
 	
-	public Matrix4d subt(Matrix4d m) {
+	public TransformationMatrix subt(TransformationMatrix m) {
 		this.m00 = m00 - m.m00;
 		this.m01 = m01 - m.m01;
 		this.m02 = m02 - m.m02;
@@ -240,7 +240,7 @@ public class Matrix4d extends Transformation {
 		return this;
 	}
 	
-	public Matrix4d set(Matrix4d m) {
+	public TransformationMatrix set(TransformationMatrix m) {
 		this.m00 = m.m00;
 		this.m01 = m.m01;
 		this.m02 = m.m02;
@@ -264,7 +264,7 @@ public class Matrix4d extends Transformation {
 		return this;
 	}
 	
-	public Matrix4d translate(Vector3d vec) {
+	public TransformationMatrix translate(Vector3d vec) {
 		this.m30 += this.m00 * vec.x + this.m10 * vec.y + this.m20 * vec.z;
 		this.m31 += this.m01 * vec.x + this.m11 * vec.y + this.m21 * vec.z;
 		this.m32 += this.m02 * vec.x + this.m12 * vec.y + this.m22 * vec.z;
@@ -273,7 +273,7 @@ public class Matrix4d extends Transformation {
 		return this;
 	}
 	
-	public Matrix4d rotateDegs(Vector3d axis, double degs) {
+	public TransformationMatrix rotateDegs(Vector3d axis, double degs) {
 		double rads = Math.toRadians(degs);
 		double l = axis.x; double m = axis.y; double n = axis.z;
 		double sT = Math.sin(rads);
@@ -287,10 +287,10 @@ public class Matrix4d extends Transformation {
 				{0, 0, 0, 1,},
 		};
 		
-		return this.mult(new Matrix4d(d));
+		return this.mult(new TransformationMatrix(d));
 	}
 	
-	public Matrix4d scale(Vector3d vec) {
+	public TransformationMatrix scale(Vector3d vec) {
 		this.m00 = this.m00 * vec.x;
 		this.m01 = this.m01 * vec.x;
 		this.m02 = this.m02 * vec.x;
@@ -353,7 +353,7 @@ public class Matrix4d extends Transformation {
 	}
 
 	@Override
-	public void applyTo(Matrix4d mat) {
+	public void applyTo(TransformationMatrix mat) {
 		mat.mult(this);
 	}
 }

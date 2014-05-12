@@ -14,8 +14,8 @@ public class Rotation extends Transformation {
 		this.degrees = degs;
 	}
 
-	private Matrix4d getMatrix() {
-		return new Matrix4d().rotateDegs(axis, degrees);
+	private TransformationMatrix getMatrix() {
+		return new TransformationMatrix().rotateDegs(axis, degrees);
 	}
 	
 	@Override
@@ -29,7 +29,7 @@ public class Rotation extends Transformation {
 	}
 	
 	@Override
-	public void applyTo(Matrix4d mat) {
+	public void applyTo(TransformationMatrix mat) {
 		mat.mult(getMatrix());
 	}
 

@@ -4,10 +4,15 @@ import java.util.ArrayList;
 
 import ml.core.vec.Vector3d;
 
+/**
+ * Adding transformations here will ensure they are performed in the correct order in GL
+ * 
+ * @author Matchlighter
+ */
 public class MultiTransformation extends Transformation {
 
 	private ArrayList<Transformation> tranforms = new ArrayList<Transformation>();
-	private Matrix4d cacheMat;
+	private TransformationMatrix cacheMat;
 	
 	public MultiTransformation(Transformation[] trans) {
 		for (Transformation t : trans)
@@ -21,9 +26,9 @@ public class MultiTransformation extends Transformation {
 		return this;
 	}
 	
-	public Matrix4d toMatrix() {
+	public TransformationMatrix toMatrix() {
 		if (cacheMat==null) {
-			cacheMat = new Matrix4d();
+			cacheMat = new TransformationMatrix();
 			for (int i=tranforms.size()-1; i>=0; i--)
 				tranforms.get(i).applyTo(cacheMat);
 		}
@@ -43,7 +48,7 @@ public class MultiTransformation extends Transformation {
 	}
 
 	@Override
-	public void applyTo(Matrix4d mat) {
+	public void applyTo(TransformationMatrix mat) {
 		mat.mult(toMatrix());
 	}
 

@@ -27,7 +27,7 @@ public class LocalizedTransformation extends Transformation {
 	}
 
 	@Override
-	public void applyTo(Matrix4d mat) {
+	public void applyTo(TransformationMatrix mat) {
 		mat.translate(loc.copy().negate());
 		baseTrans.applyTo(mat);
 		mat.translate(loc);

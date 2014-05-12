@@ -35,17 +35,17 @@ public class RayTrace {
 			break;
 
 		case 2:
-			hit = strt.getInterceptOfXZ(end, cuboid.min.z);
+			hit = strt.getInterceptOfXY(end, cuboid.min.z);
 			break;
 		case 3:
-			hit = strt.getInterceptOfXZ(end, cuboid.max.z);
+			hit = strt.getInterceptOfXY(end, cuboid.max.z);
 			break;
 
 		case 4:
-			hit = strt.getInterceptOfXZ(end, cuboid.min.x);
+			hit = strt.getInterceptOfYZ(end, cuboid.min.x);
 			break;
 		case 5:
-			hit = strt.getInterceptOfXZ(end, cuboid.max.x);
+			hit = strt.getInterceptOfYZ(end, cuboid.max.x);
 			break;
 		}
 

@@ -25,7 +25,7 @@ public class Translation extends Transformation {
 	public void applyToNormal(Vector3d N) {}
 
 	@Override
-	public void applyTo(Matrix4d mat) {
+	public void applyTo(TransformationMatrix mat) {
 		mat.translate(vec);
 	}
 
