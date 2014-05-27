@@ -6,33 +6,21 @@ import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 
-import ml.core.network.serializers.SForgeDirection;
-import ml.core.network.serializers.SItemsStack;
-import ml.core.network.serializers.SNBTTagCompound;
-import ml.core.network.serializers.SString;
-import ml.core.network.serializers.STileEntity;
+import ml.core.data.IDataSerializer;
+import ml.core.data.Serialization;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.packet.Packet250CustomPayload;
 
 import com.google.common.io.ByteArrayDataInput;
 
+import cpw.mods.fml.common.network.PacketDispatcher;
+import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 
 public abstract class MLPacket {
-	
-	public static final List<IDataSerializer> serializers = new ArrayList<IDataSerializer>();
-	static {
-		serializers.add(new SString());
-		serializers.add(new SNBTTagCompound());
-		serializers.add(new SItemsStack());
-		serializers.add(new SForgeDirection());
-		serializers.add(new STileEntity());
-	}
 	
 	/**
 	 * Can be applied to any field that has a Type that has a serializer.
@@ -53,24 +41,8 @@ public abstract class MLPacket {
 				data ann = fld.getAnnotation(data.class);
 				if (ann != null) {
 					Class cls = fld.getType();
-				
-					if (cls == int.class || cls == Integer.class)
-						fld.set(this, dataIn.readInt());
-					else if (cls == boolean.class || cls == Boolean.class)
-						fld.set(this, dataIn.readBoolean());
-					else if (cls == double.class || cls == Double.class)
-						fld.set(this, dataIn.readDouble());
-					else if (cls == byte.class || cls == Byte.class)
-						fld.set(this, dataIn.readByte());
-					
-					else {
-						IDataSerializer slzr = null;
-						for (IDataSerializer IDS : serializers) {
-							if (IDS.handles(cls) && (slzr == null || slzr.getPriority()<IDS.getPriority()))
-								slzr = IDS;
-						} 
-						if (slzr != null) fld.set(this, slzr.deserialize(dataIn, pl)); else throw new RuntimeException("Could not find serializer for "+cls.getName());
-					}
+					Object v = Serialization.deserialize(cls, dataIn);
+					fld.set(this, v);
 				}
 			}
 		} catch (Exception e) {
@@ -112,24 +84,7 @@ public abstract class MLPacket {
 				data ann = fld.getAnnotation(data.class);
 				if (ann != null) {
 					Class cls = fld.getType();
-				
-					if (cls == int.class || cls == Integer.class)
-						dataOut.writeInt((Integer)fld.get(this));
-					else if (cls == boolean.class || cls == Boolean.class)
-						dataOut.writeBoolean((Boolean)fld.get(this));
-					else if (cls == double.class || cls == Double.class)
-						dataOut.writeDouble((Double)fld.get(this));
-					else if (cls == byte.class || cls == Byte.class)
-						dataOut.writeByte((Byte)fld.get(this));
-					
-					else {
-						IDataSerializer slzr = null;
-						for (IDataSerializer IDS : serializers) {
-							if (IDS.handles(cls) && (slzr == null || slzr.getPriority()<IDS.getPriority()))
-									slzr = IDS;
-						}
-						if (slzr != null) slzr.serialize(fld.get(this), dataOut); else throw new RuntimeException("Could not find serializer for "+cls.getName());
-					}
+					Serialization.serialize(cls, fld.get(this), dataOut);
 				}
 			}
 		} catch (Exception e) {
@@ -139,6 +94,26 @@ public abstract class MLPacket {
 		Packet250CustomPayload mcPkt = new Packet250CustomPayload(channel, dataOutRaw.toByteArray());
 		mcPkt.isChunkDataPacket = chunkDataPacket;
 		return mcPkt;
+	}
+	
+	public void dispatchToServer() {
+		PacketDispatcher.sendPacketToServer(convertToPkt250());
+	}
+	
+	public void dispatchToPlayer(EntityPlayer epl) {
+		PacketDispatcher.sendPacketToPlayer(convertToPkt250(), (Player)epl);
+	}
+	
+	public void dispatchToDimension(int dimId) {
+		PacketDispatcher.sendPacketToAllInDimension(convertToPkt250(), dimId);
+	}
+	
+	public void dispatchToAllNear(double X, double Y, double Z, double range, int dimensionId) {
+		PacketDispatcher.sendPacketToAllAround(X, Y, Z, range, dimensionId, convertToPkt250());
+	}
+	
+	public void dispatchToAll() {
+		PacketDispatcher.sendPacketToAllPlayers(convertToPkt250());
 	}
 	
 	private Comparator<Field> fldComparator = new Comparator<Field>() {

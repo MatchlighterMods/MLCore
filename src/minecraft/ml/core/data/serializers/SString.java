@@ -1,10 +1,9 @@
-package ml.core.network.serializers;
+package ml.core.data.serializers;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import ml.core.network.IDataSerializer;
-import net.minecraft.entity.player.EntityPlayer;
+import ml.core.data.IDataSerializer;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -16,7 +15,7 @@ public class SString implements IDataSerializer {
 	}
 
 	@Override
-	public Object deserialize(ByteArrayDataInput dIn, EntityPlayer epl) throws IOException {
+	public Object deserialize(Class clazz, ByteArrayDataInput dIn) throws IOException {
 		return readString(dIn, 256);
 	}
 

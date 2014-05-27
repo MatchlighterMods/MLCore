@@ -1,10 +1,9 @@
-package ml.core.network.serializers;
+package ml.core.data.serializers;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import ml.core.network.IDataSerializer;
-import net.minecraft.entity.player.EntityPlayer;
+import ml.core.data.IDataSerializer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -18,7 +17,7 @@ public class SItemsStack implements IDataSerializer {
 	}
 
 	@Override
-	public Object deserialize(ByteArrayDataInput dIn, EntityPlayer epl) throws IOException {
+	public Object deserialize(Class clazz, ByteArrayDataInput dIn) throws IOException {
 		ItemStack var1 = null;
 		short var2 = dIn.readShort();
 
