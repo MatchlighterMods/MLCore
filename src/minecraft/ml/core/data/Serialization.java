@@ -5,23 +5,23 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.io.ByteArrayDataInput;
-
+import ml.core.data.serializers.SBlockCoord;
 import ml.core.data.serializers.SForgeDirection;
 import ml.core.data.serializers.SItemsStack;
 import ml.core.data.serializers.SNBTTagCompound;
 import ml.core.data.serializers.SString;
-import ml.core.data.serializers.STileEntity;
+
+import com.google.common.io.ByteArrayDataInput;
 
 public class Serialization {
 	
 	public static final List<IDataSerializer> serializers = new ArrayList<IDataSerializer>();
 	static {
-		serializers.add(new SString());
-		serializers.add(new SNBTTagCompound());
-		serializers.add(new SItemsStack());
-		serializers.add(new SForgeDirection());
-		serializers.add(new STileEntity());
+		addSerializer(new SString());
+		addSerializer(new SNBTTagCompound());
+		addSerializer(new SItemsStack());
+		addSerializer(new SForgeDirection());
+		addSerializer(new SBlockCoord());
 	}
 	
 	public static void addSerializer(IDataSerializer serializer) {

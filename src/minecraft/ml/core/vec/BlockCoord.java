@@ -1,5 +1,7 @@
 package ml.core.vec;
 
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 
 public class BlockCoord {
@@ -11,6 +13,16 @@ public class BlockCoord {
 		x = ix;
 		y = iy;
 		z = iz;
+	}
+	
+	public BlockCoord(TileEntity te) {
+		this.x = te.xCoord;
+		this.y = te.yCoord;
+		this.z = te.zCoord;
+	}
+	
+	public TileEntity getTileEntity(World wrld) {
+		return wrld.getBlockTileEntity(x, y, z);
 	}
 	
 	@Override
