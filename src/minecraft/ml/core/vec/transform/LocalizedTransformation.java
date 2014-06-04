@@ -15,21 +15,19 @@ public class LocalizedTransformation extends Transformation {
 	}
 	
 	@Override
-	public void applyTo(Vector3d V) {
-		V.minus(loc);
-		baseTrans.applyTo(V);
-		V.add(loc);
+	public Vector3d getTransformedPoint(Vector3d point) {
+		return baseTrans.getTransformedPoint(point.minus(loc));
 	}
 
 	@Override
-	public void applyToNormal(Vector3d N) {
-		baseTrans.applyToNormal(N);
+	public Vector3d getTransformedVector(Vector3d vector) {
+		return baseTrans.getTransformedVector(vector);
 	}
 
 	@Override
-	public void applyTo(TransformationMatrix mat) {
+	public void getTransformedMatrix(TransformationMatrix mat) {
 		mat.translate(loc.copy().negate());
-		baseTrans.applyTo(mat);
+		baseTrans.getTransformedMatrix(mat);
 		mat.translate(loc);
 	}
 

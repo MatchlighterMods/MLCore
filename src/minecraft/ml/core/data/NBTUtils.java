@@ -1,5 +1,9 @@
 package ml.core.data;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagByteArray;
@@ -50,11 +54,20 @@ public class NBTUtils {
 		return null;
 	}
 	
+	private static String[] splitPath(String... path) {
+		List<String> spath = new ArrayList<String>();
+		for (String elm : path) {
+			spath.addAll(Arrays.asList(elm.split("\\.")));
+		}
+		return (String[])spath.toArray(new String[]{});
+	}
+	
 	/**
 	 * You CAN get a string from any NBTTag type with this method - if the defaultVal is a String, toString() will be called on the returning Object.
 	 */
 	public static <T> T getTagValue(NBTTagCompound parent, T defaultVal, String...tagPath) {
 		try {
+			tagPath = splitPath(tagPath);
 			String tagName = null;
 			for (int i=0; i<tagPath.length; i++) {
 				tagName = tagPath[i];
@@ -73,6 +86,7 @@ public class NBTUtils {
 	}
 	
 	public static void setTag(NBTTagCompound parent, Object value, String...tagPath) {
+		tagPath = splitPath(tagPath);
 		String tagName = null;
 		for (int i=0; i<tagPath.length; i++){
 			tagName = tagPath[i];
@@ -87,6 +101,7 @@ public class NBTUtils {
 	}
 	
 	public static boolean hasTagAt(NBTTagCompound parent, String...tagPath) {
+		tagPath = splitPath(tagPath);
 		String tagName = null;
 		for (int i=0; i<tagPath.length; i++) {
 			tagName = tagPath[i];

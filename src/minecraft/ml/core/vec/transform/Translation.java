@@ -17,15 +17,17 @@ public class Translation extends Transformation {
 	}
 	
 	@Override
-	public void applyTo(Vector3d V) {
-		V.add(vec);
+	public Vector3d getTransformedPoint(Vector3d point) {
+		return point.add(vec);
 	}
 
 	@Override
-	public void applyToNormal(Vector3d N) {}
+	public Vector3d getTransformedVector(Vector3d vector) {
+		return vector;
+	}
 
 	@Override
-	public void applyTo(TransformationMatrix mat) {
+	public void getTransformedMatrix(TransformationMatrix mat) {
 		mat.translate(vec);
 	}
 

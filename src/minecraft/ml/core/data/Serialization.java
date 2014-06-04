@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import ml.core.data.serializers.SArray;
 import ml.core.data.serializers.SBlockCoord;
 import ml.core.data.serializers.SForgeDirection;
 import ml.core.data.serializers.SItemsStack;
@@ -22,6 +23,7 @@ public class Serialization {
 		addSerializer(new SItemsStack());
 		addSerializer(new SForgeDirection());
 		addSerializer(new SBlockCoord());
+		addSerializer(new SArray());
 	}
 	
 	public static void addSerializer(IDataSerializer serializer) {

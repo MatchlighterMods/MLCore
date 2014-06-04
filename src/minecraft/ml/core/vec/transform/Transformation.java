@@ -15,11 +15,11 @@ import cpw.mods.fml.relauncher.SideOnly;
  */
 public abstract class Transformation {
 
-	public abstract void applyTo(Vector3d V);
+	public abstract Vector3d getTransformedPoint(Vector3d point);
 	
-	public abstract void applyToNormal(Vector3d N);
+	public abstract Vector3d getTransformedVector(Vector3d vector);
 	
-	public abstract void applyTo(TransformationMatrix mat);
+	public abstract void getTransformedMatrix(TransformationMatrix mat);
 	
 	public MultiTransformation append(Transformation t) {
 		return new MultiTransformation(new Transformation[]{this, t});

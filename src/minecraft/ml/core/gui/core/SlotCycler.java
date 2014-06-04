@@ -22,7 +22,7 @@ public class SlotCycler {
 	}
 	
 	public SlotCycler(IStackMergeTarget... controls) {
-		slotsGroups = Arrays.asList(controls);
+		slotsGroups = new ArrayList<SlotCycler.IStackMergeTarget>(Arrays.asList(controls));
 	}
 	
 	private boolean cycleSlot(Slot slot, ControlSlot cslot) {

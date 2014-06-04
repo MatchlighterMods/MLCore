@@ -33,16 +33,27 @@ public class Cuboid6 {
 	}
 	
 	public Cuboid6 transform(Transformation t) {
-		t.applyTo(min);
-		t.applyTo(max);
+		Vector3d nmin = t.getTransformedPoint(min);
+		Vector3d nmax = t.getTransformedPoint(max);
 		
-		double tx = min.x;
-		double ty = min.y;
-		double tz = min.z;
+		double minx = nmin.x;
+		double miny = nmin.y;
+		double minz = nmin.z;
+		              
+		double maxx = nmax.x;
+		double maxy = nmax.y;
+		double maxz = nmax.z;
 		
-		if (max.x < min.x) { min.x = max.x; max.x = tx; }
-		if (max.y < min.y) { min.y = max.y; max.y = ty; }
-		if (max.z < min.z) { min.z = max.z; max.z = tz; }
+		double tempx = minx;
+		double tempy = miny;
+		double tempz = minz;
+		
+		if (maxx < minx) { minx = maxx; maxx = tempx; }
+		if (maxy < miny) { miny = maxy; maxy = tempy; }
+		if (maxz < minz) { minz = maxz; maxz = tempz; }
+		
+		this.min = new Vector3d(minx, miny, minz);
+		this.max = new Vector3d(maxx, maxy, maxz);
 		
 		return this;
 	}

@@ -23,7 +23,7 @@ public class SArray implements IDataSerializer {
 		int len = dIn.readInt();
 		Object arr = Array.newInstance(cls, len);
 		for (int i=0; i<len; i++) {
-			Array.set(arr, i, deserialize(cls, dIn));
+			Array.set(arr, i, Serialization.deserialize(cls, dIn));
 		}
 		return arr;
 	}
@@ -33,6 +33,7 @@ public class SArray implements IDataSerializer {
 		Class cls = array.getClass().getComponentType();
 		
 		int len = Array.getLength(array);
+		dataOut.writeInt(len);
 		for (int i=0; i<len; i++) {
 			Object aobj = Array.get(array, i);
 			Serialization.serialize(aobj, dataOut);

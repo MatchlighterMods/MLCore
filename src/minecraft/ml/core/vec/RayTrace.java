@@ -28,24 +28,24 @@ public class RayTrace {
 		Vector3d hit = null;
 		switch(face){
 		case 0:
-			hit = strt.getInterceptOfXZ(end, cuboid.min.y);
+			hit = Intersect.getInterceptOfXZ(strt, end, cuboid.min.y);
 			break;
 		case 1:
-			hit = strt.getInterceptOfXZ(end, cuboid.max.y);
+			hit = Intersect.getInterceptOfXZ(strt, end, cuboid.max.y);
 			break;
 
 		case 2:
-			hit = strt.getInterceptOfXY(end, cuboid.min.z);
+			hit = Intersect.getInterceptOfXY(strt, end, cuboid.min.z);
 			break;
 		case 3:
-			hit = strt.getInterceptOfXY(end, cuboid.max.z);
+			hit = Intersect.getInterceptOfXY(strt, end, cuboid.max.z);
 			break;
 
 		case 4:
-			hit = strt.getInterceptOfYZ(end, cuboid.min.x);
+			hit = Intersect.getInterceptOfYZ(strt, end, cuboid.min.x);
 			break;
 		case 5:
-			hit = strt.getInterceptOfYZ(end, cuboid.max.x);
+			hit = Intersect.getInterceptOfYZ(strt, end, cuboid.max.x);
 			break;
 		}
 

@@ -2,15 +2,14 @@ package ml.core.vec;
 
 import java.util.Arrays;
 
-import ml.core.math.MathUtils;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.ForgeDirection;
 
 public class Vector3d {
 
-	public double x;
-	public double y;
-	public double z;
+	public final double x;
+	public final double y;
+	public final double z;
 	
 	public static Vector3d fromForgeDir(ForgeDirection fd) {
 		return new Vector3d(fd.offsetX, fd.offsetY, fd.offsetZ);
@@ -28,8 +27,6 @@ public class Vector3d {
 		z=c.z;
 	}
 
-	public Vector3d() {}
-	
 	public Vector3d copy() {
 		return new Vector3d(this);
 	}
@@ -48,8 +45,14 @@ public class Vector3d {
 		return Arrays.hashCode(new double[]{x,y,z});
 	}
 
-	public double dotProd(Vector3d ov3) {
+	public double dot(Vector3d ov3) {
 		return this.x*ov3.x + this.y*ov3.y + this.z*ov3.z;
+	}
+	
+	public Vector3d cross(Vector3d ov3) {
+		return new Vector3d(y * ov3.z - z * ov3.y,
+				z - ov3.x - x * ov3.z,
+				x - ov3.y - y * ov3.x);
 	}
 
 	public double magnitude() {
@@ -68,103 +71,51 @@ public class Vector3d {
 	}
 
 	public Vector3d minus(Vector3d dif) {
-		this.x -= dif.x;
-		this.y -= dif.y;
-		this.z -= dif.z;
-		return this;
+		return new Vector3d(x-dif.x, y-dif.y, z-dif.z);
 	}
 
 	public Vector3d add(Vector3d a) {
-		this.x += a.x;
-		this.y += a.y;
-		this.z += a.z;
-		return this;
+		return new Vector3d(x+a.x, y+a.y, z+a.z);
 	}
 
 	public Vector3d divide(double div) {
-		this.x /= div;
-		this.y /= div;
-		this.z /= div;
-		return this;
+		return new Vector3d(x / div, y / div, z / div);
 	}
 
 	public Vector3d mult(double fac) {
-		this.x *= fac;
-		this.y *= fac;
-		this.z *= fac;
-		return this;
+		return new Vector3d(x * fac, y * fac, z * fac);
 	}
 	
 	public Vector3d mult(Vector3d a) {
-		this.x *= a.x;
-		this.y *= a.y;
-		this.z *= a.z;
-		return this;
+		return new Vector3d(x*a.x, y*a.y, z*a.z);
 	}
 	
 	public Vector3d negate() {
-		this.x = -x;
-		this.y = -y;
-		this.z = -z;
-		return this;
+		return new Vector3d(-x, -y, -z);
 	}
-
-	/**
-	 * Returns a new vector with x value equal to the second parameter, along the line between this vector and the
-	 * passed in vector, or null if not possible.
-	 */
-	public Vector3d getInterceptOfYZ(Vector3d end, double tX) {
-		double delX = end.x - x;
-		double delY = end.y - y;
-		double delZ = end.z - z;
-
-		if (delX == 0) return null;
-		double d = (tX - x) / delX;
-
-		if (MathUtils.between(-1E-5, delX, 1E-5))
-			return this;
-
-		return new Vector3d(tX, this.y + delY * d, this.z + delZ * d);
-	}
-
-	/**
-	 * Returns a new vector with y value equal to the second parameter, along the line between this vector and the
-	 * passed in vector, or null if not possible.
-	 */
-	public Vector3d getInterceptOfXZ(Vector3d end, double tY) {
-		double delX = end.x - x;
-		double delY = end.y - y;
-		double delZ = end.z - z;
-
-		if (delY == 0) return null;
-		double d = (tY - y) / delY;
-
-		if (MathUtils.between(-1E-5, delY, 1E-5))
-			return this;
-
-		return new Vector3d(this.x + delX * d, tY, this.z + delZ * d);
-	}
-
-	/**
-	 * Returns a new vector with z value equal to the second parameter, along the line between this vector and the
-	 * passed in vector, or null if not possible.
-	 */
-	public Vector3d getInterceptOfXY(Vector3d end, double tZ) {
-		double delX = end.x - x;
-		double delY = end.y - y;
-		double delZ = end.z - z;
-
-		if (delZ == 0) return null;
-		double d = (tZ - z) / delZ;
-
-		if (MathUtils.between(-1E-5, delZ, 1E-5))
-			return this;
-
-		return new Vector3d(this.x + delX * d, this.y + delY * d, tZ);
+	
+	// From Apache Commons Math
+	public Vector3d getOrthogonal() {
+		double threshold = 0.6 * magnitude();
+		
+        if (Math.abs(x) <= threshold) {
+            double inverse  = 1 / Math.sqrt(y * y + z * z);
+            return new Vector3d(0, inverse * z, -inverse * y);
+        } else if (Math.abs(y) <= threshold) {
+            double inverse  = 1 / Math.sqrt(x * x + z * z);
+            return new Vector3d(-inverse * z, 0, inverse * x);
+        }
+        double inverse  = 1 / Math.sqrt(x * x + y * y);
+        
+        return new Vector3d(inverse * y, -inverse * x, 0);
 	}
 
 	public Vec3 toVec3() {
 		return Vec3.createVectorHelper(x, y, z);
 	}
 
+	@Override
+	public String toString() {
+		return "{"+x+", "+y+", "+z+"}";
+	}
 }

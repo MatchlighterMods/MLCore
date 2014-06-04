@@ -332,28 +332,23 @@ public class TransformationMatrix extends Transformation {
 	}
 
 	@Override
-	public void applyTo(Vector3d V) {
-		double x = (this.m00*V.x) + (this.m01*V.y) + (this.m02*V.z) + (this.m03*1);
-		double y = (this.m10*V.x) + (this.m11*V.y) + (this.m12*V.z) + (this.m13*1);
-		double z = (this.m20*V.x) + (this.m21*V.y) + (this.m22*V.z) + (this.m23*1);
-		V.x=x;
-		V.y=y;
-		V.z=z;
+	public Vector3d getTransformedPoint(Vector3d point) {
+		double x = (this.m00*point.x) + (this.m01*point.y) + (this.m02*point.z) + (this.m03*1);
+		double y = (this.m10*point.x) + (this.m11*point.y) + (this.m12*point.z) + (this.m13*1);
+		double z = (this.m20*point.x) + (this.m21*point.y) + (this.m22*point.z) + (this.m23*1);
+		return new Vector3d(x, y, z);
 	}
 
 	@Override
-	public void applyToNormal(Vector3d N) {
-		double x = (this.m00*N.x) + (this.m01*N.y) + (this.m02*N.z);
-		double y = (this.m10*N.x) + (this.m11*N.y) + (this.m12*N.z);
-		double z = (this.m20*N.x) + (this.m21*N.y) + (this.m22*N.z);
-		N.x=x;
-		N.y=y;
-		N.z=z;
-		N.normalize();
+	public Vector3d getTransformedVector(Vector3d vector) {
+		double x = (this.m00*vector.x) + (this.m01*vector.y) + (this.m02*vector.z);
+		double y = (this.m10*vector.x) + (this.m11*vector.y) + (this.m12*vector.z);
+		double z = (this.m20*vector.x) + (this.m21*vector.y) + (this.m22*vector.z);
+		return new Vector3d(x, y, z).normalize();
 	}
 
 	@Override
-	public void applyTo(TransformationMatrix mat) {
+	public void getTransformedMatrix(TransformationMatrix mat) {
 		mat.mult(this);
 	}
 }

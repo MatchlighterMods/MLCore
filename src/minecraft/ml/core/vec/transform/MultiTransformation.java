@@ -30,25 +30,27 @@ public class MultiTransformation extends Transformation {
 		if (cacheMat==null) {
 			cacheMat = new TransformationMatrix();
 			for (int i=tranforms.size()-1; i>=0; i--)
-				tranforms.get(i).applyTo(cacheMat);
+				tranforms.get(i).getTransformedMatrix(cacheMat);
 		}
 		return cacheMat;
 	}
 
 	@Override
-	public void applyTo(Vector3d V) {
+	public Vector3d getTransformedPoint(Vector3d point) {
 		for (Transformation t : tranforms)
-			t.applyTo(V);
+			point = t.getTransformedPoint(point);
+		return point;
 	}
 
 	@Override
-	public void applyToNormal(Vector3d N) {
+	public Vector3d getTransformedVector(Vector3d vector) {
 		for (Transformation t : tranforms)
-			t.applyToNormal(N);
+			vector = t.getTransformedVector(vector);
+		return vector;
 	}
 
 	@Override
-	public void applyTo(TransformationMatrix mat) {
+	public void getTransformedMatrix(TransformationMatrix mat) {
 		mat.mult(toMatrix());
 	}
 
