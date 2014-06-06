@@ -51,7 +51,7 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 		for (String modId : genFeatures.keySet()) {
 			RetroDataBase rdb = getRetroDataBase(w, modId);
 			for (IFeatureGenerator feat : genFeatures.get(modId)) {
-				if (feat.allowRetroGen() && feat.canGenerateInWorld(w) && rdb.shouldPerformRetroJob(x, z, feat.getGenIdentifier(), feat.getFeatureVersion())) {
+				if (feat.allowRetroGen(w, x, z) && feat.canGenerateInWorld(w) && rdb.shouldPerformRetroJob(x, z, feat.getGenIdentifier(), feat.getFeatureVersion())) {
 					RetroQueueItem rqi = new RetroQueueItem(x, z, w, feat, rdb.getLastFeatureVesrion(x, z, feat.getGenIdentifier()), rdb);
 					CoreLogger.info("Chunk @ ("+x+","+z+",DIM"+w.provider.dimensionId+") has been marked for retroactive feature generation for ("+modId+":"+feat.getGenIdentifier()+")");
 					genQueue.put(dimid, rqi);

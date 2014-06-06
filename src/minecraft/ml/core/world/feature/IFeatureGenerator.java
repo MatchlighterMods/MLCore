@@ -12,7 +12,7 @@ public interface IFeatureGenerator {
 	
 	public int getFeatureVersion();
 	
-	public boolean allowRetroGen();
+	public boolean allowRetroGen(World world, int chunkX, int chunkZ);
 
 	public abstract boolean canGenerateInWorld(World world);
 }
