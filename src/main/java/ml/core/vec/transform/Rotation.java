@@ -14,22 +14,22 @@ public class Rotation extends Transformation {
 		this.degrees = degs;
 	}
 
-	private Matrix4d getMatrix() {
-		return new Matrix4d().rotateDegs(axis, degrees);
+	private TransformationMatrix getMatrix() {
+		return new TransformationMatrix().rotateDegs(axis, degrees);
 	}
 	
 	@Override
-	public void applyTo(Vector3d V) {
-		getMatrix().applyTo(V);
+	public Vector3d getTransformedPoint(Vector3d point) {
+		return getMatrix().getTransformedPoint(point);
 	}
 
 	@Override
-	public void applyToNormal(Vector3d N) {
-		getMatrix().applyToNormal(N);
+	public Vector3d getTransformedVector(Vector3d vector) {
+		return getMatrix().getTransformedVector(vector);
 	}
 	
 	@Override
-	public void applyTo(Matrix4d mat) {
+	public void getTransformedMatrix(TransformationMatrix mat) {
 		mat.mult(getMatrix());
 	}
 

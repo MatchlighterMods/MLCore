@@ -67,8 +67,10 @@ public class GuiRenderUtils {
 
 	public static void drawStackAt(Minecraft mc, int x, int y, ItemStack is){
 		GL11.glEnable(GL11.GL_LIGHTING);
+		renderItem.zLevel = 100F;
 		renderItem.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, is, x, y);
 		renderItem.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, is, x, y);
+		renderItem.zLevel = 0F;
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
 
@@ -76,8 +78,10 @@ public class GuiRenderUtils {
 		GL11.glEnable(GL11.GL_LIGHTING);
 		ItemStack tis = is.copy();
 		tis.stackSize = 1;
+		renderItem.zLevel = 100F;
 		renderItem.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, tis, x, y);
 		renderItem.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, tis, x, y);
+		renderItem.zLevel = 0F;
 
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);

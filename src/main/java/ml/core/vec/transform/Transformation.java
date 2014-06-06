@@ -8,17 +8,18 @@ import cpw.mods.fml.relauncher.SideOnly;
  * Provides Object Space Transformations.
  * Not that while these can be applied to GL (with glTransform) they will not be ordered the same.
  * GL Transforms are World Spaced; they move the world instead of the object.
+ * Use {@link MultiTransformation} to apply Multiple transformations in the correct order.
  * 
- * Inspired by ChickenBone's CodeChickenLib's implementation
+ * Inspired by ChickenBones' CodeChickenLib's implementation
  * @author Matchlighter
  */
 public abstract class Transformation {
 
-	public abstract void applyTo(Vector3d V);
+	public abstract Vector3d getTransformedPoint(Vector3d point);
 	
-	public abstract void applyToNormal(Vector3d N);
+	public abstract Vector3d getTransformedVector(Vector3d vector);
 	
-	public abstract void applyTo(Matrix4d mat);
+	public abstract void getTransformedMatrix(TransformationMatrix mat);
 	
 	public MultiTransformation append(Transformation t) {
 		return new MultiTransformation(new Transformation[]{this, t});

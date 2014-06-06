@@ -69,7 +69,7 @@ public abstract class CustomSlotClick {
 			} else if (this.field_94536_g == 1) {
 				Slot slot = this.inventorySlots.get(slotNum);
 
-				if (slot != null && Container.func_94527_a(slot, inventoryplayer.getItemStack(), true) && slot.isItemValid(inventoryplayer.getItemStack()) && inventoryplayer.getItemStack().stackSize > this.field_94537_h.size() && this.func_94531_b(slot)) {
+				if (slot != null && Container.func_94527_a(slot, inventoryplayer.getItemStack(), true) && slot.isItemValid(inventoryplayer.getItemStack()) && inventoryplayer.getItemStack().stackSize > this.field_94537_h.size() && this.canDragIntoSlot(slot)) {
 					this.field_94537_h.add(slot);
 				}
 			} else if (this.field_94536_g == 2) {
@@ -81,7 +81,7 @@ public abstract class CustomSlotClick {
 					while (iterator.hasNext()) {
 						Slot slot1 = (Slot)iterator.next();
 
-						if (slot1 != null && Container.func_94527_a(slot1, inventoryplayer.getItemStack(), true) && slot1.isItemValid(inventoryplayer.getItemStack()) && inventoryplayer.getItemStack().stackSize >= this.field_94537_h.size() && this.func_94531_b(slot1)) {
+						if (slot1 != null && Container.func_94527_a(slot1, inventoryplayer.getItemStack(), true) && slot1.isItemValid(inventoryplayer.getItemStack()) && inventoryplayer.getItemStack().stackSize >= this.field_94537_h.size() && this.canDragIntoSlot(slot1)) {
 							ItemStack itemstack2 = itemstack1.copy();
 							int j1 = slot1.getHasStack() ? slot1.getStack().stackSize : 0;
 							Container.func_94525_a(this.field_94537_h, this.field_94535_f, itemstack2, j1);
@@ -322,7 +322,7 @@ public abstract class CustomSlotClick {
 		this.field_94537_h.clear();
 	}
 
-	public boolean func_94531_b(Slot par1Slot) {
+	public boolean canDragIntoSlot(Slot par1Slot) {
 		return true;
 	}
 

@@ -58,7 +58,7 @@ public abstract class Config {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.FIELD)
 	public static @interface Category {
-		public String category() default ""; //Configuration.CATEGORY_GENERAL;
+		public String value() default ""; //Configuration.CATEGORY_GENERAL;
 		public String comment() default "";
 	}
 	
@@ -108,7 +108,7 @@ public abstract class Config {
 	private String testGetCategory(Field fld, String last) {
 		Category cat_ann = fld.getAnnotation(Category.class);
 		if (cat_ann != null) {
-			String catn = cat_ann.category();
+			String catn = cat_ann.value();
 			String com = cat_ann.comment().isEmpty() ? null : cat_ann.comment();
 			if (catn.isEmpty()) {
 				catn = fld.getName();

@@ -1,9 +1,9 @@
 package ml.core.world;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Iterator;
 import java.util.Random;
 
 import ml.core.internal.CoreLogger;
@@ -17,25 +17,24 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.IWorldGenerator;
 import cpw.mods.fml.common.TickType;
 
 public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 
-	public static WorldGenHandler instance = new WorldGenHandler();
-	public Map<String, ArrayList<IFeatureGenerator>> featGenerators = new HashMap<String, ArrayList<IFeatureGenerator>>();
+	public static final WorldGenHandler instance = new WorldGenHandler();
+	private final Multimap<String, IFeatureGenerator> genFeatures = HashMultimap.create();
+	private final Multimap<Integer, RetroQueueItem> genQueue = HashMultimap.create();
 	
 	public static final String rdb_base = "RetrogenData_";
 	
-	public Map<Integer, ArrayList<RetroQueueItem>> retroGenQueue = new HashMap<Integer, ArrayList<RetroQueueItem>>();
-	
 	public void registerGenerator(String modId, IFeatureGenerator gen) {
-		if (!featGenerators.containsKey(modId))
-			featGenerators.put(modId, new ArrayList<IFeatureGenerator>());
-		
-		ArrayList<IFeatureGenerator> gens = featGenerators.get(modId);
-		gens.add(gen);
+		genFeatures.put(modId, gen);
 	}
 	
 	@ForgeSubscribe
@@ -48,23 +47,17 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 		int z = c.zPosition;
 		
 		int dimid = w.provider.dimensionId;
-		ArrayList<RetroQueueItem> rqis = retroGenQueue.get(dimid);
-		if (rqis == null)
-			rqis = new ArrayList<RetroQueueItem>();
 		
-		for (String mId : featGenerators.keySet()) {
-			RetroDataBase rdb = getRetroDataBase(w, mId);
-			for (IFeatureGenerator feat : featGenerators.get(mId)) {
-				if (rdb.shouldPerformRetroJob(x, z, feat.getSubIdentifier(), feat.getFeatureVersion()) && feat.allowRetroGen()) {
-					RetroQueueItem rqi = new RetroQueueItem(x, z, w, feat, rdb.getLastFeatureVesrion(x, z, feat.getSubIdentifier()), rdb);
-					if (!rqis.contains(rqi)) {
-						CoreLogger.info("Chunk @ ("+x+","+z+",DIM"+w.provider.dimensionId+") has been marked for retroactive feature generation for ("+mId+":"+feat.getSubIdentifier()+")");
-						rqis.add(rqi);
-					}
+		for (String modId : genFeatures.keySet()) {
+			RetroDataBase rdb = getRetroDataBase(w, modId);
+			for (IFeatureGenerator feat : genFeatures.get(modId)) {
+				if (feat.allowRetroGen() && feat.canGenerateInWorld(w) && rdb.shouldPerformRetroJob(x, z, feat.getGenIdentifier(), feat.getFeatureVersion())) {
+					RetroQueueItem rqi = new RetroQueueItem(x, z, w, feat, rdb.getLastFeatureVesrion(x, z, feat.getGenIdentifier()), rdb);
+					CoreLogger.info("Chunk @ ("+x+","+z+",DIM"+w.provider.dimensionId+") has been marked for retroactive feature generation for ("+modId+":"+feat.getGenIdentifier()+")");
+					genQueue.put(dimid, rqi);
 				}
 			}
 		}
-		retroGenQueue.put(dimid, rqis);
 	}
 
 	/**
@@ -72,12 +65,15 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 	 */
 	@Override
 	public void generate(Random rand, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) {
-		for (String modId : featGenerators.keySet()) {
-			ArrayList<IFeatureGenerator> features = featGenerators.get(modId);
+		for (String modId : genFeatures.keySet()) {
+			Collection<IFeatureGenerator> features = genFeatures.get(modId);
 			RetroDataBase rdb = getRetroDataBase(world, modId);
+			
 			for (IFeatureGenerator feature : features) {
-				feature.doGeneration(rand, chunkX, chunkZ, world, false, -1);
-				rdb.markRetroJobDone(chunkX, chunkZ, feature.getSubIdentifier(), feature.getFeatureVersion());
+				if (feature.canGenerateInWorld(world)) {
+					feature.doGeneration(rand, chunkX, chunkZ, world, false, -1);
+					rdb.markRetroJobDone(chunkX, chunkZ, feature.getGenIdentifier(), feature.getFeatureVersion());
+				}
 			}
 		}
 	}
@@ -100,14 +96,13 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 		World world = (World)tickData[0];
 		int dimid = world.provider.dimensionId;
 		
-		ArrayList<RetroQueueItem> rqis = retroGenQueue.get(dimid);
-		
-		if (rqis != null && rqis.size() > 0) {
-			rqis = (ArrayList)rqis.clone();
-			ArrayList<RetroQueueItem> removing_rqis = new ArrayList<WorldGenHandler.RetroQueueItem>();
-			
+		if (genQueue.get(dimid).size() > 0) {
+			Iterator<RetroQueueItem> iter = genQueue.get(dimid).iterator();
+
 			int count=0;
-			for (RetroQueueItem rqi : rqis) {
+			while (iter.hasNext()) {
+				RetroQueueItem rqi = iter.next();
+				iter.remove();
 				
 				long worldSeed = world.getSeed();
 				Random rand = new Random(worldSeed);
@@ -117,15 +112,14 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 				rand.setSeed(chunkSeed);
 				
 				rqi.feature.doGeneration(rand, rqi.chunkX, rqi.chunkZ, world, true, rqi.lastVer);
-				rqi.rdb.markRetroJobDone(rqi.chunkX, rqi.chunkZ, rqi.feature.getSubIdentifier(), rqi.feature.getFeatureVersion());
+				rqi.rdb.markRetroJobDone(rqi.chunkX, rqi.chunkZ, rqi.feature.getGenIdentifier(), rqi.feature.getFeatureVersion());
 				
-				removing_rqis.add(rqi);
 				count++;
 				if (count > 32)
 					break;
 			}
-			retroGenQueue.get(dimid).removeAll(removing_rqis);
-			CoreLogger.info(count+" chunks have been retro-generated. "+retroGenQueue.get(dimid).size()+" more left.");
+
+			CoreLogger.info(count+" chunks have been retro-generated. "+genQueue.get(dimid).size()+" more left.");
 		}
 	}
 
@@ -168,7 +162,7 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 	}
 	
 	//Credit to ProjectRed for most of this bit.
-	public static class RetroDataBase extends WorldSavedData {
+	private static class RetroDataBase extends WorldSavedData {
 
 		private HashMap<Vector2i, NBTTagCompound> chunks = new HashMap<Vector2i, NBTTagCompound>();
 		

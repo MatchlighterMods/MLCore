@@ -8,9 +8,11 @@ public interface IFeatureGenerator {
 
 	public boolean doGeneration(Random rand, int chunkX, int chunkZ, World world, boolean isRetroGen, int oldVersion);
 	
-	public String getSubIdentifier();
+	public String getGenIdentifier();
 	
 	public int getFeatureVersion();
 	
 	public boolean allowRetroGen();
+
+	public abstract boolean canGenerateInWorld(World world);
 }

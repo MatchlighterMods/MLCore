@@ -7,12 +7,21 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 import codechicken.nei.api.INEIGuiAdapter;
+import codechicken.nei.recipe.TemplateRecipeHandler;
 
 public class NEI_MLCore_Config implements IConfigureNEI {
 
+	private void registerCraftingUsage(TemplateRecipeHandler handler) {
+		API.registerRecipeHandler(handler);
+		API.registerUsageHandler(handler);
+	}
+	
 	@Override
 	public void loadConfig() {
 		API.registerNEIGuiHandler(new GuiHandler());
+		
+		registerCraftingUsage(new MixedRecipeHandler());
+		registerCraftingUsage(new MLShapedRecipeHandler());
 	}
 
 	@Override

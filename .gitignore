@@ -1,0 +1,11 @@
+*.blend1
+*.blend2
+
+.settings
+.gradle
+build/
+eclipse/
+bin/
+
+.classpath
+.project

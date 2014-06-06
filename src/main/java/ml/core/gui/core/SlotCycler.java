@@ -22,30 +22,32 @@ public class SlotCycler {
 	}
 	
 	public SlotCycler(IStackMergeTarget... controls) {
-		slotsGroups = Arrays.asList(controls);
+		slotsGroups = new ArrayList<SlotCycler.IStackMergeTarget>(Arrays.asList(controls));
 	}
 	
 	private boolean cycleSlot(Slot slot, ControlSlot cslot) {
-		IStackMergeTarget group = cslot;
-		// Find the highest MergeTarget in this cycler
-		for (GuiElement el : cslot.getAncestors()) {
-			if (el instanceof IStackMergeTarget && slotsGroups.contains(el)) {
-				group = (IStackMergeTarget)el;
+		if (slot.getHasStack()) {
+			IStackMergeTarget group = cslot;
+			// Find the highest MergeTarget in this cycler
+			for (GuiElement el : cslot.getAncestors()) {
+				if (el instanceof IStackMergeTarget && slotsGroups.contains(el)) {
+					group = (IStackMergeTarget)el;
+				}
 			}
-		}
-		
-		if (slotsGroups.contains(group)) {
-			int index = slotsGroups.indexOf(group);
-			for (int i=1; i<slotsGroups.size(); i++) { // Loop through until we find one that accepts the stack
-				IStackMergeTarget next = slotsGroups.get((index+i) % slotsGroups.size());
-				ItemStack is = slot.getStack();
-				if (next.mergeStackInto(is)) {
-					if (is.stackSize > 0) {
-						slot.onSlotChanged();
-					} else {
-						slot.putStack(null);
+			
+			if (slotsGroups.contains(group)) {
+				int index = slotsGroups.indexOf(group);
+				for (int i=1; i<slotsGroups.size(); i++) { // Loop through until we find one that accepts the stack
+					IStackMergeTarget next = slotsGroups.get((index+i) % slotsGroups.size());
+					ItemStack is = slot.getStack();
+					if (next.mergeStackInto(is)) {
+						if (is.stackSize > 0) {
+							slot.onSlotChanged();
+						} else {
+							slot.putStack(null);
+						}
+						return true;
 					}
-					return true;
 				}
 			}
 		}

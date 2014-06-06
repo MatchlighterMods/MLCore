@@ -136,7 +136,7 @@ public class BlockUtils {
 		ForgeDirection cfd = ForgeDirection.UNKNOWN;
 		double loang = Math.PI;
 		for (ForgeDirection fd : allowedDirs){
-			double secDot = Math.acos(look.dotProd(new Vector3d(fd.offsetX, fd.offsetY, fd.offsetZ)));
+			double secDot = Math.acos(look.dot(new Vector3d(fd.offsetX, fd.offsetY, fd.offsetZ)));
 			if (secDot<loang){
 				loang = secDot;
 				cfd = fd;
