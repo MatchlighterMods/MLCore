@@ -9,15 +9,15 @@ public class Plane {
 	
 	public Plane(Vector3d origin, Vector3d normal, Vector3d u, Vector3d v) {
 		this.origin = origin;
-		this.normal = normal;
+		this.normal = normal.normalize();
 		
-		this.u = u;
-		this.v = v;
+		this.u = u.normalize();
+		this.v = v.normalize();
 	}
 	
 	public Plane(Vector3d origin, Vector3d normal) {
 		this.origin = origin;
-		this.normal = normal;
+		this.normal = normal.normalize();
 		
 		this.u = normal.getOrthogonal();
 		this.v = normal.cross(u);

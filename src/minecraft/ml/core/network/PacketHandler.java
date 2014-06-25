@@ -46,6 +46,7 @@ public class PacketHandler implements IPacketHandler {
 				mlPkt.handle(entPl, FMLCommonHandler.instance().getEffectiveSide());
 			} catch (Exception e) {
 				onError(e, mlPkt);
+				e.printStackTrace();
 			}
 		} else {
 			CoreLogger.severe("("+this.getClass().toString()+") received unknown packet");

@@ -62,7 +62,7 @@ public class BlockUtils {
 		case WEST:
 			return 90F;
 		case EAST:
-			return -90F;
+			return 270F;
 		}
 		return 0F;
 	}
