@@ -32,7 +32,7 @@ import com.google.common.collect.HashBiMap;
  * 
  * @author Matchlighter
  */
-public class BlockDelegator <DCls extends Delegate> extends Block {
+public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	
 	private BiMap<Integer, DCls> subBlocks = HashBiMap.create();
 	
@@ -78,7 +78,7 @@ public class BlockDelegator <DCls extends Delegate> extends Block {
 		return nullDelegate;
 	}
 	
-	public static Delegate findSubBlock(ItemStack is) {
+	public static DelegateBlock findSubBlock(ItemStack is) {
 		if (is != null && is.getItem() instanceof ItemBlock) {
 			ItemBlock ib = (ItemBlock)is.getItem();
 			Block blk = Block.blocksList[ib.getBlockID()]; 
@@ -89,7 +89,7 @@ public class BlockDelegator <DCls extends Delegate> extends Block {
 		return null;
 	}
 	
-	public static Delegate findSubBlock(IBlockAccess world, int x, int y, int z) {
+	public static DelegateBlock findSubBlock(IBlockAccess world, int x, int y, int z) {
 		Block blk = Block.blocksList[world.getBlockId(x, y, z)];
 		if (blk instanceof BlockDelegator<?>) {
 			return ((BlockDelegator<?>)blk).subBlock(world.getBlockMetadata(x, y, z));

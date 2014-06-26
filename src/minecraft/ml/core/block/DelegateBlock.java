@@ -22,15 +22,19 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
 
-public abstract class Delegate {
+public class DelegateBlock {
 
 	protected int metaId;
-	protected BlockDelegator<? extends Delegate> parent;
+	protected BlockDelegator<? extends DelegateBlock> parent;
 
-	public Delegate() {}
+	public DelegateBlock() {}
 	
-	public BlockDelegator<? extends Delegate> parent() {
+	public BlockDelegator<? extends DelegateBlock> parent() {
 		return parent;
+	}
+	
+	public int getMetaId() {
+		return metaId;
 	}
 
 	public void setBlockAt(World world, int wx, int wy, int wz, int flags) {
