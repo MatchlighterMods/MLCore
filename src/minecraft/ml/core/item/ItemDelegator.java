@@ -29,6 +29,10 @@ public class ItemDelegator <DCls extends DelegateItem> extends Item {
 		this.nullDelegate = nullDelegate;
 		this.nullDelegate.parent = this;
 	}
+	
+	public ItemStack createStack(DCls subItem, int size) {
+		return new ItemStack(this, size, subItem.getMetaId());
+	}
 
 	/* ---------------------------- SubItems ---------------------------- */
 	

@@ -2,6 +2,9 @@ package ml.core.item;
 
 import java.util.List;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,8 +19,23 @@ public class DelegateItem {
 
 	protected int metaId;
 	protected ItemDelegator<? extends DelegateItem> parent;
+	protected String unlocalizedName;
+	
+	@SideOnly(Side.CLIENT)
+	protected Icon itemIcon = null;
+	protected String iconLocation;
 	
 	public DelegateItem() {}
+	
+	public DelegateItem setIconString(String str) {
+		this.iconLocation = str;
+		return this;
+	}
+	
+	public DelegateItem setUnlocalizedName(String str) {
+		this.unlocalizedName = str;
+		return this;
+	}
 	
 	public ItemDelegator<? extends DelegateItem> parent() {
 		return parent;
@@ -27,10 +45,14 @@ public class DelegateItem {
 		return metaId;
 	}
 	
+	public ItemStack createStack(int size) {
+		return new ItemStack(parent(), size, getMetaId());
+	}
+	
 /* ---------------------------- ItemMethods ---------------------------- */
 	
 	public String getUnlocalizedName(ItemStack stack) {
-		return "";
+		return unlocalizedName;
 	}
 	
 	/**
@@ -83,14 +105,16 @@ public class DelegateItem {
 	}
 	
 	public Icon getIcon(ItemStack stack, int pass) {
-		return null;
+		return itemIcon;
 	}
 	
 	public Icon getIconInHand(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
 		return getIcon(stack, renderPass);
 	}
 	
-	public void registerIcons(IconRegister par1IconRegister) {}
+	public void registerIcons(IconRegister ireg) {
+		this.itemIcon = ireg.registerIcon(iconLocation);
+	}
 	
 	public void addInformation(ItemStack stack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {}
 }

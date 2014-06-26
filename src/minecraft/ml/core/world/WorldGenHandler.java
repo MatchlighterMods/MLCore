@@ -162,7 +162,7 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 	}
 	
 	//Credit to ProjectRed for most of this bit.
-	private static class RetroDataBase extends WorldSavedData {
+	public static class RetroDataBase extends WorldSavedData {
 
 		private HashMap<Vector2i, NBTTagCompound> chunks = new HashMap<Vector2i, NBTTagCompound>();
 		
