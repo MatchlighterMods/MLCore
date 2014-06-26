@@ -71,7 +71,7 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 			
 			for (IFeatureGenerator feature : features) {
 				if (feature.canGenerateInWorld(world)) {
-					feature.doGeneration(rand, chunkX, chunkZ, world, false, -1);
+					feature.doPopulate(rand, chunkX, chunkZ, world, false, -1);
 					rdb.markRetroJobDone(chunkX, chunkZ, feature.getGenIdentifier(), feature.getFeatureVersion());
 				}
 			}
@@ -111,7 +111,7 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 				long chunkSeed = (xSeed * rqi.chunkX + zSeed * rqi.chunkZ) ^ worldSeed;
 				rand.setSeed(chunkSeed);
 				
-				rqi.feature.doGeneration(rand, rqi.chunkX, rqi.chunkZ, world, true, rqi.lastVer);
+				rqi.feature.doPopulate(rand, rqi.chunkX, rqi.chunkZ, world, true, rqi.lastVer);
 				rqi.rdb.markRetroJobDone(rqi.chunkX, rqi.chunkZ, rqi.feature.getGenIdentifier(), rqi.feature.getFeatureVersion());
 				
 				count++;
