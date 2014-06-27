@@ -3,6 +3,7 @@ package ml.core.item;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -65,6 +66,14 @@ public class ItemDelegator <DCls extends DelegateItem> extends Item {
 	}
 	
 	/* ---------------------------- ItemMethods ---------------------------- */
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List) {
+		for (DCls sub : subItems.values()) {
+			par3List.add(new ItemStack(this, 1, sub.getMetaId()));
+		}
+	}
 	
 	@Override
 	public String getUnlocalizedName(ItemStack par1ItemStack) {
