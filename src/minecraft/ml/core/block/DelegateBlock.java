@@ -155,7 +155,7 @@ public class DelegateBlock {
 
 	public void onBlockClicked(World par1World, int x, int y, int z, EntityPlayer par5EntityPlayer) {}
 
-	public boolean onBlockActivated(World par1World, int x, int y, int z, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9) {
+	public boolean onBlockActivated(World par1World, int x, int y, int z, EntityPlayer par5EntityPlayer, int side, float hitx, float hity, float hitz) {
 		return false;
 	}
 
