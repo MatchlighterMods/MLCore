@@ -104,14 +104,22 @@ public class DelegateItem {
 		return 16777215;
 	}
 	
-	public Icon getIcon(ItemStack stack, int pass) {
+	@SideOnly(Side.CLIENT)
+	public Icon getIcon(int meta) {
 		return itemIcon;
 	}
 	
+	@SideOnly(Side.CLIENT)
+	public Icon getIcon(ItemStack stack, int pass) {
+		return getIcon(stack.getItemDamage());
+	}
+	
+	@SideOnly(Side.CLIENT)
 	public Icon getIconInHand(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
 		return getIcon(stack, renderPass);
 	}
 	
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister ireg) {
 		this.itemIcon = ireg.registerIcon(iconLocation);
 	}

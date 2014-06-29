@@ -6,6 +6,9 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeMap;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
@@ -363,52 +366,62 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	/* ---------------------------- ClientSide ---------------------------- */
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public float getBlockBrightness(IBlockAccess world, int x, int y, int z) {
 		return subBlock(world, x, y, z).getBlockBrightness(world, x, y, z);
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public int getMixedBrightnessForBlock(IBlockAccess world, int x, int y, int z) {
 		return subBlock(world, x, y, z).getMixedBrightnessForBlock(world, x, y, z);
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int par5) {
 		Boolean renderSide = subBlock(world, x, y, z).shouldSideBeRendered(world, x, y, z, par5);
 		return renderSide != null ? renderSide : super.shouldSideBeRendered(world, x, y, z, par5);
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Icon getIcon(int side, int meta) {
 		return subBlock(meta).getIcon(side, meta);
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int par5) {
 		return subBlock(world, x, y, z).getBlockTexture(world, x, y, z, par5);
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public int getRenderColor(int meta) {
 		return subBlock(meta).getRenderColor(meta);
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister par1IconRegister) {
 		for (DCls sub : subBlocks.values()) sub.registerIcons(par1IconRegister);
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
 	public boolean addBlockDestroyEffects(World world, int x, int y, int z, int meta, EffectRenderer effectRenderer) {
 		return subBlock(world, x, y, z).addBlockDestroyEffects(world, x, y, z, meta, effectRenderer);
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public boolean addBlockHitEffects(World world, MovingObjectPosition target, EffectRenderer effectRenderer) {
 		return subBlock(world, target.blockX, target.blockY, target.blockZ).addBlockHitEffects(world, target, effectRenderer);
 	}
 	
 	@Override
+	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World world, int x, int y, int z, Random par5Random) {
 		for (DCls sub : subBlocks.values()) sub.randomDisplayTick(world, x, y, z, par5Random);
 	}

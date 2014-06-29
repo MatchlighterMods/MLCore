@@ -146,6 +146,12 @@ public class ItemDelegator <DCls extends DelegateItem> extends Item {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
+	public Icon getIconFromDamage(int par1) {
+		return subItem(par1).getIcon(par1);
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
 	public Icon getIcon(ItemStack stack, int pass) {
 		return subItem(stack).getIcon(stack, pass);
 	}

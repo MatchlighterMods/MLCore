@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -235,38 +238,48 @@ public class DelegateBlock {
 
 	/* ---------------------------- ClientSide ---------------------------- */
 
+	@SideOnly(Side.CLIENT)
 	public float getBlockBrightness(IBlockAccess world, int x, int y, int z) {
 		return world.getBrightness(x, y, z, getLightValue(world, x, y, z));
 	}
 
+	@SideOnly(Side.CLIENT)
 	public int getMixedBrightnessForBlock(IBlockAccess world, int x, int y, int z) {
 		return world.getLightBrightnessForSkyBlocks(x, y, z, getLightValue(world, x, y, z));
 	}
 
+	@SideOnly(Side.CLIENT)
 	public Boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side) {
 		return null;
 	}
 
+	@SideOnly(Side.CLIENT)
 	public Icon getIcon(int side, int meta) {return null;}
 
+	@SideOnly(Side.CLIENT)
 	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
 		return this.getIcon(side, world.getBlockMetadata(x, y, z));
 	}
 
+	@SideOnly(Side.CLIENT)
 	public int getRenderColor(int meta) {
 		return 16777215;
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(IconRegister par1IconRegister) {};
 
+	@SideOnly(Side.CLIENT)
 	public boolean addBlockDestroyEffects(World world, int x, int y, int z, int meta, EffectRenderer effectRenderer) {
 		return false;
 	}
 
+	@SideOnly(Side.CLIENT)
 	public boolean addBlockHitEffects(World worldObj, MovingObjectPosition target, EffectRenderer effectRenderer) {
 		return false;
 	}
 
+	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World par1World, int x, int y, int z, Random par5Random) {}
 
 }
