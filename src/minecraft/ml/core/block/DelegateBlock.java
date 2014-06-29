@@ -37,8 +37,20 @@ public class DelegateBlock {
 		return metaId;
 	}
 
+	public int getMetaLength() {
+		return 1;
+	}
+	
 	public void setBlockAt(World world, int wx, int wy, int wz, int flags) {
-		world.setBlock(wx, wy, wz, parent.blockID, metaId, flags);
+		this.setBlockAt(world, wx, wy, wz, 0, flags);
+	}
+	
+	public void setBlockAt(World world, int wx, int wy, int wz, int subMeta, int flags) {
+		if (subMeta < getMetaLength()) {
+			world.setBlock(wx, wy, wz, parent.blockID, metaId+subMeta, flags);
+		} else {
+			world.setBlock(wx, wy, wz, parent.blockID, metaId, flags);
+		}
 	}
 	
 	/* ---------------------------- ItemMethods ---------------------------- */

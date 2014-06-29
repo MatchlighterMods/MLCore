@@ -2,7 +2,9 @@ package ml.core.block;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.TreeMap;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -24,9 +26,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.IPlantable;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-
 /**
  * Partially inspired by OpenComputers.
  * 
@@ -34,7 +33,9 @@ import com.google.common.collect.HashBiMap;
  */
 public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	
-	private BiMap<Integer, DCls> subBlocks = HashBiMap.create();
+	private TreeMap<Integer, DCls> subBlocks = new TreeMap<Integer, DCls>();
+	
+	//private BiMap<Integer, DCls> subBlocks = HashBiMap.create();
 	
 	protected DCls nullDelegate;
 
@@ -47,7 +48,7 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	/* ---------------------------- SubBlocks ---------------------------- */
 	
 	public boolean addSubBlock(int metaData, DCls sub) {
-		if (subBlocks.containsKey(metaData) || subBlocks.containsValue(sub)) return false;
+		if (subBlock(metaData) != nullDelegate || subBlocks.containsValue(sub)) return false;
 		subBlocks.put(metaData, sub);
 		sub.parent = this;
 		sub.metaId = metaData;
@@ -56,6 +57,10 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	
 	public DCls subBlock(int metaData) {
 		if (subBlocks.containsKey(metaData)) return subBlocks.get(metaData);
+		Entry<Integer, DCls> ent = subBlocks.floorEntry(metaData);
+		if (ent != null && (ent.getValue().getMetaId() == metaData || metaData < ent.getValue().getMetaId()+ent.getValue().getMetaLength())) {
+			return ent.getValue();
+		}
 		return nullDelegate;
 	}
 	
@@ -117,7 +122,7 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	/* ---------------------------- WorldMethods ---------------------------- */
 	
 	public void setBlockAt(DCls delegate, World world, int wx, int wy, int wz, int flags) {
-		world.setBlock(wx, wy, wz, blockID, delegate.metaId, flags);
+		delegate.setBlockAt(world, wx, wy, wz, flags);
 	}
 	
 	/* ---------------------------- BlockMethods ---------------------------- */
