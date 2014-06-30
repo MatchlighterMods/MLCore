@@ -41,7 +41,7 @@ public class NEI_MLCore_Config implements IConfigureNEI {
 				MLGuiClient mlg = (MLGuiClient)gui;
 				GuiElement elm = mlg.getPrimaryElement();
 				for (GuiElement ge : elm.getDescendants()) {
-					if (ge.getGlobalBounds().intersects(new Rectangle(x, y, w, h))) {
+					if (ge.getParent().isChildVisible(ge) && ge.getGlobalBounds().intersects(new Rectangle(x, y, w, h))) {
 						return true;
 					}
 				}

@@ -24,6 +24,7 @@ public abstract class GuiElement {
 	protected List<GuiElement> childObjects = new ArrayList<GuiElement>();
 	private Vector2i position;
 	private Vector2i size;
+	private boolean visible = true;
 	
 	/**
 	 * Use {@link GuiElement#getStyle()} for getting. It checks for null and defaults to the parent.
@@ -106,6 +107,20 @@ public abstract class GuiElement {
 	public Side getSide() {
 		return getTopParent().getSide();
 	}
+
+	// ------------------------ Visibility Stuff ------------------------ //
+	
+	public void setVisibility(boolean visible) {
+		this.visible = visible;
+	}
+	
+	public boolean isVisible() {
+		return this.visible;
+	}
+	
+	public boolean isChildVisible(GuiElement elm) {
+		return elm.isVisible();
+	}
 	
 	// ------------------------ Size Stuff ------------------------ //
 	public Vector2i getSize() { return size; }
@@ -116,6 +131,16 @@ public abstract class GuiElement {
 	
 	public void setSize(int w, int h) {
 		setSize(new Vector2i(w, h));
+	}
+	
+	public Vector2i calculateChildrenSize() {
+		int mx=0, my=0;
+		for (GuiElement elm : childObjects) {
+			int xw = elm.getLocalPosition().x + elm.getSize().x, yh = elm.getLocalPosition().y + elm.getSize().y;
+			if (xw > mx) mx = xw;
+			if (yh > my) my = yh;
+		}
+		return new Vector2i(mx, my);
 	}
 	
 	// ------------------------ Position Stuff ------------------------ //
@@ -191,7 +216,7 @@ public abstract class GuiElement {
 	
 	public GuiElement findElementAtLocal(Vector2i pos) {
 		for (GuiElement el : childObjects) {
-			if (el.pointInElement(pos)) {
+			if (isChildVisible(el) && el.pointInElement(pos)) {
 				GuiElement sel = el.findElementAtLocal(pos.copy().minus(el.getLocalPosition()));
 				if (sel != null)
 					return sel;
@@ -328,10 +353,12 @@ public abstract class GuiElement {
 		GL11.glPushMatrix();
 		GL11.glTranslatef(pos.x, pos.y, 0.0F);
 		for (GuiElement el : childObjects) {
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			GL11.glDisable(GL11.GL_LIGHTING);
-
-			el.drawElement(stage, partialTick);
+			if (isChildVisible(el)) {
+				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+				GL11.glDisable(GL11.GL_LIGHTING);
+	
+				el.drawElement(stage, partialTick);
+			}
 		}
 		GL11.glPopMatrix();
 	}
