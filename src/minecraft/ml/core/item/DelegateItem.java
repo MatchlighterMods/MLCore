@@ -22,7 +22,7 @@ public class DelegateItem {
 	protected String unlocalizedName;
 	
 	@SideOnly(Side.CLIENT)
-	protected Icon itemIcon = null;
+	protected Icon itemIcon;
 	protected String iconLocation;
 	
 	public DelegateItem() {}

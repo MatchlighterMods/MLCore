@@ -10,7 +10,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * TopParentGuiObjects house all other GuiObjects in a Gui
+ * TopParentGuiObjects house all other GuiObjects in a Gui. <br/>
  * May also be a child element
  * @author Matchlighter
  */

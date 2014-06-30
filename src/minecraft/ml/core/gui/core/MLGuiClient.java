@@ -22,7 +22,11 @@ import net.minecraft.inventory.Slot;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 // All this could be a lot cleaner, but that is the cost of trying to maintain universal compatibility with things such as NEI
+@SideOnly(Side.CLIENT)
 public class MLGuiClient extends GuiContainer {
 
 	protected TopParentGuiElement priElemement;

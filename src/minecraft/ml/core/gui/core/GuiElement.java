@@ -9,6 +9,7 @@ import ml.core.gui.event.EventFocusLost;
 import ml.core.gui.event.GuiEvent;
 import ml.core.vec.Rectangle;
 import ml.core.vec.Vector2i;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 
@@ -280,8 +281,8 @@ public abstract class GuiElement {
 	/**
 	 * Your matrix will be localized to the parent element, so you need to shift by your local position.
 	 */
-	//@SideOnly(Side.CLIENT)
-	//public void drawForeground() {}
+	@SideOnly(Side.CLIENT)
+	public void drawForeground() {}
 	
 	/**
 	 * Your matrix will be localized to the parent element, so you need to shift by your local position.
@@ -300,10 +301,10 @@ public abstract class GuiElement {
 		switch (stage) {
 		case Background:
 			drawBackground();
+			GL11.glPopMatrix();
+			GL11.glPushMatrix();
+			drawForeground();
 			break;
-		//case Foreground:
-			//drawForeground();
-			//break;
 		case Overlay:
 			drawOverlay();
 			break;
@@ -360,7 +361,8 @@ public abstract class GuiElement {
 	@SideOnly(Side.CLIENT)
 	public void setCustomResource(String feat, String npath) {
 		if (!(this.style instanceof GuiStyleManip))
-			this.style = new GuiStyleManip(style);
+			this.style = new GuiStyleManip(getStyle());
+		
 		((GuiStyleManip)style).addResourceOverride(feat, npath);
 	}
 	
@@ -382,9 +384,13 @@ public abstract class GuiElement {
 	}
 	
 	@SideOnly(Side.CLIENT)
+	public Minecraft getMC() {
+		return getGui().getMinecraft();
+	}
+	
+	@SideOnly(Side.CLIENT)
 	public static enum RenderStage {
 		Background,
-		//Foreground,
 		Overlay,
 		SlotInventory;
 	}
