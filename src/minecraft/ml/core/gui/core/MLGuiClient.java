@@ -56,7 +56,7 @@ public class MLGuiClient extends GuiContainer {
 			}
 		}
 		super.drawScreen(mX, mY, par3);
-		matrixAndDraw(RenderStage.Overlay);
+		matrixAndDraw(RenderStage.Overlay, par3);
 	}
 	
 	public void refreshSize() {
@@ -82,21 +82,21 @@ public class MLGuiClient extends GuiContainer {
 	}
 	
 	/**
-	 * Calls {@link TopParentGuiElement#drawElement(RenderStage)} wrapped in a new GL Matrix<br/>
+	 * Calls {@link TopParentGuiElement#drawElement(RenderStage, float)} wrapped in a new GL Matrix<br/>
 	 * Mostly just for DRY code
 	 * @param stage
 	 */
-	private void matrixAndDraw(RenderStage stage) {
+	private void matrixAndDraw(RenderStage stage, float partialTick) {
 		//GL11.glPushMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_LIGHTING);
-		priElemement.drawElement(stage);
+		priElemement.drawElement(stage, partialTick);
 		//GL11.glPopMatrix();
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
-		matrixAndDraw(RenderStage.Background);
+		matrixAndDraw(RenderStage.Background, f);
 	}
 	
 	@Override

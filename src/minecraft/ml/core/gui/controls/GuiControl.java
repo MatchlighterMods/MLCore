@@ -22,13 +22,13 @@ public abstract class GuiControl extends GuiElement {
 	 * When inheriting through GuiControl, the matrix will already be localized to your control's position
 	 */
 	@SideOnly(Side.CLIENT)
-	public void drawBackground() {}
+	public void drawBackground(float partialTick) {}
 
 	/**
 	 * When inheriting through GuiControl, the matrix will already be localized to your control's position
 	 */
 	@SideOnly(Side.CLIENT)
-	public void drawOverlay() {}
+	public void drawOverlay(float partialTick) {}
 	
 	/**
 	 * Always make a super call or a call to drawChilds() as your last call. It will render children.<br/>
@@ -36,21 +36,22 @@ public abstract class GuiControl extends GuiElement {
 	 * You can also just override draw[Background|Overlay]() instead
 	 */
 	@SideOnly(Side.CLIENT)
-	public void drawElement(RenderStage stage) {
-		GL11.glPushMatrix();
+	public void drawElement(RenderStage stage, float partialTick) {
 		GL11.glTranslatef(getLocalPosition().x, getLocalPosition().y, 0);
+		GL11.glPushMatrix();
 		switch (stage) {
 		case Background:
-			drawBackground();
+			drawBackground(partialTick);
+			GL11.glPopMatrix();
+			GL11.glPushMatrix();
+			drawForeground(partialTick);
 			break;
-		//case Foreground:
-			//drawForeground();
-			//break;
 		case Overlay:
-			drawOverlay();
+			drawOverlay(partialTick);
 			break;
 		}
 		GL11.glPopMatrix();
-		drawChilds(stage);
+		GL11.glTranslatef(-getLocalPosition().x, -getLocalPosition().y, 0);
+		drawChilds(stage, partialTick);
 	}
 }

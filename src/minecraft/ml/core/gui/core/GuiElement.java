@@ -274,52 +274,56 @@ public abstract class GuiElement {
 	
 	/**
 	 * Your matrix will be localized to the parent element, so you need to shift by your local position.
+	 * @param partialTick TODO
 	 */
 	@SideOnly(Side.CLIENT)
-	public void drawBackground() {}
+	public void drawBackground(float partialTick) {}
 	
 	/**
 	 * Your matrix will be localized to the parent element, so you need to shift by your local position.
+	 * @param partialTick TODO
 	 */
 	@SideOnly(Side.CLIENT)
-	public void drawForeground() {}
+	public void drawForeground(float partialTick) {}
 	
 	/**
 	 * Your matrix will be localized to the parent element, so you need to shift by your local position.
+	 * @param partialTick TODO
 	 */
 	@SideOnly(Side.CLIENT)
-	public void drawOverlay() {}
+	public void drawOverlay(float partialTick) {}
 	
 	/**
 	 * Always make a super call or a call to drawChilds() as your last call. It will render children.<br/>
 	 * Your matrix will be localized to the parent element, so you need to shift by your local position.</br>
 	 * You can also just override draw[Background|Overlay]() instead
+	 * @param partialTick TODO
 	 */
 	@SideOnly(Side.CLIENT)
-	public void drawElement(RenderStage stage) {
+	public void drawElement(RenderStage stage, float partialTick) {
 		GL11.glPushMatrix();
 		switch (stage) {
 		case Background:
-			drawBackground();
+			drawBackground(partialTick);
 			GL11.glPopMatrix();
 			GL11.glPushMatrix();
-			drawForeground();
+			drawForeground(partialTick);
 			break;
 		case Overlay:
-			drawOverlay();
+			drawOverlay(partialTick);
 			break;
 		}
 		GL11.glPopMatrix();
-		drawChilds(stage);
+		drawChilds(stage, partialTick);
 	}
 	
 	/**
 	 * Called to draw children of the element. Automatically called if you don't
-	 * override {@link #drawElement(RenderStage)} or if you include a super call in your overriding method
+	 * override {@link #drawElement(RenderStage, float)} or if you include a super call in your overriding method
 	 * @param stage
 	 */
 	@SideOnly(Side.CLIENT)
-	protected void drawChilds(RenderStage stage) {
+	protected void drawChilds(RenderStage stage, float partialTick) {
 		Vector2i pos = getLocalPosition();
 		GL11.glPushMatrix();
 		GL11.glTranslatef(pos.x, pos.y, 0.0F);
@@ -327,7 +331,7 @@ public abstract class GuiElement {
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			GL11.glDisable(GL11.GL_LIGHTING);
 
-			el.drawElement(stage);
+			el.drawElement(stage, partialTick);
 		}
 		GL11.glPopMatrix();
 	}

@@ -29,7 +29,7 @@ public class ControlTextInput extends GuiControl {
 	}
 	
 	@Override
-	public void drawBackground() {
+	public void drawBackground(float partialTick) {
 		//GL11.glTranslatef(getPosition().x, getPosition().y, 0);
 		//TODO Render TB background
 		textBox.drawTextBox();
