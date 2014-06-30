@@ -27,10 +27,4 @@ public abstract class Window extends TopParentGuiElement {
 		this.player.closeScreen();
 	}
 	
-	public static enum WindowSide {
-		Top,
-		Right,
-		Bottom,
-		Left;
-	}
 }

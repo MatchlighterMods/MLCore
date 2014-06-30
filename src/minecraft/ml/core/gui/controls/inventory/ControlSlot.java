@@ -30,7 +30,15 @@ public class ControlSlot extends GuiControl implements IStackMergeTarget {
 			((MLSlot)slot).controlSlot = this;
 		getTopParent().getContainer().addSlotToContainer(slt);
 	}
+	
+	public ControlSlot(GuiElement par, Slot slt, Vector2i size) {
+		this(par, slt, new Vector2i(slt.xDisplayPosition, slt.yDisplayPosition), size);
+	}
 
+	public ControlSlot(GuiElement par, Slot slt) {
+		this(par, slt, new Vector2i(slt.xDisplayPosition, slt.yDisplayPosition), new Vector2i(18, 18));
+	}
+	
 	@Override
 	public void drawBackground() {
 		GL11.glScalef((float)getSize().x/18F, (float)getSize().y/18F, 1F);
