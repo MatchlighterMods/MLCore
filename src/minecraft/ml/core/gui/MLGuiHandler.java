@@ -34,6 +34,7 @@ public abstract class MLGuiHandler implements IGuiHandler {
 			return null;
 		
 		tel.initControls();
+		tel.constructClient();
 		tel.guiTick();
 		
 		return tel.getGui();

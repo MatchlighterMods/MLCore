@@ -109,6 +109,10 @@ public abstract class TopParentGuiElement extends GuiElement {
 		super.handleEvent(evt);
 	}
 	
+	public boolean shouldShowNEI() {
+		return true;
+	}
+	
 	public abstract ItemStack transferStackFromSlot(EntityPlayer epl, Slot slot);
 	
 	public abstract void initControls();

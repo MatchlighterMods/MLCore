@@ -22,6 +22,7 @@ import net.minecraft.inventory.Slot;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -170,6 +171,6 @@ public class MLGuiClient extends GuiContainer {
 	}
 	
 	public Minecraft getMinecraft() {
-		return this.mc;
+		return this.mc != null ? this.mc : FMLClientHandler.instance().getClient();
 	}
 }

@@ -1,16 +1,13 @@
 package ml.core.gui.controls.tabs;
 
-import net.minecraft.client.gui.FontRenderer;
 import ml.core.enums.MouseButton;
 import ml.core.gui.controls.tabs.ControlTabManager.GuiTab;
 import ml.core.gui.core.GuiElement;
 import ml.core.gui.event.GuiEvent;
 import ml.core.gui.event.mouse.EventMouseDown;
 import ml.core.vec.Vector2i;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.gui.FontRenderer;
 
-@SideOnly(Side.CLIENT)
 public abstract class TabLedger extends GuiTab {
 
 	protected boolean openState = false;

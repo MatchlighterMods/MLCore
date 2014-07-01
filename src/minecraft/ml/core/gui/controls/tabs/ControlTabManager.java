@@ -35,6 +35,12 @@ public class ControlTabManager extends GuiElement {
 			setSize(new Vector2i(defaultSize, defaultSize));
 		}
 
+		@Override
+		public void constructClient() {
+			setSize(getTargetSize());
+			super.constructClient();
+		}
+		
 		public int tabColor = 0x3590FF;
 		
 		@Override

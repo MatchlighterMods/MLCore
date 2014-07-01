@@ -39,6 +39,12 @@ public abstract class GuiElement {
 		setSize(new Vector2i());
 	}
 
+	@SideOnly(Side.CLIENT)
+	public void constructClient() {
+		for (GuiElement elm : childObjects) {
+			elm.constructClient();
+		}
+	}
 	
 	// ------------------------ Tree Model ------------------------ //
 	public void clearChildren() {
