@@ -50,18 +50,18 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	
 	/* ---------------------------- SubBlocks ---------------------------- */
 	
-	public boolean addSubBlock(int metaData, DCls sub) {
-		if (subBlock(metaData) != nullDelegate || subBlocks.containsValue(sub)) return false;
-		subBlocks.put(metaData, sub);
+	public boolean addSubBlock(int meta, DCls sub) {
+		if (subBlock(meta) != nullDelegate || subBlocks.containsValue(sub)) return false;
+		subBlocks.put(meta, sub);
 		sub.parent = this;
-		sub.metaId = metaData;
+		sub.metaId = meta;
 		return true;
 	}
 	
-	public DCls subBlock(int metaData) {
-		if (subBlocks.containsKey(metaData)) return subBlocks.get(metaData);
-		Entry<Integer, DCls> ent = subBlocks.floorEntry(metaData);
-		if (ent != null && (ent.getValue().getMetaId() == metaData || metaData < ent.getValue().getMetaId()+ent.getValue().getMetaLength())) {
+	public DCls subBlock(int meta) {
+		if (subBlocks.containsKey(meta)) return subBlocks.get(meta);
+		Entry<Integer, DCls> ent = subBlocks.floorEntry(meta);
+		if (ent != null && (ent.getValue().getMetaId() == meta || meta < ent.getValue().getMetaId()+ent.getValue().getMetaLength())) {
 			return ent.getValue();
 		}
 		return nullDelegate;
@@ -118,7 +118,10 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	@Override
 	public void getSubBlocks(int par1, CreativeTabs par2CreativeTabs, List par3List) {
 		for (Integer i : subBlocks.keySet()) {
-			par3List.add(new ItemStack(this, 1, i));
+			DCls sub = subBlocks.get(i);
+			for (int a=0; a<sub.getMetaLength(); a++) {
+				par3List.add(new ItemStack(this, 1, i+a));
+			}
 		}
 	}
 	
@@ -176,8 +179,9 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	}
 	
 	@Override
-	public boolean canSilkHarvest(World world, EntityPlayer player, int x, int y, int z, int metadata) {
-		return subBlock(world, x, y, z).canSilkHarvest(world, player, x, y, z, metadata);
+	public boolean canSilkHarvest(World world, EntityPlayer player, int x, int y, int z, int meta) {
+		DCls sub = subBlock(world, x, y, z);
+		return sub.canSilkHarvest(world, player, x, y, z, meta - sub.metaId);
 	}
 	
 	@Override
@@ -211,8 +215,9 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	}
 	
 	@Override
-	public boolean isFlammable(IBlockAccess world, int x, int y, int z, int metadata, ForgeDirection face) {
-		return subBlock(world, x, y, z).isFlammable(world, x, y, z, metadata, face);
+	public boolean isFlammable(IBlockAccess world, int x, int y, int z, int meta, ForgeDirection face) {
+		DCls sub = subBlock(world, x, y, z);
+		return sub.isFlammable(world, x, y, z, meta-sub.metaId, face);
 	}
 	
 	@Override
@@ -258,13 +263,15 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	}
 	
 	@Override
-	public void onBlockPreDestroy(World world, int x, int y, int z, int par5) {
-		subBlock(world, x, y, z).onBlockPreDestroy(world, x, y, z, par5);
+	public void onBlockPreDestroy(World world, int x, int y, int z, int meta) {
+		DCls sub = subBlock(world, x, y, z);
+		sub.onBlockPreDestroy(world, x, y, z, meta-sub.metaId);
 	}
 	
 	@Override
-	public void breakBlock(World world, int x, int y, int z, int par5, int par6) {
-		subBlock(world, x, y, z).breakBlock(world, x, y, z, par5, par6);
+	public void breakBlock(World world, int x, int y, int z, int id, int meta) {
+		DCls sub = subBlock(world, x, y, z);
+		sub.breakBlock(world, x, y, z, id, meta-sub.metaId);
 	}
 	
 	@Override
@@ -273,8 +280,8 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	}
 	
 	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, int par5) {
-		subBlock(world, x, y, z).onNeighborBlockChange(world, x, y, z, par5);
+	public void onNeighborBlockChange(World world, int x, int y, int z, int id) {
+		subBlock(world, x, y, z).onNeighborBlockChange(world, x, y, z, id);
 	}
 	
 	@Override
@@ -283,8 +290,8 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	}
 	
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer par5EntityPlayer, int par6, float par7, float par8, float par9) {
-		return subBlock(world, x, y, z).onBlockActivated(world, x, y, z, par5EntityPlayer, par6, par7, par8, par9);
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer par5EntityPlayer, int side, float par7, float par8, float par9) {
+		return subBlock(world, x, y, z).onBlockActivated(world, x, y, z, par5EntityPlayer, side, par7, par8, par9);
 	}
 	
 	@Override
@@ -305,25 +312,27 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	}
 	
 	@Override
-	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int par5) {
-		return subBlock(world, x, y, z).isProvidingStrongPower(world, x, y, z, par5);
+	public int isProvidingStrongPower(IBlockAccess world, int x, int y, int z, int side) {
+		return subBlock(world, x, y, z).isProvidingStrongPower(world, x, y, z, side);
 	}
 	
 	@Override
-	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int par5) {
-		return subBlock(world, x, y, z).isProvidingWeakPower(world, x, y, z, par5);
+	public int isProvidingWeakPower(IBlockAccess world, int x, int y, int z, int side) {
+		return subBlock(world, x, y, z).isProvidingWeakPower(world, x, y, z, side);
 	}
 	
 	/* ---------------------------- TileEntities ---------------------------- */
 	
 	@Override
-	public boolean hasTileEntity(int metadata) {
-		return subBlock(metadata).hasTileEntity(metadata);
+	public boolean hasTileEntity(int meta) {
+		DCls sub = subBlock(meta);
+		return sub.hasTileEntity(meta-sub.metaId);
 	}
 	
 	@Override
-	public TileEntity createTileEntity(World world, int metadata) {
-		return subBlock(metadata).createTileEntity(world, metadata);
+	public TileEntity createTileEntity(World world, int meta) {
+		DCls sub = subBlock(meta);
+		return sub.createTileEntity(world, meta - sub.metaId);
 	}
 	
 	/* ---------------------------- Mining ---------------------------- */
@@ -335,17 +344,18 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	
 	@Override
 	public boolean canHarvestBlock(EntityPlayer player, int meta) {
-		return subBlock(meta).canHarvestBlock(player, meta);
+		DCls sub = subBlock(meta);
+		return sub.canHarvestBlock(player, meta-sub.metaId);
 	}
 	
 	@Override
-	public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int par5, ItemStack par6ItemStack) {
-		return subBlock(world, x, y, z).canPlaceBlockOnSide(world, x, y, z, par5, par6ItemStack);
+	public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side, ItemStack par6ItemStack) {
+		return subBlock(world, x, y, z).canPlaceBlockOnSide(world, x, y, z, side, par6ItemStack);
 	}
 	
 	@Override
-	public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune) {
-		return subBlock(world, x, y, z).getBlockDropped(world, x, y, z, metadata, fortune);
+	public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int meta, int fortune) {
+		return subBlock(meta).getBlockDropped(world, x, y, z, meta, fortune);
 	}
 	
 	@Override
@@ -354,8 +364,8 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	}
 	
 	@Override
-	public int getExpDrop(World world, int data, int enchantmentLevel) {
-		return subBlock(data).getExpDrop(world, data, enchantmentLevel);
+	public int getExpDrop(World world, int meta, int enchantmentLevel) {
+		return subBlock(meta).getExpDrop(world, meta, enchantmentLevel);
 	}
 	
 	@Override
@@ -379,27 +389,29 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int par5) {
-		Boolean renderSide = subBlock(world, x, y, z).shouldSideBeRendered(world, x, y, z, par5);
-		return renderSide != null ? renderSide : super.shouldSideBeRendered(world, x, y, z, par5);
+	public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int side) {
+		Boolean renderSide = subBlock(world, x, y, z).shouldSideBeRendered(world, x, y, z, side);
+		return renderSide != null ? renderSide : super.shouldSideBeRendered(world, x, y, z, side);
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public Icon getIcon(int side, int meta) {
-		return subBlock(meta).getIcon(side, meta);
+		DCls sub = subBlock(meta);
+		return sub.getIcon(side, meta - sub.metaId);
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int par5) {
-		return subBlock(world, x, y, z).getBlockTexture(world, x, y, z, par5);
+	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
+		return subBlock(world, x, y, z).getBlockTexture(world, x, y, z, side);
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
 	public int getRenderColor(int meta) {
-		return subBlock(meta).getRenderColor(meta);
+		DCls sub = subBlock(meta);
+		return sub.getRenderColor(meta - sub.metaId);
 	}
 	
 	@Override
@@ -411,7 +423,8 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean addBlockDestroyEffects(World world, int x, int y, int z, int meta, EffectRenderer effectRenderer) {
-		return subBlock(world, x, y, z).addBlockDestroyEffects(world, x, y, z, meta, effectRenderer);
+		DCls sub = subBlock(meta);
+		return sub.addBlockDestroyEffects(world, x, y, z, meta - sub.metaId, effectRenderer);
 	}
 	
 	@Override

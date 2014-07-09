@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -24,24 +21,49 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class DelegateBlock {
 
 	protected int metaId;
 	protected BlockDelegator<? extends DelegateBlock> parent;
-
+	protected String unlocalizedName;
+	
+	@SideOnly(Side.CLIENT)
+	protected Icon itemIcon;
+	protected String iconLocation;
+	
 	public DelegateBlock() {}
 	
 	public BlockDelegator<? extends DelegateBlock> parent() {
 		return parent;
 	}
 	
-	public int getMetaId() {
+	public DelegateBlock setIconString(String str) {
+		this.iconLocation = str;
+		return this;
+	}
+	
+	public DelegateBlock setUnlocalizedName(String str) {
+		this.unlocalizedName = str;
+		return this;
+	}
+	
+	public final int getMetaId() {
 		return metaId;
 	}
 
 	public int getMetaLength() {
 		return 1;
+	}
+	
+	public int getSubMeta(IBlockAccess w, int x, int y, int z) {
+		return getSubMeta(w.getBlockMetadata(x, y, z));
+	}
+	
+	public int getSubMeta(int gmeta) {
+		return gmeta - metaId;
 	}
 	
 	public void setBlockAt(World world, int wx, int wy, int wz, int flags) {
@@ -59,7 +81,7 @@ public class DelegateBlock {
 	/* ---------------------------- ItemMethods ---------------------------- */
 	
 	public String getUnlocalizedName(ItemStack stack) {
-		return "";
+		return unlocalizedName;
 	}
 	
 	public void addInformation(ItemStack par1ItemStack, EntityPlayer par2EntityPlayer, List par3List, boolean par4) {
@@ -100,7 +122,7 @@ public class DelegateBlock {
 		return isBlockSolidOnSide(world, x, y, z, ForgeDirection.UP);
 	}
 
-	public boolean canSilkHarvest(World world, EntityPlayer player, int x, int y, int z, int metadata) {
+	public boolean canSilkHarvest(World world, EntityPlayer player, int x, int y, int z, int subMeta) {
 		return false;
 	}
 
@@ -126,7 +148,7 @@ public class DelegateBlock {
 		return false;
 	}
 
-	public boolean isFlammable(IBlockAccess world, int x, int y, int z, int metadata, ForgeDirection face) {
+	public boolean isFlammable(IBlockAccess world, int x, int y, int z, int subMeta, ForgeDirection face) {
 		return false;
 	}
 
@@ -156,17 +178,17 @@ public class DelegateBlock {
 
 	public void onBlockPlacedBy(World par1World, int x, int y, int z, EntityLivingBase par5EntityLivingBase, ItemStack par6ItemStack) {}
 
-	public void onBlockPreDestroy(World par1World, int x, int y, int z, int meta) {}
+	public void onBlockPreDestroy(World par1World, int x, int y, int z, int subMeta) {}
 
-	public void breakBlock(World par1World, int x, int y, int z, int id, int meta) {
-		if (hasTileEntity(meta)) par1World.removeBlockTileEntity(x, y, z);
+	public void breakBlock(World par1World, int x, int y, int z, int id, int subMeta) {
+		if (hasTileEntity(subMeta)) par1World.removeBlockTileEntity(x, y, z);
 	}
 
 	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z) {
 		return world.setBlockToAir(x, y, z);
 	}
 
-	public void onNeighborBlockChange(World par1World, int x, int y, int z, int par5) {}
+	public void onNeighborBlockChange(World par1World, int x, int y, int z, int id) {}
 
 	public void onBlockClicked(World par1World, int x, int y, int z, EntityPlayer par5EntityPlayer) {}
 
@@ -194,12 +216,12 @@ public class DelegateBlock {
 
 	/* ---------------------------- TileEntities ---------------------------- */
 
-	public boolean hasTileEntity(int metadata) {
+	public boolean hasTileEntity(int subMeta) {
 		return this instanceof ITileEntityProvider;
 	}
 
-	public TileEntity createTileEntity(World world, int metadata) {
-		if (hasTileEntity(metadata))
+	public TileEntity createTileEntity(World world, int subMeta) {
+		if (hasTileEntity(subMeta))
 			return ((ITileEntityProvider)this).createNewTileEntity(world);
 		return null;
 	}
@@ -210,17 +232,20 @@ public class DelegateBlock {
 		return true;
 	}
 
-	public boolean canHarvestBlock(EntityPlayer player, int meta) {
-		return ForgeHooks.canHarvestBlock(this.parent(), player, meta);
+	public boolean canHarvestBlock(EntityPlayer player, int subMeta) {
+		return ForgeHooks.canHarvestBlock(this.parent(), player, subMeta);
 	}
 
-	public boolean canPlaceBlockOnSide(World par1World, int x, int y, int z, int par5, ItemStack par6ItemStack) {
+	public boolean canPlaceBlockOnSide(World par1World, int x, int y, int z, int side, ItemStack par6ItemStack) {
 		return parent().canPlaceBlockAt(par1World, x, y, z);
 	}
 
-	public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int metadata, int fortune) {
+	/**
+	 * Note that meta is not subMeta in this case.
+	 */
+	public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int meta, int fortune) {
 		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
-		ret.add(new ItemStack(parent(), 1, metadata));
+		ret.add(new ItemStack(parent(), 1, meta));
 		return ret;
 	}
 
@@ -254,23 +279,27 @@ public class DelegateBlock {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(int side, int meta) {return null;}
-
-	@SideOnly(Side.CLIENT)
-	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
-		return this.getIcon(side, world.getBlockMetadata(x, y, z));
+	public Icon getIcon(int side, int subMeta) {
+		return itemIcon;
 	}
 
 	@SideOnly(Side.CLIENT)
-	public int getRenderColor(int meta) {
+	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
+		return this.getIcon(side, getSubMeta(world, x, y, z));
+	}
+
+	@SideOnly(Side.CLIENT)
+	public int getRenderColor(int subMeta) {
 		return 16777215;
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister par1IconRegister) {};
+	public void registerIcons(IconRegister ireg) {
+		this.itemIcon = ireg.registerIcon(iconLocation);
+	}
 
 	@SideOnly(Side.CLIENT)
-	public boolean addBlockDestroyEffects(World world, int x, int y, int z, int meta, EffectRenderer effectRenderer) {
+	public boolean addBlockDestroyEffects(World world, int x, int y, int z, int subMeta, EffectRenderer effectRenderer) {
 		return false;
 	}
 
