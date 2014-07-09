@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import ml.core.data.IDataSerializer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -12,12 +13,12 @@ import com.google.common.io.ByteArrayDataInput;
 public class SItemsStack implements IDataSerializer {
 
 	@Override
-	public boolean handles(Class clazz) {
+	public boolean handles(Class<?> clazz) {
 		return clazz==ItemStack.class || ItemStack.class.isAssignableFrom(clazz);
 	}
 
 	@Override
-	public Object deserialize(Class clazz, ByteArrayDataInput dIn) throws IOException {
+	public Object deserialize(Class<?> clazz, ByteArrayDataInput dIn) throws IOException {
 		ItemStack var1 = null;
 		short var2 = dIn.readShort();
 
@@ -25,7 +26,7 @@ public class SItemsStack implements IDataSerializer {
 		{
 			byte var3 = dIn.readByte();
 			short var4 = dIn.readShort();
-			var1 = new ItemStack(var2, var3, var4);
+			var1 = new ItemStack(Item.getItemById(var2), var3, var4);
 			var1.stackTagCompound = SNBTTagCompound.readNBTTagCompound(dIn);
 		}
 
@@ -38,7 +39,7 @@ public class SItemsStack implements IDataSerializer {
 		if (is == null) {
 			dOut.writeShort(-1);
 		} else {
-			dOut.writeShort(is.itemID);
+			dOut.writeShort(Item.getIdFromItem(is.getItem()));
 			dOut.writeByte(is.stackSize);
 			dOut.writeShort(is.getItemDamage());
 			NBTTagCompound var2 = null;

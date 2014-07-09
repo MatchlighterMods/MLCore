@@ -1,6 +1,5 @@
 package ml.core.world;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -60,7 +59,7 @@ public class WorldRenderUtils {
 				IItemRenderer cstm = MinecraftForgeClient.getItemRenderer(is, ItemRenderType.ENTITY);
 				boolean renderAs3DBlock = cstm != null && cstm.shouldUseRenderHelper(ItemRenderType.ENTITY, is, ItemRendererHelper.BLOCK_3D);
 				if (isBlock || renderAs3DBlock){
-					if (renderAs3DBlock || RenderBlocks.renderItemIn3d(Block.blocksList[is.itemID].getRenderType())) {
+					if (renderAs3DBlock || RenderBlocks.renderItemIn3d(((ItemBlock)is.getItem()).field_150939_a.getRenderType())) {
 						GL11.glScalef(1.5F, 1.5F, 1.5F);
 						GL11.glRotatef(90F, 0, 1F, 0);
 					} else {
@@ -72,7 +71,7 @@ public class WorldRenderUtils {
 				//This may happen when used from within an ItemRenderer. It should fix itself after one render loop.
 				if (RenderManager.instance.renderEngine != null) {
 					renderEnt.setEntityItemStack(is);
-					renderItem.doRenderItem(renderEnt, 0, 0, 0, 0, 0);
+					renderItem.doRender(renderEnt, 0, 0, 0, 0, 0);
 				}
 			}
 		}

@@ -10,12 +10,12 @@ import com.google.common.io.ByteArrayDataInput;
 public class SString implements IDataSerializer {
 
 	@Override
-	public boolean handles(Class clazz) {
+	public boolean handles(Class<?> clazz) {
 		return clazz==String.class;
 	}
 
 	@Override
-	public Object deserialize(Class clazz, ByteArrayDataInput dIn) throws IOException {
+	public Object deserialize(Class<?> clazz, ByteArrayDataInput dIn) throws IOException {
 		return readString(dIn, 256);
 	}
 

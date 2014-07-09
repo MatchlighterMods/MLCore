@@ -4,7 +4,7 @@ import ml.core.block.BlockUtils;
 import ml.core.block.BlockUtils.SpatialRelation;
 import ml.core.vec.BlockCoord;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

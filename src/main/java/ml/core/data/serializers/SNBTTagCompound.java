@@ -12,12 +12,12 @@ import com.google.common.io.ByteArrayDataInput;
 public class SNBTTagCompound implements IDataSerializer {
 
 	@Override
-	public boolean handles(Class clazz) {
+	public boolean handles(Class<?> clazz) {
 		return clazz == NBTTagCompound.class;
 	}
 
 	@Override
-	public Object deserialize(Class clazz, ByteArrayDataInput dIn) throws IOException {
+	public Object deserialize(Class<?> clazz, ByteArrayDataInput dIn) throws IOException {
 		return readNBTTagCompound(dIn);
 	}
 

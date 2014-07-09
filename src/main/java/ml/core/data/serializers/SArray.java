@@ -12,13 +12,13 @@ import com.google.common.io.ByteArrayDataInput;
 public class SArray implements IDataSerializer {
 
 	@Override
-	public boolean handles(Class clazz) {
+	public boolean handles(Class<?> clazz) {
 		return clazz.isArray();
 	}
 
 	@Override
-	public Object deserialize(Class clazz, ByteArrayDataInput dIn) throws IOException {
-		Class cls = clazz.getComponentType();
+	public Object deserialize(Class<?> clazz, ByteArrayDataInput dIn) throws IOException {
+		Class<?> cls = clazz.getComponentType();
 		
 		int len = dIn.readInt();
 		Object arr = Array.newInstance(cls, len);
@@ -30,8 +30,6 @@ public class SArray implements IDataSerializer {
 
 	@Override
 	public void serialize(Object array, DataOutputStream dataOut) throws IOException {
-		Class cls = array.getClass().getComponentType();
-		
 		int len = Array.getLength(array);
 		dataOut.writeInt(len);
 		for (int i=0; i<len; i++) {

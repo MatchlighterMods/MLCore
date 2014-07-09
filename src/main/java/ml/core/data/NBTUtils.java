@@ -23,6 +23,7 @@ import net.minecraft.nbt.NBTTagString;
  */
 public class NBTUtils {
 
+	@SuppressWarnings("unchecked")
 	public static <T> T getTagValue(NBTBase tag) {
 		if
 		(tag instanceof NBTTagFloat)		{return (T)(Object)((NBTTagFloat)tag).data;}	else if
@@ -65,6 +66,7 @@ public class NBTUtils {
 	/**
 	 * You CAN get a string from any NBTTag type with this method - if the defaultVal is a String, toString() will be called on the returning Object.
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T getTagValue(NBTTagCompound parent, T defaultVal, String...tagPath) {
 		try {
 			tagPath = splitPath(tagPath);

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.event.ForgeSubscribe;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -19,7 +19,7 @@ public class CustomTextureMapManager {
 	
 	public void registerMap(CustomTextureMap map) {
 		if (maps.contains(map))
-			throw new RuntimeException("TextureMap type " + map.textureType + " is already registered.");
+			throw new RuntimeException("TextureMap type " + map.getTextureType() + " is already registered.");
 		
 		maps.add(map);
 		Minecraft mc = Minecraft.getMinecraft();
@@ -30,10 +30,10 @@ public class CustomTextureMapManager {
 		} catch (IOException e) {}
 	}
 	
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void reregisterIcons(TextureStitchEvent.Pre evt) {
 		Minecraft mc = Minecraft.getMinecraft();
-		if (evt.map.textureType==0) {
+		if (evt.map.getTextureType()==0) {
 			for (CustomTextureMap map : maps) {
 				try {
 					map.loadTexture(mc.getResourceManager());

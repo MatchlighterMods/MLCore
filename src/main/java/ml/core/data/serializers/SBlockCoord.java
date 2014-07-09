@@ -11,12 +11,12 @@ import ml.core.vec.BlockCoord;
 public class SBlockCoord implements IDataSerializer {
 
 	@Override
-	public boolean handles(Class clazz) {
+	public boolean handles(Class<?> clazz) {
 		return clazz == BlockCoord.class;
 	}
 
 	@Override
-	public Object deserialize(Class clazz, ByteArrayDataInput dIn) throws IOException {
+	public Object deserialize(Class<?> clazz, ByteArrayDataInput dIn) throws IOException {
 		return new BlockCoord(dIn.readInt(), dIn.readInt(), dIn.readInt());
 	}
 

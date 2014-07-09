@@ -17,7 +17,7 @@ public class PacketContainerData extends MLPacket {
 	public @data NBTTagCompound payload;
 
 	public PacketContainerData(EntityPlayer pl, ByteArrayDataInput dataIn) {
-		super(pl, dataIn);
+		super(dataIn);
 	}
 	
 	public PacketContainerData(int windowId, NBTTagCompound payload) {
@@ -27,6 +27,15 @@ public class PacketContainerData extends MLPacket {
 	}
 
 	@Override
+	public void handleClientSide(EntityPlayer epl) throws IOException {
+		handle(epl, Side.CLIENT);
+	}
+	
+	@Override
+	public void handleServerSide(EntityPlayer epl) throws IOException {
+		handle(epl, Side.SERVER);
+	}
+	
 	public void handle(EntityPlayer epl, Side side) throws IOException {
 		if (epl.openContainer instanceof MLContainer && epl.openContainer.windowId == winId) {
 			((MLContainer)epl.openContainer).handleDataPacket(payload, side);

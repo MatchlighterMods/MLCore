@@ -1,5 +1,8 @@
 package ml.core.network;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -12,13 +15,10 @@ import java.util.Comparator;
 import ml.core.data.IDataSerializer;
 import ml.core.data.Serialization;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet250CustomPayload;
 
 import com.google.common.io.ByteArrayDataInput;
 
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
 
 public abstract class MLPacket {
 	
@@ -33,28 +33,20 @@ public abstract class MLPacket {
 	
 	// Incoming
 	
-	public MLPacket(EntityPlayer pl, ByteArrayDataInput dataIn) {
+	public MLPacket(ByteArrayDataInput dataIn) {
 		try {
 			Field[] flds = this.getClass().getFields();
 			Arrays.sort(flds, fldComparator);
 			for (Field fld : flds) {
 				data ann = fld.getAnnotation(data.class);
 				if (ann != null) {
-					Class cls = fld.getType();
+					Class<?> cls = fld.getType();
 					Object v = Serialization.deserialize(cls, dataIn);
 					fld.set(this, v);
 				}
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}
-	}
-	
-	public void handle(EntityPlayer epl, Side side) throws IOException {
-		if (side == Side.CLIENT) {
-			handleClientSide(epl);
-		} else {
-			handleServerSide(epl);
 		}
 	}
 	
@@ -71,9 +63,10 @@ public abstract class MLPacket {
 		channel = ch;
 	}
 	
-	public Packet250CustomPayload convertToPkt250() {
-		ByteArrayOutputStream dataOutRaw = new ByteArrayOutputStream();
-		DataOutputStream dataOut = new DataOutputStream(dataOutRaw);
+	public FMLProxyPacket convertToFMLPacket() {
+		ByteBuf buf = Unpooled.buffer();
+//		ByteArrayOutputStream dataOutRaw = new ByteArrayOutputStream();
+//		DataOutputStream dataOut = new DataOutputStream(dataOutRaw);
 		
 		try {
 			dataOut.writeInt(packetID);
@@ -83,7 +76,7 @@ public abstract class MLPacket {
 			for (Field fld : flds) {
 				data ann = fld.getAnnotation(data.class);
 				if (ann != null) {
-					Class cls = fld.getType();
+					Class<?> cls = fld.getType();
 					Serialization.serialize(cls, fld.get(this), dataOut);
 				}
 			}
@@ -91,29 +84,7 @@ public abstract class MLPacket {
 			e.printStackTrace();
 		}
 		
-		Packet250CustomPayload mcPkt = new Packet250CustomPayload(channel, dataOutRaw.toByteArray());
-		mcPkt.isChunkDataPacket = chunkDataPacket;
-		return mcPkt;
-	}
-	
-	public void dispatchToServer() {
-		PacketDispatcher.sendPacketToServer(convertToPkt250());
-	}
-	
-	public void dispatchToPlayer(EntityPlayer epl) {
-		PacketDispatcher.sendPacketToPlayer(convertToPkt250(), (Player)epl);
-	}
-	
-	public void dispatchToDimension(int dimId) {
-		PacketDispatcher.sendPacketToAllInDimension(convertToPkt250(), dimId);
-	}
-	
-	public void dispatchToAllNear(double X, double Y, double Z, double range, int dimensionId) {
-		PacketDispatcher.sendPacketToAllAround(X, Y, Z, range, dimensionId, convertToPkt250());
-	}
-	
-	public void dispatchToAll() {
-		PacketDispatcher.sendPacketToAllPlayers(convertToPkt250());
+		return new FMLProxyPacket(buf, channel);
 	}
 	
 	private Comparator<Field> fldComparator = new Comparator<Field>() {

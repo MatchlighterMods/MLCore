@@ -5,9 +5,13 @@ buildscript {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
+				maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.0-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
 }
 
@@ -17,9 +21,9 @@ repositories {
         name 'Forge FS legacy'
         artifactPattern "http://files.minecraftforge.net/[module]/[module]-dev-[revision].[ext]"
     }
-    ivy {
-        name 'CB FS'
-        artifactPattern "http://www.chickenbones.craftsaddle.org/Files/New_Versions/1.6.4/[module]-dev%20[revision].[ext]"
+		maven {
+        name 'CB Repo'
+        url "http://chickenbones.net/maven/"
     }
     maven {
         name 'ForgeFS'
@@ -46,8 +50,7 @@ ext.simpleVersion = version
 version = "MC${config.minecraft.version}-${project.version}"
 
 dependencies {
-    compile name: 'CodeChickenLib', version: "${config.minecraft.version}-${config.CCLIB.version}", ext: 'jar'
-    compile name: 'NotEnoughItems', version: "${config.NEI.version}", type: 'jar'
+		compile "codechicken:NotEnoughItems:${config.minecraft.version}-${config.NEI.version}:dev"
 }
 
 apply from: 'gradle/forge.gradle'

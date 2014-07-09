@@ -30,7 +30,7 @@ public class Serialization {
 		serializers.add(serializer);
 	}
 
-	public static IDataSerializer getSerializer(Class clazz) {
+	public static IDataSerializer getSerializer(Class<?> clazz) {
 		IDataSerializer slzr = null;
 		for (IDataSerializer IDS : serializers) {
 			if (IDS.handles(clazz) && (slzr == null || slzr.getPriority()<IDS.getPriority()))
@@ -39,7 +39,7 @@ public class Serialization {
 		return slzr;
 	}
 	
-	public static void serialize(Class clazz, Object obj, DataOutputStream dataOut) throws IOException {
+	public static void serialize(Class<?> clazz, Object obj, DataOutputStream dataOut) throws IOException {
 		if (clazz == int.class || clazz == Integer.class)
 			dataOut.writeInt((Integer)obj);
 		else if (clazz == boolean.class || clazz == Boolean.class)
@@ -66,7 +66,7 @@ public class Serialization {
 		serialize(obj.getClass(), obj, dataOut);
 	}
 	
-	public static Object deserialize(Class clazz, ByteArrayDataInput dataIn) throws IOException {
+	public static Object deserialize(Class<?> clazz, ByteArrayDataInput dataIn) throws IOException {
 		
 		if (clazz == int.class || clazz == Integer.class)
 			return dataIn.readInt();

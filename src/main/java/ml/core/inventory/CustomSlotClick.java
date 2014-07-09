@@ -123,12 +123,12 @@ public abstract class CustomSlotClick {
 				if (slotNum == -999) {
 					if (inventoryplayer.getItemStack() != null && slotNum == -999) {
 						if (arg == 0) {
-							par4EntityPlayer.dropPlayerItem(inventoryplayer.getItemStack());
+							par4EntityPlayer.dropPlayerItemWithRandomChoice(inventoryplayer.getItemStack(), true);
 							inventoryplayer.setItemStack((ItemStack)null);
 						}
 
 						if (arg == 1) {
-							par4EntityPlayer.dropPlayerItem(inventoryplayer.getItemStack().splitStack(1));
+							par4EntityPlayer.dropPlayerItemWithRandomChoice(inventoryplayer.getItemStack().splitStack(1), true);
 
 							if (inventoryplayer.getItemStack().stackSize == 0) {
 								inventoryplayer.setItemStack((ItemStack)null);
@@ -284,7 +284,7 @@ public abstract class CustomSlotClick {
 				if (slot2 != null && slot2.getHasStack()) {
 					itemstack1 = slot2.decrStackSize(arg == 0 ? 1 : slot2.getStack().stackSize);
 					slot2.onPickupFromSlot(par4EntityPlayer, itemstack1);
-					par4EntityPlayer.dropPlayerItem(itemstack1);
+					par4EntityPlayer.dropPlayerItemWithRandomChoice(itemstack1, true);
 				}
 			} else if (action == 6 && slotNum >= 0) {
 				slot2 = this.inventorySlots.get(slotNum);
