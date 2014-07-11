@@ -125,7 +125,7 @@ public abstract class GuiElement {
 	}
 	
 	public boolean isChildVisible(GuiElement elm) {
-		return elm.isVisible();
+		return elm.isVisible() && ((getParent() != null && getParent().isChildVisible(this)) || isTopParentElem());
 	}
 	
 	// ------------------------ Size Stuff ------------------------ //
@@ -139,14 +139,17 @@ public abstract class GuiElement {
 		setSize(new Vector2i(w, h));
 	}
 	
-	public Vector2i calculateChildrenSize() {
-		int mx=0, my=0;
+	public Rectangle calculateControlBox() {
+		int minx=Integer.MAX_VALUE, miny=Integer.MAX_VALUE, maxw=0, maxh=0;
+		
 		for (GuiElement elm : childObjects) {
-			int xw = elm.getLocalPosition().x + elm.getSize().x, yh = elm.getLocalPosition().y + elm.getSize().y;
-			if (xw > mx) mx = xw;
-			if (yh > my) my = yh;
+			minx = Math.min(minx, elm.getLocalPosition().x);
+			miny = Math.min(miny, elm.getLocalPosition().y);
+			maxw = Math.max(maxw, elm.getSize().x);
+			maxh = Math.max(maxh, elm.getSize().y);
 		}
-		return new Vector2i(mx, my);
+		
+		return new Rectangle(minx, miny, maxw, maxh);
 	}
 	
 	// ------------------------ Position Stuff ------------------------ //
@@ -323,6 +326,9 @@ public abstract class GuiElement {
 	 */
 	@SideOnly(Side.CLIENT)
 	public void drawOverlay(float partialTick) {}
+	
+	@SideOnly(Side.CLIENT)
+	public void drawTooltip(int mX, int mY, float partialTick) {}
 	
 	/**
 	 * Always make a super call or a call to drawChilds() as your last call. It will render children.<br/>

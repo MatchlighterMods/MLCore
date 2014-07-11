@@ -1,5 +1,8 @@
 package ml.core.gui.controls.tabs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ml.core.enums.MouseButton;
 import ml.core.gui.controls.tabs.ControlTabManager.GuiTab;
 import ml.core.gui.core.GuiElement;
@@ -11,21 +14,33 @@ import net.minecraft.client.gui.FontRenderer;
 public abstract class TabLedger extends GuiTab {
 
 	protected boolean openState = false;
-	public String title;
+	public String title = "";
 	public Vector2i openSize;
 	public Vector2i closeSize;
 	
 	public TabLedger(ControlTabManager ctm, Vector2i oSize) {
 		super(ctm);
 		
-		closeSize = new Vector2i(defaultSize, defaultSize);
+		this.closeSize = new Vector2i(defaultSize, defaultSize);
 		setSize(closeSize.copy());
 		openSize = oSize.copy();
 	}
 
+	public String getTitle() {
+		return title;
+	}
+	
+	public Vector2i getOpenSize() {
+		return openSize;
+	}
+	
+	public Vector2i getCloseSize() {
+		return closeSize;
+	}
+	
 	@Override
 	public Vector2i getTargetSize() {
-		return openState ? openSize : closeSize;
+		return (openState ? getOpenSize() : getCloseSize()).copy();
 	}
 	
 	public void openLedger() {
@@ -47,8 +62,16 @@ public abstract class TabLedger extends GuiTab {
 		getLocalPosition().glTranslate();
 		if (isFullyOpen()) {
 			FontRenderer fr = getMC().fontRenderer;
-			fr.drawString(title, 24, (24-fr.FONT_HEIGHT)/2+1, 0xFFFFFF, true);
+			fr.drawString(getTitle(), 24, (24-fr.FONT_HEIGHT)/2+1, 0xFFFFFF, true);
 		}
+	}
+	
+	@Override
+	public void drawTooltip(int mX, int mY, float partialTick) {
+		if (openState) return;
+		List<String> lines = new ArrayList<String>();
+		lines.add(getTitle());
+		getGui().drawHoveringText(lines, mX, mY, getMC().fontRenderer);
 	}
 	
 	@Override

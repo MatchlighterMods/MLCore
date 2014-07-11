@@ -16,6 +16,7 @@ import ml.core.gui.event.mouse.EventMouseScroll;
 import ml.core.gui.event.mouse.EventMouseUp;
 import ml.core.vec.Vector2i;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 
@@ -43,7 +44,7 @@ public class MLGuiClient extends GuiContainer {
 	
 	private List<Slot> eSlots = new ArrayList<Slot>();
 	@Override
-	public void drawScreen(int mX, int mY, float par3) {
+	public void drawScreen(int mX, int mY, float partialTick) {
 		if (mX != priElemement.gmousePos.x || mY != priElemement.gmousePos.y) {
 			priElemement.injectEvent(new EventMouseMove(priElemement, new Vector2i(mX, mY).minus(priElemement.gmousePos)));
 			priElemement.gmousePos.set(mX, mY);
@@ -56,8 +57,12 @@ public class MLGuiClient extends GuiContainer {
 				priElemement.injectEvent(new EventMouseEntered(priElemement.hoverElement));
 			}
 		}
-		super.drawScreen(mX, mY, par3);
-		matrixAndDraw(RenderStage.Overlay, par3);
+		super.drawScreen(mX, mY, partialTick);
+		matrixAndDraw(RenderStage.Overlay, partialTick);
+		
+		if (priElemement.hoverElement != null) {
+			priElemement.hoverElement.drawTooltip(mX, mY, partialTick);
+		}
 	}
 	
 	public void refreshSize() {
@@ -115,7 +120,12 @@ public class MLGuiClient extends GuiContainer {
 		super.drawSlotInventory(slt.getSlot());
 		GL11.glPopMatrix();
 	}
-
+	
+	@Override
+	public void drawHoveringText(List lines, int mX, int mY, FontRenderer font) {
+		super.drawHoveringText(lines, mX, mY, font);
+	}
+	
 	private GuiElement mouseDownEl;
 	private long mouseDownTime;
 	

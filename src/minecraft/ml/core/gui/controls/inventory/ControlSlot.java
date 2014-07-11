@@ -65,6 +65,11 @@ public class ControlSlot extends GuiControl implements IStackMergeTarget {
 	}
 
 	@Override
+	public void drawTooltip(int mX, int mY, float partialTick) { // Leaving this native so we don't conflict with NEI
+		//getGui().drawSpecialItemStackTooltip(slot.getStack(), mX, mY);
+	}
+	
+	@Override
 	public void guiTick() {
 		Vector2i abPos = getGlobalPosition().minus(getTopParent().getLocalPosition());
 		slot.xDisplayPosition = abPos.x+1;

@@ -88,6 +88,10 @@ public class DelegateBlock {
 		
 	}
 	
+	public boolean isLogicalBlock(int subMeta) {
+		return false;
+	}
+	
 	/* ---------------------------- BlockMethods ---------------------------- */
 
 	public float getExplosionResistance(Entity par1Entity, World world, int x, int y, int z, double explosionX, double explosionY, double explosionZ) {

@@ -120,7 +120,7 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 		for (Integer i : subBlocks.keySet()) {
 			DCls sub = subBlocks.get(i);
 			for (int a=0; a<sub.getMetaLength(); a++) {
-				par3List.add(new ItemStack(this, 1, i+a));
+				if (!sub.isLogicalBlock(a)) par3List.add(new ItemStack(this, 1, i+a));
 			}
 		}
 	}
