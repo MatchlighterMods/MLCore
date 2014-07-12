@@ -27,6 +27,19 @@ public abstract class MLStructureComponent extends StructureComponent {
 		this.rotation = rotation;
 	}
 	
+	/**
+	 * Post constructs the component. Constructors can be a pain to override and you have to make sure you keep the same signature for everything to work. This is easier.
+	 */
+	public MLStructureComponent constructComponent(MLStructureComponent previous, int rotation, ChunkCoordinates entranceCoords, Random rnd) {
+		this.rotation = rotation;
+		this.componentSouth = true; // South is entrance
+		
+		int centerdist = this.lboundingbox.maxZ;
+		this.position = new ChunkCoordinates(entranceCoords.posX + StructureHelper.getRotatedX(0, -centerdist, this.rotation), entranceCoords.posY, entranceCoords.posZ + StructureHelper.getRotatedZ(0, -centerdist, this.rotation));
+		this.refreshBoundingBox();
+		return this;
+	}
+	
 	public void setLocalBoundingBox(StructureBoundingBox nbox) {
 		lboundingbox = nbox;
 		refreshBoundingBox();
@@ -171,28 +184,13 @@ public abstract class MLStructureComponent extends StructureComponent {
 					rn -= wc.componentWeight;
 					
 					if (rn < 0) {
-						MLStructureComponent nComponent = null;
-						
-						try {
-							nComponent = ConstructorUtils.invokeConstructor(wc.cls, entrancePosition, (rotation+oRotation) % 4);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+						MLStructureComponent nComponent = createComponent(wc, prev, (rotation + oRotation) % 4, existingComponents, entrancePosition, rnd);
 						
 						if (nComponent != null) {
 							componentCounter--;
 							wc.instancesCreated++;
+							
 							if (wc.maxComponentInstances > 0 && wc.instancesCreated >= wc.maxComponentInstances) componentWeights.remove(wc);
-							
-							nComponent.rotation = (rotation + oRotation) % 4;
-							nComponent.componentSouth = true; // South is entrance
-							
-							int centerdist = nComponent.lboundingbox.maxZ;
-							nComponent.position = new ChunkCoordinates(entrancePosition.posX + StructureHelper.getRotatedX(0, -centerdist, nComponent.rotation), entrancePosition.posY, entrancePosition.posZ + StructureHelper.getRotatedZ(0, -centerdist, nComponent.rotation));
-							nComponent.refreshBoundingBox();
-							
-							StructureComponent intersect = StructureComponent.findIntersecting(existingComponents, nComponent.boundingBox);
-							if (intersect != null && intersect != prev) return null;
 							
 							unbuiltComponents.add(nComponent);
 							existingComponents.add(nComponent);
@@ -204,15 +202,30 @@ public abstract class MLStructureComponent extends StructureComponent {
 			}
 			return null;
 		}
-	}
-	
-	private static int getTotalWeight(List<WeightedComponent> par0List) {
-		int tweight = 0;
-
-		for (WeightedComponent wc : par0List) {
-			tweight += wc.componentWeight;
+		
+		protected MLStructureComponent createComponent(WeightedComponent wComponent, MLStructureComponent prev, int nRotation, List<StructureComponent> existingComponents, ChunkCoordinates entrancePosition, Random rnd) {
+			
+			try {
+				MLStructureComponent nComponent = ConstructorUtils.invokeConstructor(wComponent.cls);
+				nComponent.constructComponent(prev, nRotation, entrancePosition, rnd);
+				StructureComponent intersect = StructureComponent.findIntersecting(existingComponents, nComponent.boundingBox);
+				if (intersect != null && intersect != prev) return null;
+				return nComponent;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			return null;
 		}
 		
-		return tweight;
+		private static int getTotalWeight(List<WeightedComponent> par0List) {
+			int tweight = 0;
+
+			for (WeightedComponent wc : par0List) {
+				tweight += wc.componentWeight;
+			}
+			
+			return tweight;
+		}
 	}
 }
