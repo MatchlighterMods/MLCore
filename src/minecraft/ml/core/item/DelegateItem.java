@@ -2,16 +2,16 @@ package ml.core.item;
 
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 
 
@@ -49,7 +49,12 @@ public class DelegateItem {
 		return new ItemStack(parent(), size, getMetaId());
 	}
 	
-/* ---------------------------- ItemMethods ---------------------------- */
+	/* ---------------------------- ItemMethods ---------------------------- */
+	
+	@SideOnly(Side.CLIENT)
+	public void addCreativeStacks(CreativeTabs ctab, List stackList) {
+		stackList.add(new ItemStack(parent(), 1, getMetaId()));
+	}
 	
 	public String getUnlocalizedName(ItemStack stack) {
 		return unlocalizedName;
@@ -117,6 +122,11 @@ public class DelegateItem {
 	@SideOnly(Side.CLIENT)
 	public Icon getIconInHand(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
 		return getIcon(stack, renderPass);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public boolean hasEffect(ItemStack stack, int pass) {
+		return false;
 	}
 	
 	@SideOnly(Side.CLIENT)

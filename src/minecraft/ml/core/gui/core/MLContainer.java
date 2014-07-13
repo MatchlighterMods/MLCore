@@ -8,7 +8,6 @@ import ml.core.internal.PacketContainerData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -86,12 +85,12 @@ public class MLContainer extends Container {
 		return super.addSlotToContainer(par1Slot);
 	}
 	
-	@Override
-	public Slot getSlotFromInventory(IInventory inv, int slt) {
-		Slot pslot = super.getSlotFromInventory(inv, slt);
-		if (pslot == null && inv instanceof InventoryPlayer) {
-			return new Slot(inv, slt, 0, 0);
+	public void initMissingHotbarSlots() {
+		InventoryPlayer pli = priElemement.player.inventory;
+		for (int i=0; i<9; i++) {
+			if (getSlotFromInventory(pli, i) == null) {
+				addSlotToContainer(new Slot(pli, i, 0, 0));
+			}
 		}
-		return pslot;
 	}
 }

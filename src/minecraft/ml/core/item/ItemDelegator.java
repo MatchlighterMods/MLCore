@@ -71,7 +71,7 @@ public class ItemDelegator <DCls extends DelegateItem> extends Item {
 	@SideOnly(Side.CLIENT)
 	public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List) {
 		for (DCls sub : subItems.values()) {
-			par3List.add(new ItemStack(this, 1, sub.getMetaId()));
+			sub.addCreativeStacks(par2CreativeTabs, par3List);
 		}
 	}
 	
@@ -160,6 +160,11 @@ public class ItemDelegator <DCls extends DelegateItem> extends Item {
 	@SideOnly(Side.CLIENT)
 	public Icon getIcon(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
 		return subItem(stack).getIconInHand(stack, renderPass, player, usingItem, useRemaining);
+	}
+	
+	@SideOnly(Side.CLIENT)
+	public boolean hasEffect(ItemStack stack, int pass) {
+		return subItem(stack).hasEffect(stack, pass);
 	}
 	
 	@Override

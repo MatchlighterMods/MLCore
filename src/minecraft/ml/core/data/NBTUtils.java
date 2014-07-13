@@ -48,6 +48,7 @@ public class NBTUtils {
 		(value instanceof Double)	{return new NBTTagDouble(name,		(Double)value);}	else if
 		(value instanceof Byte)		{return new NBTTagByte(name,		(Byte)value);}		else if
 		(value instanceof String)	{return new NBTTagString(name,		(String)value);}	else if
+		(value instanceof Boolean)	{return new NBTTagByte(name,		(byte)((Boolean)value ? 1 : 0));}	else if
 		(value instanceof int[])	{return new NBTTagIntArray(name,	(int[])value);}		else if
 		(value instanceof byte[])	{return new NBTTagByteArray(name,	(byte[])value);}	else if
 		(value instanceof NBTBase)	{return (NBTBase)value;}
@@ -78,6 +79,8 @@ public class NBTUtils {
 			Object value = NBTUtils.getTagValue(parent.getTag(tagName));
 			if (defaultVal instanceof String)
 				return (T)value.toString();
+			if (defaultVal instanceof Boolean)
+				return (T)(Boolean)((Byte)value!=0);
 			
 			return (T)value;
 		} catch (Exception ex) {
