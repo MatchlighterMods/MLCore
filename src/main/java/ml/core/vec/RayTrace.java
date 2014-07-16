@@ -5,8 +5,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.EnumMovingObjectType;
 import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.MovingObjectPosition.MovingObjectType;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -122,7 +122,7 @@ public class RayTrace {
 			mop.blockX = blv3.x;
 			mop.blockY = blv3.y;
 			mop.blockZ = blv3.z;
-			mop.typeOfHit = EnumMovingObjectType.TILE;
+			mop.typeOfHit = MovingObjectType.BLOCK;
 			if (blk != null)
 				c_cuboid.translate(new Vector3d(-blv3.x, -blv3.y, -blv3.z)).setToBlockBounds(blk);
 		}
@@ -134,7 +134,7 @@ public class RayTrace {
 		Vec3 look = player.getLook(1.0F);
 		double reach = world.isRemote ? getReachDist_client() : getReachDist_server((EntityPlayerMP) player);
 		Vec3 end = strt.addVector(look.xCoord * reach, look.yCoord * reach, look.zCoord * reach);
-		return Block.blocksList[world.getBlockId(x, y, z)].collisionRayTrace(world, x, y, z, strt, end);
+		return world.getBlock(x, y, z).collisionRayTrace(world, x, y, z, strt, end);
 	}
 
 	public static double getReachDist_server(EntityPlayerMP player){

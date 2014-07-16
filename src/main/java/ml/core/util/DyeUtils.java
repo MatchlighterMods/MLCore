@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -18,7 +18,7 @@ public class DyeUtils {
 		if (mOre == null) return -1;
 
 		for (int i=0; i<16; i++){
-			if (OreDictionary.getOreID(new ItemStack(Item.dyePowder, 1, i)) == OreDictionary.getOreID(mOre)){
+			if (OreDictionary.itemMatches(new ItemStack(Items.dye, 1, i), mOre, true)){
 				return i;
 			}
 		}
@@ -28,7 +28,7 @@ public class DyeUtils {
 	public static int getDyeColor(ItemStack dyeStack) {
 		int dyeId = getVanillaColorId(dyeStack);
 		if (dyeId > -1) {
-			return ItemDye.dyeColors[dyeId];
+			return ItemDye.field_150922_c[dyeId];
 		}
 		return -1;
 	}
@@ -64,10 +64,29 @@ public class DyeUtils {
 		return mixDyeColors(-1, dyes);
 	}
 	
+	private static final String[] dyes =
+        {
+            "Black",
+            "Red",
+            "Green",
+            "Brown",
+            "Blue",
+            "Purple",
+            "Cyan",
+            "LightGray",
+            "Gray",
+            "Pink",
+            "Lime",
+            "Yellow",
+            "LightBlue",
+            "Magenta",
+            "Orange",
+            "White"
+        };
 	public static List<ItemStack> getAllDyeStacks() {
 		List<ItemStack> stacks = new ArrayList<ItemStack>();
-		for (int i=0; i<ItemDye.dyeColors.length; i++) {
-			stacks.addAll(OreDictionary.getOres(OreDictionary.getOreID(new ItemStack(Item.dyePowder, 1, i))));
+		for (int i=0; i<ItemDye.field_150922_c.length; i++) {
+			stacks.addAll(OreDictionary.getOres("dye"+dyes[i]));
 		}
 		return stacks;
 	}

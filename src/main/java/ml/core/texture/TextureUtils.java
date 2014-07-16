@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.ResourceManager;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 
 public class TextureUtils {
@@ -53,8 +53,7 @@ public class TextureUtils {
 	public static boolean shouldReloadTexture(TextureMap mp, String texFile) {
 		return mp.setTextureEntry(texFile, new TextureAtlasSprite(texFile) {
 			@Override
-			public boolean load(ResourceManager manager,
-					ResourceLocation location) throws IOException {
+			public boolean load(IResourceManager manager, ResourceLocation location) {
 				return false;
 			}
 		}); 

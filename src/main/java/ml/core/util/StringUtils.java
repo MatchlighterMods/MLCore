@@ -45,7 +45,7 @@ public class StringUtils {
 	}
 	
 	public static String getLColorName(int c) {
-		return StatCollector.translateToLocal("item.fireworksCharge." + ItemDye.dyeColorNames[c]);
+		return StatCollector.translateToLocal("item.fireworksCharge." + ItemDye.field_150923_a[c]);
 	}
 	
 }

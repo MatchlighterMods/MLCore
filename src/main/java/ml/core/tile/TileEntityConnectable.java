@@ -3,7 +3,7 @@ package ml.core.tile;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public abstract class TileEntityConnectable extends TileEntity {
@@ -40,7 +40,7 @@ public abstract class TileEntityConnectable extends TileEntity {
 	}
 	
 	public TileEntityConnectable getConnected() {
-		TileEntity te = worldObj.getBlockTileEntity(xCoord+linkedDir.offsetX, yCoord+linkedDir.offsetY, zCoord+linkedDir.offsetZ);
+		TileEntity te = worldObj.getTileEntity(xCoord+linkedDir.offsetX, yCoord+linkedDir.offsetY, zCoord+linkedDir.offsetZ);
 		if (linkedDir != ForgeDirection.UNKNOWN && te instanceof TileEntityConnectable && te.getClass()==this.getClass()) {
 			return (TileEntityConnectable)te;
 		}
@@ -66,7 +66,7 @@ public abstract class TileEntityConnectable extends TileEntity {
 	}
 	
 	private boolean tryConnection(ForgeDirection fd){
-		TileEntity rte = worldObj.getBlockTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
+		TileEntity rte = worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
 		if (rte instanceof TileEntityConnectable){
 			TileEntityConnectable rtec = (TileEntityConnectable)rte;
 			if (rtec.facing == this.facing &&
@@ -92,7 +92,7 @@ public abstract class TileEntityConnectable extends TileEntity {
 	
 	public void refreshConnection(){
 		if (linkedDir != ForgeDirection.UNKNOWN) {
-			TileEntity te = worldObj.getBlockTileEntity(xCoord+linkedDir.offsetX, yCoord+linkedDir.offsetY, zCoord+linkedDir.offsetZ);
+			TileEntity te = worldObj.getTileEntity(xCoord+linkedDir.offsetX, yCoord+linkedDir.offsetY, zCoord+linkedDir.offsetZ);
 			if (!(te instanceof TileEntityConnectable) || !canConnectWith((TileEntityConnectable)te) ||
 					((TileEntityConnectable)te).linkedDir != linkedDir.getOpposite()){
 				linkedDir = ForgeDirection.UNKNOWN;

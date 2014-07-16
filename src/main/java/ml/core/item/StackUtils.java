@@ -19,18 +19,16 @@ import com.google.common.collect.Lists;
 
 public class StackUtils {
 
-	public static ItemStack create(int itemID, int count, int meta, NBTTagCompound nbt) {
-		ItemStack stack = new ItemStack(itemID, count, meta);
+	public static ItemStack create(Item item, int count, int meta, NBTTagCompound nbt) {
+		ItemStack stack = new ItemStack(item, count, meta);
 		stack.setTagCompound(nbt);
 		return stack;
 	}
 	
-	public static ItemStack create(Item item, int count, int meta, NBTTagCompound nbt) {
-		return create(item.itemID, count, meta, nbt);
-	}
-	
 	public static ItemStack create(Block block, int count, int meta, NBTTagCompound nbt) {
-		return create(block.blockID, count, meta, nbt);
+		ItemStack stack = new ItemStack(block, count, meta);
+		stack.setTagCompound(nbt);
+		return stack;
 	}
 	
 	/**
@@ -176,7 +174,7 @@ public class StackUtils {
 			ItemStack trgIS = (ItemStack)target;
 			return (trgIS.getItem() == input.getItem() && (trgIS.getItemDamage() == OreDictionary.WILDCARD_VALUE || trgIS.getItemDamage() == input.getItemDamage()));
 		} else if (target instanceof Item) {
-			return (((Item)target).itemID == input.itemID);
+			return (((Item)target) == input.getItem());
 		}
 		return false;
 	}

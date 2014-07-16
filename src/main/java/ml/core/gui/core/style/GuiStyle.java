@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import net.minecraft.client.resources.ReloadableResourceManager;
-import net.minecraft.client.resources.Resource;
-import net.minecraft.client.resources.ResourceManager;
-import net.minecraft.client.resources.ResourceManagerReloadListener;
+import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.resources.IResource;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -29,7 +29,7 @@ import cpw.mods.fml.relauncher.SideOnly;
  * @author Matchlighter
  */
 @SideOnly(Side.CLIENT)
-public class GuiStyle implements ResourceManagerReloadListener {
+public class GuiStyle implements IResourceManagerReloadListener {
 
 	public static final String defaultDomain = "mlcontrols";
 	public static final String defaultBasePath = "default";
@@ -134,15 +134,15 @@ public class GuiStyle implements ResourceManagerReloadListener {
 	}
 
 	@Override
-	public void onResourceManagerReload(ResourceManager resourcemanager) {
+	public void onResourceManagerReload(IResourceManager resourcemanager) {
 		clearCache();
 		
 		//Load Properties and Colors
-		ResourceManager rm = FMLClientHandler.instance().getClient().getResourceManager();
+		IResourceManager rm = FMLClientHandler.instance().getClient().getResourceManager();
 		props.clear();
 		try {
-			List<Resource> robjs = rm.getAllResources(getResourceManual("properties.txt")); //TODO 1.7.2: Make sure these load in the correct order
-			for (Resource res : robjs) {
+			List<IResource> robjs = rm.getAllResources(getResourceManual("properties.txt")); //TODO 1.7.2: Make sure these load in the correct order
+			for (IResource res : robjs) {
 				props.load(res.getInputStream());
 			}
 		} catch (IOException e) {
@@ -151,7 +151,7 @@ public class GuiStyle implements ResourceManagerReloadListener {
 	}
 	
 	public void registerAsReloadListener() {
-		((ReloadableResourceManager)FMLClientHandler.instance().getClient().getResourceManager()).registerReloadListener(this);
+		((IReloadableResourceManager)FMLClientHandler.instance().getClient().getResourceManager()).registerReloadListener(this);
 	}
 
 }

@@ -42,15 +42,15 @@ public class NBTUtils {
 	
 	public static NBTBase createTag(String name, Object value) {
 		if
-		(value instanceof Float)	{return new NBTTagFloat(name,		(Float)value);}		else if
-		(value instanceof Integer)	{return new NBTTagInt(name,			(Integer)value);}	else if
-		(value instanceof Short)	{return new NBTTagShort(name,		(Short)value);}		else if
-		(value instanceof Long)		{return new NBTTagLong(name,		(Long)value);}		else if
-		(value instanceof Double)	{return new NBTTagDouble(name,		(Double)value);}	else if
-		(value instanceof Byte)		{return new NBTTagByte(name,		(Byte)value);}		else if
-		(value instanceof String)	{return new NBTTagString(name,		(String)value);}	else if
-		(value instanceof int[])	{return new NBTTagIntArray(name,	(int[])value);}		else if
-		(value instanceof byte[])	{return new NBTTagByteArray(name,	(byte[])value);}	else if
+		(value instanceof Float)	{return new NBTTagFloat(	(Float)value);}		else if
+		(value instanceof Integer)	{return new NBTTagInt(		(Integer)value);}	else if
+		(value instanceof Short)	{return new NBTTagShort(	(Short)value);}		else if
+		(value instanceof Long)		{return new NBTTagLong(		(Long)value);}		else if
+		(value instanceof Double)	{return new NBTTagDouble(	(Double)value);}	else if
+		(value instanceof Byte)		{return new NBTTagByte(		(Byte)value);}		else if
+		(value instanceof String)	{return new NBTTagString(	(String)value);}	else if
+		(value instanceof int[])	{return new NBTTagIntArray(	(int[])value);}		else if
+		(value instanceof byte[])	{return new NBTTagByteArray((byte[])value);}	else if
 		(value instanceof NBTBase)	{return (NBTBase)value;}
 		return null;
 	}
@@ -94,7 +94,7 @@ public class NBTUtils {
 			tagName = tagPath[i];
 			if (i == tagPath.length-1) break;
 			if (!parent.hasKey(tagName))
-				parent.setCompoundTag(tagName, new NBTTagCompound(tagName));
+				parent.setTag(tagName, new NBTTagCompound());
 			parent = parent.getCompoundTag(tagName);
 		}
 		NBTBase ntag = createTag(tagName, value);

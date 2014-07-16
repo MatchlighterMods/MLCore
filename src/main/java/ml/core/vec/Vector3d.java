@@ -3,7 +3,7 @@ package ml.core.vec;
 import java.util.Arrays;
 
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class Vector3d {
 
