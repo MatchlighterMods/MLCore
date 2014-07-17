@@ -9,3 +9,13 @@ bin/
 
 .classpath
 .project
+
+/*
+!/.gitignore
+!/gradle/
+!/gradle/*
+!/gradle*
+!/src/
+!/src/*
+!/*.gradle
+!/*.md

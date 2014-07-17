@@ -5,7 +5,7 @@ buildscript {
             name = "forge"
             url = "http://files.minecraftforge.net/maven"
         }
-				maven {
+        maven {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
@@ -14,7 +14,6 @@ buildscript {
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
 }
-
 
 repositories {
     ivy {
@@ -40,7 +39,7 @@ file "build.properties" withReader {
 }
 
 version = "${config.mlcore.version}"
-group = "ml.core"
+group = "ml"
 archivesBaseName = "MLCore"
 
 if (System.getenv("BUILD_NUMBER") != null)
@@ -56,3 +55,4 @@ dependencies {
 apply from: 'gradle/forge.gradle'
 apply from: 'gradle/artifact.gradle'
 apply from: 'gradle/release.gradle'
+
