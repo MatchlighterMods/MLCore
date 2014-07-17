@@ -30,9 +30,17 @@ public class ControlSlot extends GuiControl implements IStackMergeTarget {
 			((MLSlot)slot).controlSlot = this;
 		getTopParent().getContainer().addSlotToContainer(slt);
 	}
+	
+	public ControlSlot(GuiElement par, Slot slt, Vector2i size) {
+		this(par, slt, new Vector2i(slt.xDisplayPosition, slt.yDisplayPosition), size);
+	}
 
+	public ControlSlot(GuiElement par, Slot slt) {
+		this(par, slt, new Vector2i(slt.xDisplayPosition, slt.yDisplayPosition), new Vector2i(18, 18));
+	}
+	
 	@Override
-	public void drawBackground() {
+	public void drawBackground(float partialTick) {
 		GL11.glScalef((float)getSize().x/18F, (float)getSize().y/18F, 1F);
 
 		if (renderBackground) {
@@ -53,9 +61,14 @@ public class ControlSlot extends GuiControl implements IStackMergeTarget {
 			GuiRenderUtils.drawGradientRect(1, 1, 1 + 16, 1 + 16, hoverColor, hoverColor);
 		}
 
-		super.drawBackground();
+		super.drawBackground(partialTick);
 	}
 
+	@Override
+	public void drawTooltip(int mX, int mY, float partialTick) { // Leaving this native so we don't conflict with NEI
+		//getGui().drawSpecialItemStackTooltip(slot.getStack(), mX, mY);
+	}
+	
 	@Override
 	public void guiTick() {
 		Vector2i abPos = getGlobalPosition().minus(getTopParent().getLocalPosition());

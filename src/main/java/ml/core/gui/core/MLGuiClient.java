@@ -16,13 +16,19 @@ import ml.core.gui.event.mouse.EventMouseScroll;
 import ml.core.gui.event.mouse.EventMouseUp;
 import ml.core.vec.Vector2i;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.client.FMLClientHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 // All this could be a lot cleaner, but that is the cost of trying to maintain universal compatibility with things such as NEI
+@SideOnly(Side.CLIENT)
 public class MLGuiClient extends GuiContainer {
 
 	protected TopParentGuiElement priElemement;
@@ -38,7 +44,7 @@ public class MLGuiClient extends GuiContainer {
 	
 	private List<Slot> eSlots = new ArrayList<Slot>();
 	@Override
-	public void drawScreen(int mX, int mY, float par3) {
+	public void drawScreen(int mX, int mY, float partialTick) {
 		if (mX != priElemement.gmousePos.x || mY != priElemement.gmousePos.y) {
 			priElemement.injectEvent(new EventMouseMove(priElemement, new Vector2i(mX, mY).minus(priElemement.gmousePos)));
 			priElemement.gmousePos.set(mX, mY);
@@ -51,8 +57,12 @@ public class MLGuiClient extends GuiContainer {
 				priElemement.injectEvent(new EventMouseEntered(priElemement.hoverElement));
 			}
 		}
-		super.drawScreen(mX, mY, par3);
-		matrixAndDraw(RenderStage.Overlay);
+		super.drawScreen(mX, mY, partialTick);
+		matrixAndDraw(RenderStage.Overlay, partialTick);
+		
+		if (priElemement.hoverElement != null) {
+			priElemement.hoverElement.drawTooltip(mX, mY, partialTick);
+		}
 	}
 	
 	public void refreshSize() {
@@ -78,21 +88,21 @@ public class MLGuiClient extends GuiContainer {
 	}
 	
 	/**
-	 * Calls {@link TopParentGuiElement#drawElement(RenderStage)} wrapped in a new GL Matrix<br/>
+	 * Calls {@link TopParentGuiElement#drawElement(RenderStage, float)} wrapped in a new GL Matrix<br/>
 	 * Mostly just for DRY code
 	 * @param stage
 	 */
-	private void matrixAndDraw(RenderStage stage) {
+	private void matrixAndDraw(RenderStage stage, float partialTick) {
 		//GL11.glPushMatrix();
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 		GL11.glDisable(GL11.GL_LIGHTING);
-		priElemement.drawElement(stage);
+		priElemement.drawElement(stage, partialTick);
 		//GL11.glPopMatrix();
 	}
 
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
-		matrixAndDraw(RenderStage.Background);
+		matrixAndDraw(RenderStage.Background, f);
 	}
 	
 	@Override
@@ -110,7 +120,12 @@ public class MLGuiClient extends GuiContainer {
 		super.drawSlotInventory(slt.getSlot());
 		GL11.glPopMatrix();
 	}
-
+	
+	@Override
+	public void drawHoveringText(List lines, int mX, int mY, FontRenderer font) {
+		super.drawHoveringText(lines, mX, mY, font);
+	}
+	
 	private GuiElement mouseDownEl;
 	private long mouseDownTime;
 	
@@ -166,6 +181,6 @@ public class MLGuiClient extends GuiContainer {
 	}
 	
 	public Minecraft getMinecraft() {
-		return this.mc;
+		return this.mc != null ? this.mc : FMLClientHandler.instance().getClient();
 	}
 }

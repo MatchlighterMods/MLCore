@@ -80,6 +80,8 @@ public class NBTUtils {
 			Object value = NBTUtils.getTagValue(parent.getTag(tagName));
 			if (defaultVal instanceof String)
 				return (T)value.toString();
+			if (defaultVal instanceof Boolean)
+				return (T)(Boolean)((Byte)value!=0);
 			
 			return (T)value;
 		} catch (Exception ex) {

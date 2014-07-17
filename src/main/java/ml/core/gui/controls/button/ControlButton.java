@@ -19,7 +19,7 @@ public class ControlButton extends GuiControl {
 	}
 
 	@Override
-	public void drawBackground() {
+	public void drawBackground(float partialTick) {
 		bindStyleTexture("button");
 		int p = enabled ? (hasHover() ? 40 : 20) : 0;
 		GuiRenderUtils.drawSlicedRect(0, 0, getSize().x, getSize().y, 0, p, 200, 20, 2, 2, 2, 2, 200, 80);

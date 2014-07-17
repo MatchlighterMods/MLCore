@@ -2,13 +2,14 @@ package ml.core.block;
 
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 public class ItemBlockDelegate extends ItemBlock {
 
-	public ItemBlockDelegate(int par1) {
+	public ItemBlockDelegate(Block par1) {
 		super(par1);
 		setHasSubtypes(true);
 	}

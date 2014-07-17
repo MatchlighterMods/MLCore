@@ -9,6 +9,7 @@ import ml.core.gui.event.EventFocusLost;
 import ml.core.gui.event.GuiEvent;
 import ml.core.vec.Rectangle;
 import ml.core.vec.Vector2i;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 
@@ -23,6 +24,7 @@ public abstract class GuiElement {
 	protected List<GuiElement> childObjects = new ArrayList<GuiElement>();
 	private Vector2i position;
 	private Vector2i size;
+	private boolean visible = true;
 	
 	/**
 	 * Use {@link GuiElement#getStyle()} for getting. It checks for null and defaults to the parent.
@@ -37,6 +39,12 @@ public abstract class GuiElement {
 		setSize(new Vector2i());
 	}
 
+	@SideOnly(Side.CLIENT)
+	public void constructClient() {
+		for (GuiElement elm : childObjects) {
+			elm.constructClient();
+		}
+	}
 	
 	// ------------------------ Tree Model ------------------------ //
 	public void clearChildren() {
@@ -105,6 +113,20 @@ public abstract class GuiElement {
 	public Side getSide() {
 		return getTopParent().getSide();
 	}
+
+	// ------------------------ Visibility Stuff ------------------------ //
+	
+	public void setVisibility(boolean visible) {
+		this.visible = visible;
+	}
+	
+	public boolean isVisible() {
+		return this.visible;
+	}
+	
+	public boolean isChildVisible(GuiElement elm) {
+		return elm.isVisible() && ((getParent() != null && getParent().isChildVisible(this)) || isTopParentElem());
+	}
 	
 	// ------------------------ Size Stuff ------------------------ //
 	public Vector2i getSize() { return size; }
@@ -115,6 +137,19 @@ public abstract class GuiElement {
 	
 	public void setSize(int w, int h) {
 		setSize(new Vector2i(w, h));
+	}
+	
+	public Rectangle calculateControlBox() {
+		int minx=Integer.MAX_VALUE, miny=Integer.MAX_VALUE, maxw=0, maxh=0;
+		
+		for (GuiElement elm : childObjects) {
+			minx = Math.min(minx, elm.getLocalPosition().x);
+			miny = Math.min(miny, elm.getLocalPosition().y);
+			maxw = Math.max(maxw, elm.getSize().x);
+			maxh = Math.max(maxh, elm.getSize().y);
+		}
+		
+		return new Rectangle(minx, miny, maxw, maxh);
 	}
 	
 	// ------------------------ Position Stuff ------------------------ //
@@ -190,7 +225,7 @@ public abstract class GuiElement {
 	
 	public GuiElement findElementAtLocal(Vector2i pos) {
 		for (GuiElement el : childObjects) {
-			if (el.pointInElement(pos)) {
+			if (isChildVisible(el) && el.pointInElement(pos)) {
 				GuiElement sel = el.findElementAtLocal(pos.copy().minus(el.getLocalPosition()));
 				if (sel != null)
 					return sel;
@@ -273,60 +308,69 @@ public abstract class GuiElement {
 	
 	/**
 	 * Your matrix will be localized to the parent element, so you need to shift by your local position.
+	 * @param partialTick TODO
 	 */
 	@SideOnly(Side.CLIENT)
-	public void drawBackground() {}
+	public void drawBackground(float partialTick) {}
 	
 	/**
 	 * Your matrix will be localized to the parent element, so you need to shift by your local position.
+	 * @param partialTick TODO
 	 */
-	//@SideOnly(Side.CLIENT)
-	//public void drawForeground() {}
+	@SideOnly(Side.CLIENT)
+	public void drawForeground(float partialTick) {}
 	
 	/**
 	 * Your matrix will be localized to the parent element, so you need to shift by your local position.
+	 * @param partialTick TODO
 	 */
 	@SideOnly(Side.CLIENT)
-	public void drawOverlay() {}
+	public void drawOverlay(float partialTick) {}
+	
+	@SideOnly(Side.CLIENT)
+	public void drawTooltip(int mX, int mY, float partialTick) {}
 	
 	/**
 	 * Always make a super call or a call to drawChilds() as your last call. It will render children.<br/>
 	 * Your matrix will be localized to the parent element, so you need to shift by your local position.</br>
 	 * You can also just override draw[Background|Overlay]() instead
+	 * @param partialTick TODO
 	 */
 	@SideOnly(Side.CLIENT)
-	public void drawElement(RenderStage stage) {
+	public void drawElement(RenderStage stage, float partialTick) {
 		GL11.glPushMatrix();
 		switch (stage) {
 		case Background:
-			drawBackground();
+			drawBackground(partialTick);
+			GL11.glPopMatrix();
+			GL11.glPushMatrix();
+			drawForeground(partialTick);
 			break;
-		//case Foreground:
-			//drawForeground();
-			//break;
 		case Overlay:
-			drawOverlay();
+			drawOverlay(partialTick);
 			break;
 		}
 		GL11.glPopMatrix();
-		drawChilds(stage);
+		drawChilds(stage, partialTick);
 	}
 	
 	/**
 	 * Called to draw children of the element. Automatically called if you don't
-	 * override {@link #drawElement(RenderStage)} or if you include a super call in your overriding method
+	 * override {@link #drawElement(RenderStage, float)} or if you include a super call in your overriding method
 	 * @param stage
 	 */
 	@SideOnly(Side.CLIENT)
-	protected void drawChilds(RenderStage stage) {
+	protected void drawChilds(RenderStage stage, float partialTick) {
 		Vector2i pos = getLocalPosition();
 		GL11.glPushMatrix();
 		GL11.glTranslatef(pos.x, pos.y, 0.0F);
 		for (GuiElement el : childObjects) {
-			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			GL11.glDisable(GL11.GL_LIGHTING);
-
-			el.drawElement(stage);
+			if (isChildVisible(el)) {
+				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+				GL11.glDisable(GL11.GL_LIGHTING);
+	
+				el.drawElement(stage, partialTick);
+			}
 		}
 		GL11.glPopMatrix();
 	}
@@ -360,7 +404,8 @@ public abstract class GuiElement {
 	@SideOnly(Side.CLIENT)
 	public void setCustomResource(String feat, String npath) {
 		if (!(this.style instanceof GuiStyleManip))
-			this.style = new GuiStyleManip(style);
+			this.style = new GuiStyleManip(getStyle());
+		
 		((GuiStyleManip)style).addResourceOverride(feat, npath);
 	}
 	
@@ -382,9 +427,13 @@ public abstract class GuiElement {
 	}
 	
 	@SideOnly(Side.CLIENT)
+	public Minecraft getMC() {
+		return getGui().getMinecraft();
+	}
+	
+	@SideOnly(Side.CLIENT)
 	public static enum RenderStage {
 		Background,
-		//Foreground,
 		Overlay,
 		SlotInventory;
 	}

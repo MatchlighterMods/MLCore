@@ -27,7 +27,7 @@ public class ControlTabManager extends GuiElement {
 		public ControlTabManager TabManager;
 
 		public static final int defaultSize = 24;
-		public int sizingSpeed = 8;
+		public int sizingSpeed = 32;
 		
 		public GuiTab(ControlTabManager ctm) {
 			super(ctm);
@@ -35,6 +35,12 @@ public class ControlTabManager extends GuiElement {
 			setSize(new Vector2i(defaultSize, defaultSize));
 		}
 
+		@Override
+		public void constructClient() {
+			setSize(getTargetSize());
+			super.constructClient();
+		}
+		
 		public int tabColor = 0x3590FF;
 		
 		@Override
@@ -42,6 +48,7 @@ public class ControlTabManager extends GuiElement {
 			super.guiTick();
 			
 			Vector2i trg = getTargetSize();
+			lastSize = new Vector2i(getSize());
 			getSize().x = Math.abs(getSize().x-trg.x) < sizingSpeed ? trg.x : getSize().x + (getSize().x > trg.x ? -sizingSpeed : sizingSpeed);
 			getSize().y = Math.abs(getSize().y-trg.y) < sizingSpeed ? trg.y : getSize().y + (getSize().y > trg.y ? -sizingSpeed : sizingSpeed);
 		}
@@ -56,8 +63,9 @@ public class ControlTabManager extends GuiElement {
 			return new Vector2i(tb.xCoord, tb.yCoord);
 		}
 
+		private Vector2i lastSize = new Vector2i();
 		@Override
-		public void drawBackground() {
+		public void drawBackground(float partialTick) {
 			getLocalPosition().glTranslate();
 			float red = ((tabColor >> 16) & 0xFF) /255F;
 			float green = ((tabColor >> 8) & 0xFF) /255F;
@@ -65,23 +73,26 @@ public class ControlTabManager extends GuiElement {
 
 			GL11.glColor4f(red, green, blue, 1.0F);
 			bindTexture(getStyle().getResource("ledger"));
-
+			
+			int sizeX = lastSize.x + (int)((getSize().x - lastSize.x) * partialTick);
+			int sizeY = lastSize.y + (int)((getSize().y - lastSize.y) * partialTick);
+			
 			switch (TabManager.side){
 			case Left:
-				GuiRenderUtils.drawTexturedModalRect(0, 0, 0, 0, this.getSize().x, this.getSize().y-4);
-				GuiRenderUtils.drawTexturedModalRect(0, 4, 0, 256-this.getSize().y+4, this.getSize().x, this.getSize().y-4);
+				GuiRenderUtils.drawTexturedModalRect(0, 0, 0, 0, sizeX, sizeY-4);
+				GuiRenderUtils.drawTexturedModalRect(0, 4, 0, 256-sizeY+4, sizeX, sizeY-4);
 				break;
 			case Right:
-				GuiRenderUtils.drawTexturedModalRect(0, 0, 256-this.getSize().x, 0, this.getSize().x, this.getSize().y-4);
-				GuiRenderUtils.drawTexturedModalRect(0, 4, 256-this.getSize().x, 256-this.getSize().y+4, this.getSize().x, this.getSize().y-4);
+				GuiRenderUtils.drawTexturedModalRect(0, 0, 256-sizeX, 0, sizeX, sizeY-4);
+				GuiRenderUtils.drawTexturedModalRect(0, 4, 256-sizeX, 256-sizeY+4, sizeX, sizeY-4);
 				break;
 			case Top:
-				GuiRenderUtils.drawTexturedModalRect(0, 0, 0, 0, this.getSize().x-4, this.getSize().y);
-				GuiRenderUtils.drawTexturedModalRect(4, 0, 256-this.getSize().x+4, 0, this.getSize().x-4, this.getSize().y);
+				GuiRenderUtils.drawTexturedModalRect(0, 0, 0, 0, sizeX-4, sizeY);
+				GuiRenderUtils.drawTexturedModalRect(4, 0, 256-sizeX+4, 0, sizeX-4, sizeY);
 				break;
 			case Bottom:
-				GuiRenderUtils.drawTexturedModalRect(0, 0, 0, 256-this.getSize().y, this.getSize().x-4, this.getSize().y);
-				GuiRenderUtils.drawTexturedModalRect(4, 0, 256-this.getSize().x+4, 256-this.getSize().y, this.getSize().x-4, this.getSize().y);
+				GuiRenderUtils.drawTexturedModalRect(0, 0, 0, 256-sizeY, sizeX-4, sizeY);
+				GuiRenderUtils.drawTexturedModalRect(4, 0, 256-sizeX+4, 256-sizeY, sizeX-4, sizeY);
 				break;
 			}
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);

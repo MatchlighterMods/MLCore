@@ -10,7 +10,7 @@ import net.minecraft.world.gen.structure.MapGenStructure;
 public abstract class StructureGeneratorBase extends MapGenStructure implements IFeatureGenerator {
 
 	@Override
-	public boolean doGeneration(Random rand, int chunkX, int chunkZ, World world, boolean isRetroGen, int oldVersion) {
+	public boolean doPopulate(Random rand, int chunkX, int chunkZ, World world, boolean isRetroGen, int oldVersion) {
 		func_151539_a(world.getChunkProvider(), world, chunkX, chunkZ, null);
 		return generateStructuresInChunk(world, rand, chunkX, chunkZ);
 	}

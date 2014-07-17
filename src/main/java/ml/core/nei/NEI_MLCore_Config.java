@@ -2,8 +2,10 @@ package ml.core.nei;
 
 import ml.core.gui.core.GuiElement;
 import ml.core.gui.core.MLGuiClient;
+import ml.core.gui.core.TopParentGuiElement;
 import ml.core.vec.Rectangle;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import codechicken.nei.VisiblityData;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 import codechicken.nei.api.INEIGuiAdapter;
@@ -41,12 +43,22 @@ public class NEI_MLCore_Config implements IConfigureNEI {
 				MLGuiClient mlg = (MLGuiClient)gui;
 				GuiElement elm = mlg.getPrimaryElement();
 				for (GuiElement ge : elm.getDescendants()) {
-					if (ge.getGlobalBounds().intersects(new Rectangle(x, y, w, h))) {
+					if (ge.getParent().isChildVisible(ge) && ge.getGlobalBounds().intersects(new Rectangle(x, y, w, h))) {
 						return true;
 					}
 				}
 			}
 			return false;
+		}
+		
+		@Override
+		public VisiblityData modifyVisiblity(GuiContainer gui, VisiblityData currentVisibility) {
+			if (gui instanceof MLGuiClient) {
+				MLGuiClient mlg = (MLGuiClient)gui;
+				TopParentGuiElement elm = mlg.getPrimaryElement();
+				currentVisibility.showNEI = elm.shouldShowNEI();
+			}
+			return super.modifyVisiblity(gui, currentVisibility);
 		}
 	}
 }

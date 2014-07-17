@@ -2,7 +2,6 @@
 *.blend2
 
 .settings
-.gradle
 build/
 eclipse/
 bin/
@@ -19,3 +18,5 @@ bin/
 !/src/*
 !/*.gradle
 !/*.md
+
+.gradle/

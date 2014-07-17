@@ -1,30 +1,43 @@
 package ml.core.network;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.MessageToMessageCodec;
+
 import java.lang.reflect.Constructor;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.logging.Level;
 
 import ml.core.internal.CoreLogger;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.NetHandlerPlayServer;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteStreams;
 
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.IPacketHandler;
-import cpw.mods.fml.common.network.Player;
+import cpw.mods.fml.common.network.FMLEmbeddedChannel;
+import cpw.mods.fml.common.network.FMLOutboundHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 /**
  * Thanks to MachineMuse for the idea on how to implement this
  * @author Matchlighter
  */
-public class PacketHandler implements IPacketHandler {
+public class PacketHandler extends MessageToMessageCodec<FMLProxyPacket, MLPacket> {
 		
+	private EnumMap<Side, FMLEmbeddedChannel> channels;
 	protected static BiMap<Integer, Class<? extends MLPacket>> PacketTypes = HashBiMap.create();
+	
+	public PacketHandler(String channel) {
+		this.channels = NetworkRegistry.INSTANCE.newChannel(channel, this);
+	}
 	
 	public static void addHandler(Class<? extends MLPacket> pktClass){
 		PacketTypes.put(PacketTypes.size(), pktClass);
@@ -36,45 +49,73 @@ public class PacketHandler implements IPacketHandler {
 		}
 	}
 	
-	@Override
-	public void onPacketData(INetworkManager manager, Packet250CustomPayload packet, Player player) {
-		EntityPlayer entPl = (EntityPlayer)player;
-		
-		MLPacket mlPkt = tryCastPacket(packet, entPl);
-		if (mlPkt != null){
-			try {
-				mlPkt.handle(entPl, FMLCommonHandler.instance().getEffectiveSide());
-			} catch (Exception e) {
-				onError(e, mlPkt);
-				e.printStackTrace();
-			}
-		} else {
-			CoreLogger.severe("("+this.getClass().toString()+") received unknown packet");
-		}
-	}
-	
 	protected void onError(Throwable e, MLPacket mlPkt) {
 		CoreLogger.log(Level.SEVERE, "Error handling packet in channel ("+mlPkt.channel+")", e);
 	}
 
-	private static MLPacket tryCastPacket(Packet250CustomPayload pkt, EntityPlayer pl){
-		ByteArrayDataInput dat = ByteStreams.newDataInput(pkt.data);
-		int pkId = dat.readInt();
+	public static int findPacketId(Class<? extends MLPacket> pktClass){
+		return PacketTypes.inverse().get(pktClass);
+	}
+
+	@Override
+	protected void encode(ChannelHandlerContext ctx, MLPacket msg, List<Object> out) throws Exception {
+		out.add(msg.convertToFMLPacket());
+	}
+
+	@Override
+	protected void decode(ChannelHandlerContext ctx, FMLProxyPacket msg, List<Object> out) throws Exception {
+		ByteBuf buf = msg.payload();
+		int pkId = buf.readInt();
 		if (PacketTypes.get(pkId) != null){
 			try {
-				Constructor<? extends MLPacket> contructor = PacketTypes.get(pkId).getConstructor(EntityPlayer.class, ByteArrayDataInput.class);
-				MLPacket nPkt = contructor.newInstance(pl, dat);
-				nPkt.channel = pkt.channel;
-				return nPkt;
+				Constructor<? extends MLPacket> contructor = PacketTypes.get(pkId).getConstructor(ByteBuf.class);
+				MLPacket nPkt = contructor.newInstance(buf);
+				nPkt.channel = msg.channel();
+				
+				Side side = msg.getTarget();
+				if (side == Side.CLIENT) {
+					nPkt.handleClientSide(getClientPlayer());
+				} else {
+					INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
+					nPkt.handleServerSide(((NetHandlerPlayServer) netHandler).playerEntity);
+				}
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
 		}
-		return null;
 	}
 	
-	public static int findPacketId(Class<? extends MLPacket> pktClass){
-		return PacketTypes.inverse().get(pktClass);
+	@SideOnly(Side.CLIENT)
+	private EntityPlayer getClientPlayer() {
+		return Minecraft.getMinecraft().thePlayer;
+	}
+	
+	public void sendToAll(MLPacket message) {
+		this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALL);
+		this.channels.get(Side.SERVER).writeAndFlush(message);
+	}
+
+	public void sendTo(MLPacket message, EntityPlayerMP player) {
+		this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
+		this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(player);
+		this.channels.get(Side.SERVER).writeAndFlush(message);
+	}
+
+	public void sendToAllAround(MLPacket message, NetworkRegistry.TargetPoint point) {
+		this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.ALLAROUNDPOINT);
+		this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(point);
+		this.channels.get(Side.SERVER).writeAndFlush(message);
+	}
+
+	public void sendToDimension(MLPacket message, int dimensionId) {
+		this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.DIMENSION);
+		this.channels.get(Side.SERVER).attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(dimensionId);
+		this.channels.get(Side.SERVER).writeAndFlush(message);
+	}
+	
+	public void sendToServer(MLPacket message) {
+		this.channels.get(Side.CLIENT).attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.TOSERVER);
+		this.channels.get(Side.CLIENT).writeAndFlush(message);
 	}
 }

@@ -42,7 +42,7 @@ public class GuiStyleManip extends GuiStyle {
 	@Override
 	protected ResourceLocation findResource(String feat) {
 		if (resOverrides.containsKey(feat))
-			return new ResourceLocation(resOverrides.get(feat));
+			return new ResourceLocation(resOverrides.get(feat)+".png");
 		return parentStyle.findResource(feat);
 	}
 	

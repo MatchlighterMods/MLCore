@@ -1,6 +1,8 @@
 package ml.core.gui.core;
 
 import ml.core.gui.core.style.GuiStyle;
+import ml.core.gui.event.EventGuiClosing;
+import ml.core.gui.event.GuiEvent;
 import ml.core.vec.Vector2i;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -10,7 +12,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 /**
- * TopParentGuiObjects house all other GuiObjects in a Gui
+ * TopParentGuiObjects house all other GuiObjects in a Gui. <br/>
  * May also be a child element
  * @author Matchlighter
  */
@@ -29,6 +31,11 @@ public abstract class TopParentGuiElement extends GuiElement {
 	
 	public GuiElement hoverElement;
 	public GuiElement focusedElement;
+	
+	/**
+	 * This inventory belongs to the gui. Any items will be dropped when it is closed. By default it can store 64 stacks.
+	 */
+	public DummyInventory guiInventory = new DummyInventory(64);
 
 	public TopParentGuiElement(EntityPlayer epl, Side side) {
 		super(null);
@@ -91,6 +98,19 @@ public abstract class TopParentGuiElement extends GuiElement {
 		} else {
 			sendPacket(payload, Side.CLIENT);
 		}
+	}
+	
+	@Override
+	public void handleEvent(GuiEvent evt) {
+		if (evt instanceof EventGuiClosing && side == Side.SERVER) {
+			guiInventory.dumpItems(player);
+		}
+		
+		super.handleEvent(evt);
+	}
+	
+	public boolean shouldShowNEI() {
+		return true;
 	}
 	
 	public abstract ItemStack transferStackFromSlot(EntityPlayer epl, Slot slot);

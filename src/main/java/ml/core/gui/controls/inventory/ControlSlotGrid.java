@@ -49,6 +49,7 @@ public class ControlSlotGrid extends ControlMultiSlotBase {
 		return new Vector2i((idx%rowLength)*18, idx/rowLength*18);
 	}
 	
+	@Override
 	protected ControlSlot makeControlSlot(Slot slot) {
 		return new ControlSlot(this, slot, positionSlot(slots.size()), new Vector2i(18,18));
 	}

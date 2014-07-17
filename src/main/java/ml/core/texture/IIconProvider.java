@@ -1,7 +1,7 @@
 package ml.core.texture;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 
 public interface IIconProvider {
-	public void registerIcons(IconRegister ireg);
+	public void registerIcons(IIconRegister ireg);
 }

@@ -1,9 +1,12 @@
 package ml.core.gui.core;
 
+import java.util.Iterator;
+
 import ml.core.gui.event.EventDataPacketReceived;
 import ml.core.gui.event.EventGuiClosing;
 import ml.core.internal.PacketContainerData;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -43,6 +46,22 @@ public class MLContainer extends Container {
 		priElemement.injectEvent(new EventDataPacketReceived(priElemement, pload, side)); // TODO Test this stuff
 	}
 
+	/**
+	 * If a data packet is sent right when a container is opened, it may be received early on the other side.
+	 * In this case, it is queued and waits for construction to finish. This method checks the queue and processes and queued packets.
+	 * There is no need to call this yourself.
+	 */
+	public final void checkPacketQueue() {
+		Iterator<PacketContainerData> i = PacketContainerData.packetQ.get(priElemement.player).iterator();
+		while (i.hasNext()) {
+			PacketContainerData pcd = i.next();
+			if (pcd.winId == this.windowId) {
+				i.remove();
+				handleDataPacket(pcd.payload, priElemement.side);
+			}
+		}
+	}
+	
 	public void sendPacket(NBTTagCompound payload, Side sendTo) {
 		Packet250CustomPayload pkt = new PacketContainerData(windowId, payload).convertToPkt250();
 		if (sendTo == Side.SERVER) {
@@ -64,5 +83,14 @@ public class MLContainer extends Container {
 	 */
 	public Slot addSlotToContainer(Slot par1Slot) {
 		return super.addSlotToContainer(par1Slot);
+	}
+	
+	public void initMissingHotbarSlots() {
+		InventoryPlayer pli = priElemement.player.inventory;
+		for (int i=0; i<9; i++) {
+			if (getSlotFromInventory(pli, i) == null) {
+				addSlotToContainer(new Slot(pli, i, 0, 0));
+			}
+		}
 	}
 }

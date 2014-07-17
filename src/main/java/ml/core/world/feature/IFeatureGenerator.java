@@ -6,7 +6,7 @@ import net.minecraft.world.World;
 
 public interface IFeatureGenerator {
 
-	public boolean doGeneration(Random rand, int chunkX, int chunkZ, World world, boolean isRetroGen, int oldVersion);
+	public boolean doPopulate(Random rand, int chunkX, int chunkZ, World world, boolean isRetroGen, int oldVersion);
 	
 	public String getGenIdentifier();
 	

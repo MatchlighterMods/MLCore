@@ -28,7 +28,7 @@ public abstract class ControlMultiSlotBase extends GuiControl implements IStackM
 	 * Override this to create non-standard ControlSlots.
 	 */
 	protected ControlSlot makeControlSlot(Slot slot) {
-		return new ControlSlot(this, slot, new Vector2i(slot.xDisplayPosition, slot.yDisplayPosition), new Vector2i(18,18));
+		return new ControlSlot(this, slot);
 	}
 	
 	public List<ControlSlot> getMergeTargets(ItemStack is) {
