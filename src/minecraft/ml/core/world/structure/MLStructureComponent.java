@@ -29,10 +29,11 @@ public abstract class MLStructureComponent extends StructureComponent {
 	
 	/**
 	 * Post constructs the component. Constructors can be a pain to override and you have to make sure you keep the same signature for everything to work. This is easier.
+	 * @param previous The previous component. May be null.
 	 */
 	public MLStructureComponent constructComponent(MLStructureComponent previous, int rotation, ChunkCoordinates entranceCoords, Random rnd) {
 		this.rotation = rotation;
-		this.componentSouth = true; // South is entrance
+		this.componentSouth = previous != null; // South is entrance
 		
 		int centerdist = this.lboundingbox.maxZ;
 		this.position = new ChunkCoordinates(entranceCoords.posX + StructureHelper.getRotatedX(0, -centerdist, this.rotation), entranceCoords.posY, entranceCoords.posZ + StructureHelper.getRotatedZ(0, -centerdist, this.rotation));
@@ -42,7 +43,7 @@ public abstract class MLStructureComponent extends StructureComponent {
 	
 	public void setLocalBoundingBox(StructureBoundingBox nbox) {
 		lboundingbox = nbox;
-		refreshBoundingBox();
+		if (position != null) refreshBoundingBox();
 	}
 	
 	public void refreshBoundingBox() {
@@ -97,9 +98,9 @@ public abstract class MLStructureComponent extends StructureComponent {
 	public StructureBoundingBox globalizeBoundingBox(StructureBoundingBox box) {
 		int nx, px, nz, pz;
 		if (rotation == 1) {
-			nx = box.minZ;
+			nx = box.maxZ;
 			nz = box.maxX;
-			px = box.maxZ;
+			px = box.minZ;
 			pz = box.minX;
 		} else if (rotation == 2) {
 			nx = box.maxX;
@@ -107,9 +108,9 @@ public abstract class MLStructureComponent extends StructureComponent {
 			px = box.minX;
 			pz = box.minZ;
 		} else if (rotation == 3) {
-			nx = box.maxZ;
+			nx = box.minZ;
 			nz = box.minX;
-			px = box.minZ;
+			px = box.maxZ;
 			pz = box.maxX;
 		} else {
 			nx = box.minX;
@@ -184,7 +185,7 @@ public abstract class MLStructureComponent extends StructureComponent {
 					rn -= wc.componentWeight;
 					
 					if (rn < 0) {
-						MLStructureComponent nComponent = createComponent(wc, prev, (rotation + oRotation) % 4, existingComponents, entrancePosition, rnd);
+						MLStructureComponent nComponent = createComponent(wc, prev, (prev.rotation + oRotation) % 4, existingComponents, entrancePosition, rnd);
 						
 						if (nComponent != null) {
 							componentCounter--;
