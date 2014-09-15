@@ -92,7 +92,7 @@ public abstract class TileEntityConnectable extends TileEntity {
 	
 	public void refreshConnection(){
 		if (linkedDir != ForgeDirection.UNKNOWN) {
-			TileEntity te = worldObj.getBlockTileEntity(xCoord+linkedDir.offsetX, yCoord+linkedDir.offsetY, zCoord+linkedDir.offsetZ);
+			TileEntity te = worldObj.getTileEntity(xCoord+linkedDir.offsetX, yCoord+linkedDir.offsetY, zCoord+linkedDir.offsetZ);
 			if (!(te instanceof TileEntityConnectable) || !canConnectWith((TileEntityConnectable)te) ||
 					((TileEntityConnectable)te).linkedDir != linkedDir.getOpposite()){
 				linkedDir = ForgeDirection.UNKNOWN;
