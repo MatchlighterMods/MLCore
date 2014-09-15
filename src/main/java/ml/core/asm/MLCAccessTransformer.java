@@ -5,9 +5,9 @@ import java.lang.reflect.Method;
 
 import cpw.mods.fml.common.asm.transformers.AccessTransformer;
 
-public class MLCAccesTransformer extends AccessTransformer {
+public class MLCAccessTransformer extends AccessTransformer {
 
-	public MLCAccesTransformer() throws IOException {
+	public MLCAccessTransformer() throws IOException {
 		readMapFile("mlcore_at.cfg");
 	}
 

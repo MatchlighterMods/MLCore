@@ -47,7 +47,7 @@ public class MLCore implements IFMLLoadingPlugin {
 	
 	@Override
 	public String[] getASMTransformerClass() {
-		return new String[]{"ml.core.asm.MLCAccesTransformer"};
+		return new String[]{"ml.core.asm.MLCAccessTransformer"};
 	}
 
 	@Override
