@@ -134,7 +134,7 @@ public class RayTrace {
 		Vec3 look = player.getLook(1.0F);
 		double reach = world.isRemote ? getReachDist_client() : getReachDist_server((EntityPlayerMP) player);
 		Vec3 end = strt.addVector(look.xCoord * reach, look.yCoord * reach, look.zCoord * reach);
-		return Block.blocksList[world.getBlockId(x, y, z)].collisionRayTrace(world, x, y, z, strt, end);
+		return world.getBlock(x, y, z).collisionRayTrace(world, x, y, z, strt, end);
 	}
 
 	public static double getReachDist_server(EntityPlayerMP player){
