@@ -60,7 +60,7 @@ public class WorldRenderUtils {
 				IItemRenderer cstm = MinecraftForgeClient.getItemRenderer(stack, ItemRenderType.ENTITY);
 				boolean renderAs3DBlock = cstm != null && cstm.shouldUseRenderHelper(ItemRenderType.ENTITY, stack, ItemRendererHelper.BLOCK_3D);
 				if (isBlock || renderAs3DBlock){
-					if (renderAs3DBlock || RenderBlocks.renderItemIn3d(Block.blocksList[stack.itemID].getRenderType())) {
+					if (renderAs3DBlock || RenderBlocks.renderItemIn3d(Block.getBlockFromItem(stack.getItem()).getRenderType())) {
 						GL11.glScalef(1.5F, 1.5F, 1.5F);
 						GL11.glRotatef(90F, 0, 1F, 0);
 					} else {
