@@ -3,7 +3,7 @@ package ml.core.tile;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
 public abstract class TileEntityConnectable extends TileEntity {
