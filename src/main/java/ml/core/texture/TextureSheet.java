@@ -38,14 +38,19 @@ public class TextureSheet {
 		}
 		
 		@Override
-		public boolean load(IResourceManager manager, ResourceLocation location)
-				throws IOException {
+		public boolean load(IResourceManager manager, ResourceLocation location) {
 			int offX = index%tilesX * swidth;
 			int offY = index/tilesY * sheight;
 			
 			BufferedImage spri = masterImg.getSubimage(offX, offY, swidth, sheight);
 			ByteArrayOutputStream ot = new ByteArrayOutputStream();
-			ImageIO.write(spri, "png", ot);
+			try
+			{
+				ImageIO.write(spri, "png", ot);
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+			}
 			SimpleResource res = new SimpleResource(location, new ByteArrayInputStream(ot.toByteArray()), null, null);
 			
 			super.loadSprite(res);
