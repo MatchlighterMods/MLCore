@@ -52,7 +52,7 @@ public class ItemDelegator <DCls extends DelegateItem> extends Item {
 	
 	public DCls subItem(ItemStack is) {
 		if (is != null && is.getItem() == this) {
-			return subItem(is.getItemDamage());
+			return subItem(is.getCurrentDurability());
 		}
 		return nullDelegate;
 	}
