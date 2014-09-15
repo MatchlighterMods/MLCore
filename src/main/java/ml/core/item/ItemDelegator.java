@@ -92,7 +92,7 @@ public class ItemDelegator <DCls extends DelegateItem> extends Item {
 	}
 	
 	@Override
-	public ItemStack getContainerItemStack(ItemStack itemStack) {
+	public ItemStack getContainerItem(ItemStack itemStack) {
 		return subItem(itemStack).getContainerItemStack(itemStack);
 	}
 	
