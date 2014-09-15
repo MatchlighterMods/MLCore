@@ -11,9 +11,9 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet250CustomPayload;
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
+//import net.minecraft.network.Packet250CustomPayload;
+//import cpw.mods.fml.common.network.PacketDispatcher;
+//import cpw.mods.fml.common.network.Player;
 import cpw.mods.fml.relauncher.Side;
 
 public class MLContainer extends Container {
@@ -62,14 +62,14 @@ public class MLContainer extends Container {
 		}
 	}
 	
-	public void sendPacket(NBTTagCompound payload, Side sendTo) {
+/**	public void sendPacket(NBTTagCompound payload, Side sendTo) {
 		Packet250CustomPayload pkt = new PacketContainerData(windowId, payload).convertToPkt250();
 		if (sendTo == Side.SERVER) {
 			PacketDispatcher.sendPacketToServer(pkt);
 		} else {
 			PacketDispatcher.sendPacketToPlayer(pkt, (Player)priElemement.player);
 		}
-	}
+	}*/
 	
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2) {
