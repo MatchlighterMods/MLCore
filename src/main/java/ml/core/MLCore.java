@@ -46,11 +46,6 @@ public class MLCore implements IFMLLoadingPlugin {
 	}
 	
 	@Override
-	public String[] getLibraryRequestClass() {
-		return null;
-	}
-
-	@Override
 	public String[] getASMTransformerClass() {
 		return new String[]{"ml.core.asm.MLCAccesTransformer"};
 	}
@@ -68,5 +63,19 @@ public class MLCore implements IFMLLoadingPlugin {
 	@Override
 	public void injectData(Map<String, Object> data) {
 		
+	}
+
+	/**
+	 * Return an optional access transformer class for this coremod. It will
+	 * be injected post-deobf
+	 * so ensure your ATs conform to the new srgnames scheme.
+	 *
+	 * @return the name of an access transformer class or null if none is
+	 * provided
+	 */
+	@Override
+	public String getAccessTransformerClass()
+	{
+		return null;
 	}
 }
