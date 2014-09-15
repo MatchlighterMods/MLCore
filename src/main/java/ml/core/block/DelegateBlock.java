@@ -6,14 +6,14 @@ import java.util.Random;
 
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
@@ -31,7 +31,7 @@ public class DelegateBlock {
 	protected String unlocalizedName;
 	
 	@SideOnly(Side.CLIENT)
-	protected Icon itemIcon;
+	protected IIcon itemIcon;
 	protected String iconLocation;
 	
 	public DelegateBlock() {}
@@ -283,12 +283,12 @@ public class DelegateBlock {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(int side, int subMeta) {
+	public IIcon getIcon(int side, int subMeta) {
 		return itemIcon;
 	}
 
 	@SideOnly(Side.CLIENT)
-	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
+	public IIcon getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
 		return this.getIcon(side, getSubMeta(world, x, y, z));
 	}
 
@@ -298,7 +298,7 @@ public class DelegateBlock {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister ireg) {
+	public void registerIcons(IIconRegister ireg) {
 		this.itemIcon = ireg.registerIcon(iconLocation);
 	}
 
