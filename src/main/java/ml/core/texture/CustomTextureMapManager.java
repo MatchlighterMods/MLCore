@@ -3,9 +3,9 @@ package ml.core.texture;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.event.ForgeSubscribe;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -30,7 +30,7 @@ public class CustomTextureMapManager {
 		} catch (IOException e) {}
 	}
 	
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void reregisterIcons(TextureStitchEvent.Pre evt) {
 		Minecraft mc = Minecraft.getMinecraft();
 		if (evt.map.textureType==0) {
