@@ -68,7 +68,7 @@ public class DummyInventory implements IInventory {
 	public void dumpItems(EntityPlayer epl) {
 		for (ItemStack is : stacks) {
 			if (is != null) {
-				epl.dropPlayerItem(is);
+				epl.dropPlayerItemWithRandomChoice(is, false);
 			}
 		}
 	}
