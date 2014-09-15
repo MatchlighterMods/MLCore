@@ -69,9 +69,9 @@ public class ItemDelegator <DCls extends DelegateItem> extends Item {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void getSubItems(int par1, CreativeTabs par2CreativeTabs, List par3List) {
+	public void getSubItems(Item item, CreativeTabs tabs, List list) {
 		for (DCls sub : subItems.values()) {
-			sub.addCreativeStacks(par2CreativeTabs, par3List);
+			sub.addCreativeStacks(tabs, list);
 		}
 	}
 	
