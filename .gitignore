@@ -1,0 +1,13 @@
+/*
+!/.travis.yml
+!/.gitignore
+!/gradle/
+!/gradle/*
+!/gradle*
+!/src/
+!/src/*
+!/*.gradle
+!/*.md
+.gradle
+gitlog-to-changelog
+CHANGELOG
