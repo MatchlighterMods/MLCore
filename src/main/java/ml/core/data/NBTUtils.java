@@ -24,18 +24,36 @@ import net.minecraft.nbt.NBTTagString;
 public class NBTUtils {
 
 	public static <T> T getTagValue(NBTBase tag) {
-		if
-		(tag instanceof NBTTagFloat)		{return (T)(Object)((NBTTagFloat)tag).data;}	else if
-		(tag instanceof NBTTagInt)			{return (T)(Object)((NBTTagInt)tag).data;}		else if
-		(tag instanceof NBTTagShort)		{return (T)(Object)((NBTTagShort)tag).data;}	else if
-		(tag instanceof NBTTagLong)			{return (T)(Object)((NBTTagLong)tag).data;}		else if
-		(tag instanceof NBTTagDouble)		{return (T)(Object)((NBTTagDouble)tag).data;}	else if
-		(tag instanceof NBTTagByte)			{return (T)(Object)((NBTTagByte)tag).data;}		else if
-		
-		(tag instanceof NBTTagString)		{return (T)((NBTTagString)tag).data;}			else if
-		(tag instanceof NBTTagIntArray)		{return (T)((NBTTagIntArray)tag).intArray;}		else if
-		(tag instanceof NBTTagByteArray)	{return (T)((NBTTagByteArray)tag).byteArray;}	else if
-		(tag instanceof NBTTagCompound)		{return (T)tag;}
+		if(tag instanceof NBTTagFloat){
+			return (T)(Object)((NBTTagFloat)tag).getFloat();
+		}
+		else if(tag instanceof NBTTagInt) {
+			return (T)(Object)((NBTTagInt)tag).getInt();
+		}
+		else if(tag instanceof NBTTagShort) {
+			return (T)(Object)((NBTTagShort)tag).getShort();
+		}
+		else if(tag instanceof NBTTagLong) {
+			return (T)(Object)((NBTTagLong)tag).getLong();
+		}
+		else if(tag instanceof NBTTagDouble) {
+			return (T)(Object)((NBTTagDouble)tag).getDouble();
+		}
+		else if(tag instanceof NBTTagByte) {
+			return (T)(Object)((NBTTagByte)tag).getByte();
+		}
+		else if(tag instanceof NBTTagString) {
+			return (T)((NBTTagString)tag).getString();
+		}
+		else if(tag instanceof NBTTagIntArray) {
+			return (T)((NBTTagIntArray)tag).getIntArray();
+		}
+		else if(tag instanceof NBTTagByteArray) {
+			return (T)((NBTTagByteArray)tag).getByteArray();
+		}
+		else if(tag instanceof NBTTagCompound) {
+			return (T)tag;
+		}
 		return null;
 	}
 	
