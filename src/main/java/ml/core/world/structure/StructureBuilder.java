@@ -9,6 +9,7 @@ import net.minecraft.block.BlockRailBase;
 import net.minecraft.block.BlockRedstoneRepeater;
 import net.minecraft.block.BlockStairs;
 import net.minecraft.block.BlockTorch;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemDoor;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
@@ -173,9 +174,9 @@ public class StructureBuilder {
 		}
 	}
 	
-	public int getBlockIdAt(int rx, int ry, int rz) {
+	public Block getBlockAt(int rx, int ry, int rz) {
 		ChunkCoordinates p = getAbsCoords(rx, ry, rz);
-		return world.getBlockId(p.posX, p.posY, p.posZ);
+		return world.getBlock(p.posX, p.posY, p.posZ);
 	}
 	
 	private void setBlockAtAbs(int ax, int ay, int az, Block block, int blockMeta) {
@@ -184,7 +185,7 @@ public class StructureBuilder {
 		if (block instanceof BlockDoor) {
 			ItemDoor.placeDoorBlock(world, ax, ay, az, blockMeta, block);
 		} else {
-			world.setBlock(ax, ay, az, block != null ? block.blockID : 0, blockMeta, 3);
+			world.setBlock(ax, ay, az, block != null ? block : Blocks.air, blockMeta, 3);
 		}
 	}
 	
@@ -272,7 +273,7 @@ public class StructureBuilder {
 		for (int x=startX; x<=endX; x++) {
 			for (int z=startZ; z<=endZ; z++) {
 				for (int y=startY; getAbsY(y)>0; y--) {
-					if (getBlockIdAt(x, y, z) != 0) {
+					if (getBlockAt(x, y, z).isAir(world, x, y, z)) {
 						break;
 					}
 					setBlockAt(x, y, z, block, blockMeta);
@@ -302,7 +303,7 @@ public class StructureBuilder {
 			
 			return rot | (cRotation & 8);
 			
-		} else if (block == Block.ladder) {
+		} else if (block == Blocks.ladder) {
 			if (rot4 == 0) return 2;
 			if (rot4 == 1) return 5;
 			else if (rot4 == 2) return 3;
@@ -314,7 +315,7 @@ public class StructureBuilder {
 			else if (rot4 == 2) return 3;
 			else if (rot4 == 3) return 2;
 			
-		} else if (block instanceof BlockPistonBase || block instanceof BlockLever || block == Block.dispenser) {
+		} else if (block instanceof BlockPistonBase || block instanceof BlockLever || block == Blocks.dispenser) {
 			// TODO
 		} else if (block instanceof BlockRedstoneRepeater) {
 			return rot4;
