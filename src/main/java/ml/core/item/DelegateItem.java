@@ -2,13 +2,13 @@ package ml.core.item;
 
 import java.util.List;
 
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -22,7 +22,7 @@ public class DelegateItem {
 	protected String unlocalizedName;
 	
 	@SideOnly(Side.CLIENT)
-	protected Icon itemIcon;
+	protected IIcon itemIcon;
 	protected String iconLocation;
 	
 	public DelegateItem() {}
@@ -110,17 +110,17 @@ public class DelegateItem {
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(int meta) {
+	public IIcon getIcon(int meta) {
 		return itemIcon;
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(ItemStack stack, int pass) {
+	public IIcon getIcon(ItemStack stack, int pass) {
 		return getIcon(stack.getItemDamage());
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public Icon getIconInHand(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
+	public IIcon getIconInHand(ItemStack stack, int renderPass, EntityPlayer player, ItemStack usingItem, int useRemaining) {
 		return getIcon(stack, renderPass);
 	}
 	
@@ -130,7 +130,7 @@ public class DelegateItem {
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister ireg) {
+	public void registerIcons(IIconRegister ireg) {
 		this.itemIcon = ireg.registerIcon(iconLocation);
 	}
 	
