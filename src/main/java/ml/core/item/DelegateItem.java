@@ -106,7 +106,7 @@ public class DelegateItem {
 	/* ---------------------------- ClientSide ---------------------------- */
 	
 	public int getColorFromItemStack(ItemStack stack, int par2) {
-		return 16777215;
+		return 0xFFFFFF;
 	}
 	
 	@SideOnly(Side.CLIENT)
