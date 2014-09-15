@@ -122,7 +122,7 @@ public class RayTrace {
 			mop.blockX = blv3.x;
 			mop.blockY = blv3.y;
 			mop.blockZ = blv3.z;
-			mop.typeOfHit = MovingObjectPosition.MovingObjectType.TILE;
+			mop.typeOfHit = MovingObjectPosition.MovingObjectType.BLOCK;
 			if (blk != null)
 				c_cuboid.translate(new Vector3d(-blv3.x, -blv3.y, -blv3.z)).setToBlockBounds(blk);
 		}
