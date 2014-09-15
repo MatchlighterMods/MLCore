@@ -3,12 +3,12 @@
   "modid": "MLCore",
   "name": "Matchlighter Core",
   "description": "A collection of common functions used in many of Matchlighter's mods",
-  "version": "@VERSION@",
-  "mcversion": "@MCVERSION@",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
   "authors": [
-    "Matchlighter"
+    "Matchlighter", "The_NetZ"
   ],
   "credits": "",
   "logoFile": "",

@@ -19,7 +19,7 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
 import cpw.mods.fml.relauncher.Side;
 
-@Mod(modid="MLCore", name="MLCore")
+@Mod(modid="MLCore", name="MLCore", version = "@VERSION@")
 @NetworkMod(clientSideRequired=false, serverSideRequired=false, channels={PacketHandler.defChan}, packetHandler=PacketHandler.class)
 @TransformerExclusions({"ml"})
 public class MLCore implements IFMLLoadingPlugin {
