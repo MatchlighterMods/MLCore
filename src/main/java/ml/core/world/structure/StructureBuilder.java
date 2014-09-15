@@ -15,7 +15,7 @@ import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.ChunkPosition;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
-import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Helper class for making the creation of rotatable structures easier.<br/>
@@ -91,20 +91,20 @@ public class StructureBuilder {
 		
 		switch (mrot) {
 		case 0:
-			return center.x+x;
+			return center.chunkPosX+x;
 		case 1:
-			return center.x-z;
+			return center.chunkPosX-z;
 		case 2:
-			return center.x-x;
+			return center.chunkPosX-x;
 		case 3:
-			return center.x+z;
+			return center.chunkPosX+z;
 		}
-		return center.x;
+		return center.chunkPosX;
 	}
 	
 	public int getAbsY(int oy) {
 		if (invertY) oy = -oy;
-		return center.y + oy + ioffset.posY;
+		return center.chunkPosY + oy + ioffset.posY;
 	}
 	
 	/**
@@ -117,15 +117,15 @@ public class StructureBuilder {
 		
 		switch (mrot) {
 		case 0:
-			return center.z+z;
+			return center.chunkPosZ+z;
 		case 1:
-			return center.z+x;
+			return center.chunkPosZ+x;
 		case 2:
-			return center.z-z;
+			return center.chunkPosZ-z;
 		case 3:
-			return center.z-x;
+			return center.chunkPosZ-x;
 		}
-		return center.z;
+		return center.chunkPosZ;
 	}
 	
 	public TileEntity getTileEntityAt(int rx, int ry, int rz) {
