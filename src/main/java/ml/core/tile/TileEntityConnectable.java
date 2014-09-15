@@ -66,7 +66,7 @@ public abstract class TileEntityConnectable extends TileEntity {
 	}
 	
 	private boolean tryConnection(ForgeDirection fd){
-		TileEntity rte = worldObj.getBlockTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
+		TileEntity rte = worldObj.getTileEntity(xCoord+fd.offsetX, yCoord+fd.offsetY, zCoord+fd.offsetZ);
 		if (rte instanceof TileEntityConnectable){
 			TileEntityConnectable rtec = (TileEntityConnectable)rte;
 			if (rtec.facing == this.facing &&
