@@ -40,7 +40,7 @@ public abstract class TileEntityConnectable extends TileEntity {
 	}
 	
 	public TileEntityConnectable getConnected() {
-		TileEntity te = worldObj.getBlockTileEntity(xCoord+linkedDir.offsetX, yCoord+linkedDir.offsetY, zCoord+linkedDir.offsetZ);
+		TileEntity te = worldObj.getTileEntity(xCoord+linkedDir.offsetX, yCoord+linkedDir.offsetY, zCoord+linkedDir.offsetZ);
 		if (linkedDir != ForgeDirection.UNKNOWN && te instanceof TileEntityConnectable && te.getClass()==this.getClass()) {
 			return (TileEntityConnectable)te;
 		}
