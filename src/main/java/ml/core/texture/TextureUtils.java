@@ -53,8 +53,8 @@ public class TextureUtils {
 	public static boolean shouldReloadTexture(TextureMap mp, String texFile) {
 		return mp.setTextureEntry(texFile, new TextureAtlasSprite(texFile) {
 			@Override
-			public boolean load(IResourceManager manager,
-					ResourceLocation location) throws IOException {
+			public boolean load(IResourceManager manager, ResourceLocation location)
+			{
 				return false;
 			}
 		}); 
