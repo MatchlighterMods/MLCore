@@ -12,7 +12,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,7 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
@@ -396,14 +396,14 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getIcon(int side, int meta) {
+	public IIcon getIcon(int side, int meta) {
 		DCls sub = subBlock(meta);
 		return sub.getIcon(side, meta - sub.metaId);
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
+	public IIcon getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
 		return subBlock(world, x, y, z).getBlockTexture(world, x, y, z, side);
 	}
 	
@@ -416,7 +416,7 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister par1IconRegister) {
+	public void registerIcons(IIconRegister par1IconRegister) {
 		for (DCls sub : subBlocks.values()) sub.registerIcons(par1IconRegister);
 	}
 
