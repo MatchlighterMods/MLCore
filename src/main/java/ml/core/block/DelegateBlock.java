@@ -185,7 +185,7 @@ public class DelegateBlock {
 	public void onBlockPreDestroy(World par1World, int x, int y, int z, int subMeta) {}
 
 	public void breakBlock(World par1World, int x, int y, int z, int id, int subMeta) {
-		if (hasTileEntity(subMeta)) par1World.removeBlockTileEntity(x, y, z);
+		if (hasTileEntity(subMeta)) par1World.removeTileEntity(x, y, z);
 	}
 
 	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z) {
