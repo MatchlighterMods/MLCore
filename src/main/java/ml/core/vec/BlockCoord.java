@@ -22,7 +22,7 @@ public class BlockCoord {
 	}
 	
 	public TileEntity getTileEntity(World wrld) {
-		return wrld.getBlockTileEntity(x, y, z);
+		return wrld.getTileEntity(x, y, z);
 	}
 	
 	@Override
