@@ -24,8 +24,8 @@ public class ItemDelegator <DCls extends DelegateItem> extends Item {
 	
 	protected DCls nullDelegate;
 	
-	public ItemDelegator(int id, DCls nullDelegate) {
-		super(id);
+	public ItemDelegator(DCls nullDelegate) {
+		super();
 		setHasSubtypes(true);
 		this.nullDelegate = nullDelegate;
 		this.nullDelegate.parent = this;
