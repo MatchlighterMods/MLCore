@@ -58,18 +58,39 @@ public class NBTUtils {
 	}
 	
 	public static NBTBase createTag(String name, Object value) {
-		if
-		(value instanceof Float)	{return new NBTTagFloat(name,		(Float)value);}		else if
-		(value instanceof Integer)	{return new NBTTagInt(name,			(Integer)value);}	else if
-		(value instanceof Short)	{return new NBTTagShort(name,		(Short)value);}		else if
-		(value instanceof Long)		{return new NBTTagLong(name,		(Long)value);}		else if
-		(value instanceof Double)	{return new NBTTagDouble(name,		(Double)value);}	else if
-		(value instanceof Byte)		{return new NBTTagByte(name,		(Byte)value);}		else if
-		(value instanceof String)	{return new NBTTagString(name,		(String)value);}	else if
-		(value instanceof Boolean)	{return new NBTTagByte(name,		(byte)((Boolean)value ? 1 : 0));}	else if
-		(value instanceof int[])	{return new NBTTagIntArray(name,	(int[])value);}		else if
-		(value instanceof byte[])	{return new NBTTagByteArray(name,	(byte[])value);}	else if
-		(value instanceof NBTBase)	{return (NBTBase)value;}
+		if(value instanceof Float) {
+			return new NBTTagFloat(name, (Float)value);
+		}
+		else if(value instanceof Integer) {
+			return new NBTTagInt(name, (Integer)value);
+		}
+		else if(value instanceof Short) {
+			return new NBTTagShort(name, (Short)value);
+		}
+		else if(value instanceof Long) {
+			return new NBTTagLong(name, (Long)value);
+		}
+		else if(value instanceof Double) {
+			return new NBTTagDouble(name, (Double)value);
+		}
+		else if(value instanceof Byte) {
+			return new NBTTagByte(name, (Byte)value);
+		}
+		else if(value instanceof String) {
+			return new NBTTagString(name, (String)value);
+		}
+		else if(value instanceof Boolean) {
+			return new NBTTagByte(name, (byte)((Boolean)value ? 1 : 0));
+		}
+		else if(value instanceof int[]) {
+			return new NBTTagIntArray(name, (int[])value);
+		}
+		else if(value instanceof byte[]) {
+			return new NBTTagByteArray(name, (byte[])value);
+		}
+		else if(value instanceof NBTBase) {
+			return (NBTBase)value;
+		}
 		return null;
 	}
 	
@@ -78,7 +99,7 @@ public class NBTUtils {
 		for (String elm : path) {
 			spath.addAll(Arrays.asList(elm.split("\\.")));
 		}
-		return (String[])spath.toArray(new String[]{});
+		return spath.toArray(new String[spath.size()]);
 	}
 	
 	/**
@@ -123,7 +144,7 @@ public class NBTUtils {
 	
 	public static boolean hasTagAt(NBTTagCompound parent, String...tagPath) {
 		tagPath = splitPath(tagPath);
-		String tagName = null;
+		String tagName;
 		for (int i=0; i<tagPath.length; i++) {
 			tagName = tagPath[i];
 			if (!parent.hasKey(tagName)) return false;
