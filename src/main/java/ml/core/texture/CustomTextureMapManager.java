@@ -15,11 +15,11 @@ public class CustomTextureMapManager {
 	public static final int custom_map_type = 21; 
 	
 	public static CustomTextureMapManager instance = new CustomTextureMapManager();
-	protected final ArrayList<CustomTextureMap> maps = new ArrayList<CustomTextureMap>();
+	protected final ArrayList<CustomTextureMap> maps = new ArrayList<>();
 	
 	public void registerMap(CustomTextureMap map) {
 		if (maps.contains(map))
-			throw new RuntimeException("TextureMap type " + map.textureType + " is already registered.");
+			throw new RuntimeException("TextureMap type " + map.getTextureType() + " is already registered.");
 		
 		maps.add(map);
 		Minecraft mc = Minecraft.getMinecraft();
@@ -33,7 +33,7 @@ public class CustomTextureMapManager {
 	@SubscribeEvent
 	public void reregisterIcons(TextureStitchEvent.Pre evt) {
 		Minecraft mc = Minecraft.getMinecraft();
-		if (evt.map.textureType==0) {
+		if (evt.map.getTextureType()==0) {
 			for (CustomTextureMap map : maps) {
 				try {
 					map.loadTexture(mc.getResourceManager());
