@@ -130,7 +130,7 @@ public class StructureBuilder {
 	
 	public TileEntity getTileEntityAt(int rx, int ry, int rz) {
 		ChunkCoordinates abs = getAbsCoords(rx, ry, rz);
-		return world.getBlockTileEntity(abs.posX, abs.posY, abs.posZ);
+		return world.getTileEntity(abs.posX, abs.posY, abs.posZ);
 	}
 	
 	/**
