@@ -1,7 +1,7 @@
 package ml.core.tile;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.packet.Packet;
+import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
 import cpw.mods.fml.common.network.PacketDispatcher;
