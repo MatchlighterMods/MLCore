@@ -10,12 +10,12 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.texture.IconRegister;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.ResourceManager;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.SimpleResource;
-import net.minecraft.util.Icon;
+import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -38,7 +38,7 @@ public class TextureSheet {
 		}
 		
 		@Override
-		public boolean load(ResourceManager manager, ResourceLocation location)
+		public boolean load(IResourceManager manager, ResourceLocation location)
 				throws IOException {
 			int offX = index%tilesX * swidth;
 			int offY = index/tilesY * sheight;
@@ -73,9 +73,9 @@ public class TextureSheet {
 	}
 	
 	/**
-	 * Call in your code (e.g. on {@link Block#registerIcons(IconRegister)})
+	 * Call in your code (e.g. on {@link Block#registerIcons(IIconRegister)})
 	 */
-	public void registerIcons(IconRegister reg) {
+	public void registerIcons(IIconRegister reg) {
 		TextureMap tmap = (TextureMap)reg;
 		if (TextureUtils.shouldReloadTexture(tmap, texFile)) {
 			loadMasterImg();
@@ -109,7 +109,7 @@ public class TextureSheet {
 		}
 	}
 	
-	public Icon getSprite(int i) {
+	public IIcon getSprite(int i) {
 		return sprites[i];
 	}
 }
