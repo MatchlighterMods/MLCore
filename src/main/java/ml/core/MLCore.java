@@ -37,7 +37,7 @@ public class MLCore implements IFMLLoadingPlugin {
 		
 		MinecraftForge.EVENT_BUS.register(WorldGenHandler.instance);
 		TickRegistry.registerTickHandler(WorldGenHandler.instance, Side.SERVER);
-		GameRegistry.registerWorldGenerator(WorldGenHandler.instance);
+		GameRegistry.registerWorldGenerator(WorldGenHandler.instance, 1); //TODO figure out weighting
 	}
 	
 	@EventHandler
