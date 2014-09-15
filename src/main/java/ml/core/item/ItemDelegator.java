@@ -81,7 +81,7 @@ public class ItemDelegator <DCls extends DelegateItem> extends Item {
 	}
 	
 	@Override
-	public String getItemDisplayName(ItemStack par1ItemStack) {
+	public String getItemStackDisplayName(ItemStack par1ItemStack) {
 		String name = subItem(par1ItemStack).getItemDisplayName(par1ItemStack);
 		return name != null ? name : super.getItemStackDisplayName(par1ItemStack);
 	}
