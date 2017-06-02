@@ -1,0 +1,25 @@
+minecraft {
+    mcpVersion = "snapshot"
+    version    = "1.7.10-10.13.1.1217"
+    runDir     = "run"
+    replaceIn    "ml/core/MLCore.java"
+    replace      "@VERSION@", project.version
+}
+
+version = "${project.minecraft.version}-${project.version}.${ext.revision}"
+
+processResources
+{
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+

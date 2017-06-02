@@ -1,0 +1,21 @@
+[
+{
+  "modid": "MLCore",
+  "name": "Matchlighter Core",
+  "description": "A collection of common functions used in many of Matchlighter's mods",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authors": [
+    "Matchlighter", "The_NetZ"
+  ],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [
+  ],
+  "parent":"",
+  "dependencies": [
+  ]
+}
+]
