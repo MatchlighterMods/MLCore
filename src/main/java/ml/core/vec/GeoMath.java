@@ -23,7 +23,7 @@ public class GeoMath {
 
 	public static Vector2i getScaledMouse(){
 		Minecraft mc = FMLClientHandler.instance().getClient();
-		ScaledResolution var13 = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+		ScaledResolution var13 = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 		int var14 = var13.getScaledWidth();
 		int var15 = var13.getScaledHeight();
 		int adjMouseX = Mouse.getX() * var14 / mc.displayWidth;

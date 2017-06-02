@@ -68,7 +68,7 @@ public class DummyInventory implements IInventory {
 	public void dumpItems(EntityPlayer epl) {
 		for (ItemStack is : stacks) {
 			if (is != null) {
-				epl.dropPlayerItem(is);
+				epl.entityDropItem(is, 0);
 			}
 		}
 	}
@@ -79,12 +79,12 @@ public class DummyInventory implements IInventory {
 	}
 
 	@Override
-	public String getInvName() {
+	public String getInventoryName() {
 		return "Gui";
 	}
 
 	@Override
-	public boolean isInvNameLocalized() {
+	public boolean isCustomInventoryName() {
 		return true;
 	}
 
@@ -94,7 +94,7 @@ public class DummyInventory implements IInventory {
 	}
 
 	@Override
-	public void onInventoryChanged() {}
+	public void markDirty() {}
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer entityplayer) {

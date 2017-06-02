@@ -21,8 +21,8 @@ public class TextPage extends Page {
 	@Override
 	public void drawPage(Minecraft mc, int x, int y, int w, int h, float partialTick) {
 		for (String ln : text) {
-			mc.fontRenderer.drawString(ln, x, y, 0x000000);
-			y+=mc.fontRenderer.FONT_HEIGHT;
+			mc.fontRendererObj.drawString(ln, x, y, 0x000000);
+			y+=mc.fontRendererObj.FONT_HEIGHT;
 		}
 	}
 

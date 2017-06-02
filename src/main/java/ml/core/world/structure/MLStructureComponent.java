@@ -56,7 +56,7 @@ public abstract class MLStructureComponent extends StructureComponent {
 	
 	// Save
 	@Override
-	protected void func_143012_a(NBTTagCompound tag) {
+	protected void writeStructureToNBT(NBTTagCompound tag) {
 		tag.setInteger("pos_x", position.posX);
 		tag.setInteger("pos_y", position.posY);
 		tag.setInteger("pos_z", position.posZ);
@@ -73,7 +73,7 @@ public abstract class MLStructureComponent extends StructureComponent {
 
 	// Load
 	@Override
-	protected void func_143011_b(NBTTagCompound tag) {
+	protected void readStructureFromNBT(NBTTagCompound tag) {
 		this.position = new ChunkCoordinates(tag.getInteger("pos_x"), tag.getInteger("pos_y"), tag.getInteger("pos_z"));
 		this.rotation = tag.getInteger("rotation");
 		

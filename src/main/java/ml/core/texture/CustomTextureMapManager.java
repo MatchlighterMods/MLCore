@@ -15,7 +15,7 @@ public class CustomTextureMapManager {
 	public static final int custom_map_type = 21; 
 	
 	public static CustomTextureMapManager instance = new CustomTextureMapManager();
-	protected final ArrayList<CustomTextureMap> maps = new ArrayList<>();
+	protected final ArrayList<CustomTextureMap> maps = new ArrayList<CustomTextureMap>();
 	
 	public void registerMap(CustomTextureMap map) {
 		if (maps.contains(map))

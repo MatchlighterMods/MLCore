@@ -92,20 +92,20 @@ public class StructureBuilder {
 		
 		switch (mrot) {
 		case 0:
-			return center.chunkPosX+x;
+			return center.x+x;
 		case 1:
-			return center.chunkPosX-z;
+			return center.x-z;
 		case 2:
-			return center.chunkPosX-x;
+			return center.x-x;
 		case 3:
-			return center.chunkPosX+z;
+			return center.x+z;
 		}
-		return center.chunkPosX;
+		return center.x;
 	}
 	
 	public int getAbsY(int oy) {
 		if (invertY) oy = -oy;
-		return center.chunkPosY + oy + ioffset.posY;
+		return center.y + oy + ioffset.posY;
 	}
 	
 	/**
@@ -118,15 +118,15 @@ public class StructureBuilder {
 		
 		switch (mrot) {
 		case 0:
-			return center.chunkPosZ+z;
+			return center.z+z;
 		case 1:
-			return center.chunkPosZ+x;
+			return center.z+x;
 		case 2:
-			return center.chunkPosZ-z;
+			return center.z-z;
 		case 3:
-			return center.chunkPosZ-x;
+			return center.z-x;
 		}
-		return center.chunkPosZ;
+		return center.z;
 	}
 	
 	public TileEntity getTileEntityAt(int rx, int ry, int rz) {

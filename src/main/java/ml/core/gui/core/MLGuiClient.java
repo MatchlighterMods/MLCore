@@ -112,12 +112,12 @@ public class MLGuiClient extends GuiContainer {
 	}
 	
 	@Override
-	protected void drawSlotInventory(Slot par1Slot) {}
+	protected void drawSlot(Slot par1Slot) {}
 	
 	public void drawSpecialSlotInventory(ControlSlot slt) {
 		GL11.glPushMatrix();
 		GL11.glTranslatef(-slt.getSlot().xDisplayPosition+1, -slt.getSlot().yDisplayPosition+1, 0F);
-		super.drawSlotInventory(slt.getSlot());
+		super.drawSlot(slt.getSlot());
 		GL11.glPopMatrix();
 	}
 	
@@ -141,7 +141,7 @@ public class MLGuiClient extends GuiContainer {
 	}
 	
 	@Override
-	protected void mouseMovedOrUp(int mX, int mY, int which) {
+	protected void mouseReleased(int mX, int mY, int which) {
 		if (which > -1) {
 			priElemement.injectEvent(new EventMouseUp(priElemement, new Vector2i(mX, mY), MouseButton.get(which)));
 			if (mouseDownEl == priElemement.hoverElement) {
@@ -150,7 +150,7 @@ public class MLGuiClient extends GuiContainer {
 		} else {
 			
 		}
-		super.mouseMovedOrUp(mX, mY, which);
+		super.mouseReleased(mX, mY, which);
 	}
 
 	@Override

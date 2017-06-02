@@ -123,12 +123,12 @@ public abstract class CustomSlotClick {
 				if (slotNum == -999) {
 					if (inventoryplayer.getItemStack() != null && slotNum == -999) {
 						if (arg == 0) {
-							par4EntityPlayer.dropPlayerItem(inventoryplayer.getItemStack());
+							par4EntityPlayer.entityDropItem(inventoryplayer.getItemStack(), 0);
 							inventoryplayer.setItemStack((ItemStack)null);
 						}
 
 						if (arg == 1) {
-							par4EntityPlayer.dropPlayerItem(inventoryplayer.getItemStack().splitStack(1));
+							par4EntityPlayer.entityDropItem(inventoryplayer.getItemStack().splitStack(1), 0);
 
 							if (inventoryplayer.getItemStack().stackSize == 0) {
 								inventoryplayer.setItemStack((ItemStack)null);
@@ -195,7 +195,7 @@ public abstract class CustomSlotClick {
 
 								slot2.onPickupFromSlot(par4EntityPlayer, inventoryplayer.getItemStack());
 							} else if (slot2.isItemValid(itemstack4)) {
-								if (itemstack1.itemID == itemstack4.itemID && itemstack1.getItemDamage() == itemstack4.getItemDamage() && ItemStack.areItemStackTagsEqual(itemstack1, itemstack4)) {
+								if (itemstack1.itemID == itemstack4.itemID && itemstack1.getMetadata() == itemstack4.getMetadata() && ItemStack.areItemStackTagsEqual(itemstack1, itemstack4)) {
 									k1 = arg == 0 ? itemstack4.stackSize : 1;
 
 									if (k1 > slot2.getSlotStackLimit() - itemstack1.stackSize) {
@@ -217,7 +217,7 @@ public abstract class CustomSlotClick {
 									slot2.putStack(itemstack4);
 									inventoryplayer.setItemStack(itemstack1);
 								}
-							} else if (itemstack1.itemID == itemstack4.itemID && itemstack4.getMaxStackSize() > 1 && (!itemstack1.getHasSubtypes() || itemstack1.getItemDamage() == itemstack4.getItemDamage()) && ItemStack.areItemStackTagsEqual(itemstack1, itemstack4)) {
+							} else if (itemstack1.itemID == itemstack4.itemID && itemstack4.getMaxStackSize() > 1 && (!itemstack1.getHasSubtypes() || itemstack1.getMetadata() == itemstack4.getMetadata()) && ItemStack.areItemStackTagsEqual(itemstack1, itemstack4)) {
 								k1 = itemstack1.stackSize;
 
 								if (k1 > 0 && k1 + itemstack4.stackSize <= itemstack4.getMaxStackSize()) {
@@ -284,7 +284,7 @@ public abstract class CustomSlotClick {
 				if (slot2 != null && slot2.getHasStack()) {
 					itemstack1 = slot2.decrStackSize(arg == 0 ? 1 : slot2.getStack().stackSize);
 					slot2.onPickupFromSlot(par4EntityPlayer, itemstack1);
-					par4EntityPlayer.dropPlayerItem(itemstack1);
+					par4EntityPlayer.entityDropItem(itemstack1, 0);
 				}
 			} else if (action == 6 && slotNum >= 0) {
 				slot2 = this.inventorySlots.get(slotNum);

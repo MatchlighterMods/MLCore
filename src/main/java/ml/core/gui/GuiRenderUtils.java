@@ -1,15 +1,14 @@
 package ml.core.gui;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Icon;
-
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 
 @SideOnly(Side.CLIENT)
 public class GuiRenderUtils {
@@ -68,8 +67,8 @@ public class GuiRenderUtils {
 	public static void drawStackAt(Minecraft mc, int x, int y, ItemStack is){
 		GL11.glEnable(GL11.GL_LIGHTING);
 		renderItem.zLevel = 100F;
-		renderItem.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, is, x, y);
-		renderItem.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, is, x, y);
+		renderItem.renderItemAndEffectIntoGUI(mc.fontRendererObj, mc.renderEngine, is, x, y);
+		renderItem.renderItemOverlayIntoGUI(mc.fontRendererObj, mc.renderEngine, is, x, y);
 		renderItem.zLevel = 0F;
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
@@ -79,13 +78,13 @@ public class GuiRenderUtils {
 		ItemStack tis = is.copy();
 		tis.stackSize = 1;
 		renderItem.zLevel = 100F;
-		renderItem.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, tis, x, y);
-		renderItem.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, tis, x, y);
+		renderItem.renderItemAndEffectIntoGUI(mc.fontRendererObj, mc.renderEngine, tis, x, y);
+		renderItem.renderItemOverlayIntoGUI(mc.fontRendererObj, mc.renderEngine, tis, x, y);
 		renderItem.zLevel = 0F;
 
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		mc.fontRenderer.drawStringWithShadow(str, x + 19 - 2 - mc.fontRenderer.getStringWidth(str), y + 6 + 3, 16777215);
+		mc.fontRendererObj.drawStringWithShadow(str, x + 19 - 2 - mc.fontRendererObj.getStringWidth(str), y + 6 + 3, 16777215);
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 
@@ -107,11 +106,11 @@ public class GuiRenderUtils {
 		drawSlicedRect(x, y, w, h, uBase, vBase, uW, uH, bord, bord, bord, bord);
 	}
 
-	public static void drawTexturedModelRectFromIcon(int par1, int par2, Icon par3Icon, int par4, int par5) {
+	public static void drawTexturedModelRectFromIcon(int par1, int par2, IIcon par3Icon, int par4, int par5) {
 		drawTexturedModelRect(par1, par2, par3Icon.getMinU(), par3Icon.getMinV(), par3Icon.getMaxU(), par3Icon.getMaxV(), par4, par5);
 	}
 	
-	public static void drawSlicedRectFromIcon(int x, int y, int w, int h, Icon i, int tBord, int rBord, int bBord, int lBord) {
+	public static void drawSlicedRectFromIcon(int x, int y, int w, int h, IIcon i, int tBord, int rBord, int bBord, int lBord) {
 		double dtBord = (double)tBord / (double)i.getIconHeight();
 		double dbBord = (double)bBord / (double)i.getIconHeight();
 		double drBord = (double)tBord / (double)i.getIconWidth();

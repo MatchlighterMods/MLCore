@@ -130,15 +130,15 @@ public abstract class WindowBook extends Window {
 		
 		@Override
 		public Vector2i getTargetSize() {
-			return new Vector2i(treeHasHover() ? 24 + getMC().fontRenderer.getStringWidth(mark.getName()) : 18, 24);
+			return new Vector2i(treeHasHover() ? 24 + getMC().fontRendererObj.getStringWidth(mark.getName()) : 18, 24);
 		}
 		
 		@Override
 		public void drawForeground(float partialTick) {
 			getLocalPosition().glTranslate();
-			FontRenderer fr = getMC().fontRenderer;
+			FontRenderer fr = getMC().fontRendererObj;
 			if (treeHasHover() && getSize().equals(getTargetSize())) {
-				fr.drawString(this.mark.getName(), 6, (24-getGui().getMinecraft().fontRenderer.FONT_HEIGHT)/2+1, 0xFFFFFF, true);
+				fr.drawString(this.mark.getName(), 6, (24-getGui().getMinecraft().fontRendererObj.FONT_HEIGHT)/2+1, 0xFFFFFF, true);
 			}
 		}
 		
@@ -200,7 +200,7 @@ public abstract class WindowBook extends Window {
 	
 	@SideOnly(Side.CLIENT)
 	public List<Page> addChapter(String title, String text) {
-		FontRenderer fr = FMLClientHandler.instance().getClient().fontRenderer;
+		FontRenderer fr = FMLClientHandler.instance().getClient().fontRendererObj;
 		
 		List<String> lines = splitStringWidth(text);
 		List<Page> pages = new ArrayList<Page>();
@@ -222,7 +222,7 @@ public abstract class WindowBook extends Window {
 	
 	@SideOnly(Side.CLIENT)
 	public List<String> splitStringWidth(String str) {
-		FontRenderer fr = FMLClientHandler.instance().getClient().fontRenderer;
+		FontRenderer fr = FMLClientHandler.instance().getClient().fontRendererObj;
 		return new ArrayList<String>(fr.listFormattedStringToWidth(str, getPageWidth()));
 	}
 	

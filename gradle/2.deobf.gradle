@@ -6,7 +6,7 @@ task deobfJar(type: Jar) {
 
     manifest {
         //attributes FMLCorePlugin: "net.cazzar.example.CoreMod", //Only for Core Mods, no comma if only using the FMLCorePlugin
-        //attributes FMLAT: "fmlat.cfg" //Only for FMLAT
+        attributes FMLAT: "mlcore_at.cfg" //Only for FMLAT
     }
 }
 

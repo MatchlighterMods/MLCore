@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import net.minecraft.item.Item;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
@@ -18,7 +18,7 @@ public class DyeUtils {
 		if (mOre == null) return -1;
 
 		for (int i=0; i<16; i++){
-			if (OreDictionary.getOreID(new ItemStack(Item.dyePowder, 1, i)) == OreDictionary.getOreID(mOre)){
+			if (OreDictionary.itemMatches(new ItemStack(Items.dye, 1, i), mOre, true)){ // TODO
 				return i;
 			}
 		}
@@ -66,9 +66,14 @@ public class DyeUtils {
 	
 	public static List<ItemStack> getAllDyeStacks() {
 		List<ItemStack> stacks = new ArrayList<ItemStack>();
-		for (int i=0; i<ItemDye.dyeColors.length; i++) {
-			stacks.addAll(OreDictionary.getOres(OreDictionary.getOreID(new ItemStack(Item.dyePowder, 1, i))));
+		String[] ores = OreDictionary.getOreNames();
+		
+		for (int i=0; i<ores.length; i++) {
+			if (ores[i].startsWith("dye")) {
+				stacks.addAll(OreDictionary.getOres(ores[i]));
+			}
 		}
+		
 		return stacks;
 	}
 }

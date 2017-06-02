@@ -72,7 +72,7 @@ public class WorldRenderUtils {
 				//This may happen when used from within an ItemRenderer. It should fix itself after one render loop.
 				if (RenderManager.instance.renderEngine != null) {
 					renderEnt.setEntityItemStack(is);
-					renderItem.doRenderItem(renderEnt, 0, 0, 0, 0, 0);
+					renderItem.doRender(renderEnt, 0, 0, 0, 0, 0);
 				}
 			}
 		}

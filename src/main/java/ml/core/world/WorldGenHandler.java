@@ -8,6 +8,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
+import cpw.mods.fml.common.ITickHandler;
+import cpw.mods.fml.common.IWorldGenerator;
+import cpw.mods.fml.common.TickType;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import ml.core.internal.CoreLogger;
 import ml.core.vec.Vector2i;
 import ml.core.world.feature.IFeatureGenerator;
@@ -17,15 +24,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.world.ChunkEvent;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
-import cpw.mods.fml.common.ITickHandler;
-import cpw.mods.fml.common.IWorldGenerator;
-import cpw.mods.fml.common.TickType;
 
 public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 
@@ -39,7 +38,7 @@ public class WorldGenHandler implements IWorldGenerator, ITickHandler {
 		genFeatures.put(modId, gen);
 	}
 	
-	@ForgeSubscribe
+	@SubscribeEvent
 	public void handleChunkLoad(ChunkEvent.Load evt) {
 		World w = evt.world;
 		Chunk c = evt.getChunk();

@@ -13,7 +13,7 @@ public abstract class TabDynamicLedger extends TabLedger {
 	@Override
 	public Vector2i getOpenSize() {
 		Rectangle controlRect = calculateControlBox();
-		FontRenderer fr = getMC().fontRenderer;
+		FontRenderer fr = getMC().fontRendererObj;
 		return new Vector2i(Math.max(controlRect.width + controlRect.xCoord*2, 24 + fr.getStringWidth(getTitle())+8),
 				controlRect.yCoord + controlRect.height + (controlRect.yCoord - defaultSize + 8));
 	}
