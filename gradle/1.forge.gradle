@@ -1,6 +1,6 @@
 minecraft {
     mcpVersion = "snapshot"
-    version    = "1.7.10-10.13.1.1217"
+    version    = "1.7.10-10.13.4.1558-1.7.10"
     runDir     = "run"
     replaceIn    "ml/core/MLCore.java"
     replace      "@VERSION@", project.version

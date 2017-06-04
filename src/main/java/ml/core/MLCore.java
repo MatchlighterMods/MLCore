@@ -2,10 +2,6 @@ package ml.core;
 
 import java.util.Map;
 
-import ml.core.internal.CommonProxy;
-import ml.core.internal.PacketHandler;
-import ml.core.world.WorldGenHandler;
-import net.minecraftforge.common.MinecraftForge;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -13,10 +9,13 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.TickRegistry;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 import cpw.mods.fml.relauncher.IFMLLoadingPlugin.TransformerExclusions;
-import cpw.mods.fml.relauncher.Side;
+import ml.core.internal.CommonProxy;
+import ml.core.internal.PacketContainerData;
+import ml.core.network.PacketHandler;
+import ml.core.world.WorldGenHandler;
+import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid="MLCore", name="MLCore", version = "@VERSION@")
 //@NetworkMod(clientSideRequired=false, serverSideRequired=false, channels={PacketHandler.defChan}, packetHandler=PacketHandler.class)
@@ -24,6 +23,7 @@ import cpw.mods.fml.relauncher.Side;
 public class MLCore implements IFMLLoadingPlugin {
 	
 	public static final String mlcore_name = "MLCore";
+	public PacketHandler pkh;
 	
 	@Instance("MLCore")
 	public static MLCore instance;
@@ -36,13 +36,15 @@ public class MLCore implements IFMLLoadingPlugin {
 		proxy.prInit();
 		
 		MinecraftForge.EVENT_BUS.register(WorldGenHandler.instance);
-		TickRegistry.registerTickHandler(WorldGenHandler.instance, Side.SERVER);
 		GameRegistry.registerWorldGenerator(WorldGenHandler.instance, 1); //TODO figure out weighting
 	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent evt) {
 		proxy.load();
+		
+		pkh = new PacketHandler("MLCore");
+		pkh.addHandler(PacketContainerData.class);
 	}
 	
 	public String[] getASMTransformerClass() {
@@ -62,5 +64,10 @@ public class MLCore implements IFMLLoadingPlugin {
 	@Override
 	public void injectData(Map<String, Object> data) {
 		
+	}
+
+	@Override
+	public String getAccessTransformerClass() {
+		return null;
 	}
 }

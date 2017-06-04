@@ -9,16 +9,14 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Comparator;
 
+import com.google.common.io.ByteArrayDataInput;
+
+import cpw.mods.fml.common.network.internal.FMLProxyPacket;
+import cpw.mods.fml.relauncher.Side;
+import io.netty.buffer.Unpooled;
 import ml.core.data.IDataSerializer;
 import ml.core.data.Serialization;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.packet.Packet250CustomPayload;
-
-import com.google.common.io.ByteArrayDataInput;
-
-import cpw.mods.fml.common.network.PacketDispatcher;
-import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.relauncher.Side;
 
 public abstract class MLPacket {
 	
@@ -29,8 +27,6 @@ public abstract class MLPacket {
 	@Retention(RetentionPolicy.RUNTIME)
 	public static @interface data {}
 	
-	protected int packetID;
-	
 	// Incoming
 	
 	public MLPacket(EntityPlayer pl, ByteArrayDataInput dataIn) {
@@ -40,7 +36,7 @@ public abstract class MLPacket {
 			for (Field fld : flds) {
 				data ann = fld.getAnnotation(data.class);
 				if (ann != null) {
-					Class cls = fld.getType();
+					Class<?> cls = fld.getType();
 					Object v = Serialization.deserialize(cls, dataIn);
 					fld.set(this, v);
 				}
@@ -64,26 +60,23 @@ public abstract class MLPacket {
 	
 	// Outgoing
 	public boolean chunkDataPacket = true;
-	public String channel;
 	
-	public MLPacket(String ch) {
-		packetID = PacketHandler.findPacketId(this.getClass());
-		channel = ch;
-	}
+	public MLPacket() {}
 	
-	public Packet250CustomPayload convertToPkt250() {
+	public FMLProxyPacket convertToFMLProxyPacket(PacketHandler pkh) {
 		ByteArrayOutputStream dataOutRaw = new ByteArrayOutputStream();
 		DataOutputStream dataOut = new DataOutputStream(dataOutRaw);
 		
+		
 		try {
-			dataOut.writeInt(packetID);
+			dataOut.writeInt(pkh.findPacketId(this.getClass()));
 			
 			Field[] flds = this.getClass().getFields();
 			Arrays.sort(flds, fldComparator);
 			for (Field fld : flds) {
 				data ann = fld.getAnnotation(data.class);
 				if (ann != null) {
-					Class cls = fld.getType();
+					Class<?> cls = fld.getType();
 					Serialization.serialize(cls, fld.get(this), dataOut);
 				}
 			}
@@ -91,30 +84,30 @@ public abstract class MLPacket {
 			e.printStackTrace();
 		}
 		
-		Packet250CustomPayload mcPkt = new Packet250CustomPayload(channel, dataOutRaw.toByteArray());
-		mcPkt.isChunkDataPacket = chunkDataPacket;
+		FMLProxyPacket mcPkt = new FMLProxyPacket(Unpooled.wrappedBuffer(dataOutRaw.toByteArray()), pkh.channel);
+//		mcPkt.isChunkDataPacket = chunkDataPacket;
 		return mcPkt;
 	}
 	
-	public void dispatchToServer() {
-		PacketDispatcher.sendPacketToServer(convertToPkt250());
-	}
-	
-	public void dispatchToPlayer(EntityPlayer epl) {
-		PacketDispatcher.sendPacketToPlayer(convertToPkt250(), (Player)epl);
-	}
-	
-	public void dispatchToDimension(int dimId) {
-		PacketDispatcher.sendPacketToAllInDimension(convertToPkt250(), dimId);
-	}
-	
-	public void dispatchToAllNear(double X, double Y, double Z, double range, int dimensionId) {
-		PacketDispatcher.sendPacketToAllAround(X, Y, Z, range, dimensionId, convertToPkt250());
-	}
-	
-	public void dispatchToAll() {
-		PacketDispatcher.sendPacketToAllPlayers(convertToPkt250());
-	}
+//	public void dispatchToServer() {
+//		PacketDispatcher.sendPacketToServer(convertToPkt250());
+//	}
+//	
+//	public void dispatchToPlayer(EntityPlayer epl) {
+//		PacketDispatcher.sendPacketToPlayer(convertToPkt250(), (Player)epl);
+//	}
+//	
+//	public void dispatchToDimension(int dimId) {
+//		PacketDispatcher.sendPacketToAllInDimension(convertToPkt250(), dimId);
+//	}
+//	
+//	public void dispatchToAllNear(double X, double Y, double Z, double range, int dimensionId) {
+//		PacketDispatcher.sendPacketToAllAround(X, Y, Z, range, dimensionId, convertToPkt250());
+//	}
+//	
+//	public void dispatchToAll() {
+//		PacketDispatcher.sendPacketToAllPlayers(convertToPkt250());
+//	}
 	
 	private Comparator<Field> fldComparator = new Comparator<Field>() {
 		@Override

@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import ml.core.data.IDataSerializer;
 import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -12,12 +13,12 @@ import com.google.common.io.ByteArrayDataInput;
 public class SNBTTagCompound implements IDataSerializer {
 
 	@Override
-	public boolean handles(Class clazz) {
+	public boolean handles(Class<?> clazz) {
 		return clazz == NBTTagCompound.class;
 	}
 
 	@Override
-	public Object deserialize(Class clazz, ByteArrayDataInput dIn) throws IOException {
+	public Object deserialize(Class<?> clazz, ByteArrayDataInput dIn) throws IOException {
 		return readNBTTagCompound(dIn);
 	}
 
@@ -40,7 +41,7 @@ public class SNBTTagCompound implements IDataSerializer {
 		} else {
 			byte[] var2 = new byte[var1];
 			dataIn.readFully(var2);
-			return CompressedStreamTools.decompress(var2);
+			return CompressedStreamTools.decompress(var2, NBTSizeTracker.field_152451_a);
 		}
 	}
 

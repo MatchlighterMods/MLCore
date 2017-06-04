@@ -2,7 +2,7 @@
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     //Since this is now the main version, maven standards
-    classifier = ''
+    classifier = 'deobf'
 
     manifest {
         //attributes FMLCorePlugin: "net.cazzar.example.CoreMod", //Only for Core Mods, no comma if only using the FMLCorePlugin

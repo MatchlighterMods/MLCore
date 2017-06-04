@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -18,11 +21,9 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.IPlantable;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class DelegateBlock {
 
@@ -72,9 +73,9 @@ public class DelegateBlock {
 	
 	public void setBlockAt(World world, int wx, int wy, int wz, int subMeta, int flags) {
 		if (subMeta < getMetaLength()) {
-			world.setBlock(wx, wy, wz, parent.blockID, metaId+subMeta, flags);
+			world.setBlock(wx, wy, wz, parent, metaId+subMeta, flags);
 		} else {
-			world.setBlock(wx, wy, wz, parent.blockID, metaId, flags);
+			world.setBlock(wx, wy, wz, parent, metaId, flags);
 		}
 	}
 	
@@ -110,7 +111,7 @@ public class DelegateBlock {
 		return 0;
 	}
 
-	public int getLightOpacity(World world, int x, int y, int z) {
+	public int getLightOpacity(IBlockAccess world, int x, int y, int z) {
 		return isOpaqueCube() ? 255 : 0;
 	}
 	
@@ -118,29 +119,29 @@ public class DelegateBlock {
 		return true;
 	}
 
-	public boolean canBeReplacedByLeaves(World world, int x, int y, int z) {
+	public boolean canBeReplacedByLeaves(IBlockAccess world, int x, int y, int z) {
 		return false;
 	}
 
-	public boolean canCreatureSpawn(EnumCreatureType type, World world, int x, int y, int z) {
-		return isBlockSolidOnSide(world, x, y, z, ForgeDirection.UP);
+	public boolean canCreatureSpawn(EnumCreatureType type, IBlockAccess world, int x, int y, int z) {
+		return isSideSolid(world, x, y, z, ForgeDirection.UP);
 	}
 
 	public boolean canSilkHarvest(World world, EntityPlayer player, int x, int y, int z, int subMeta) {
 		return false;
 	}
 
-	public boolean canSustainLeaves(World world, int x, int y, int z) {
+	public boolean canSustainLeaves(IBlockAccess world, int x, int y, int z) {
 		return false;
 	}
 
-	public boolean canSustainPlant(World world, int x, int y, int z, ForgeDirection direction, IPlantable plant) {
+	public boolean canSustainPlant(IBlockAccess world, int x, int y, int z, ForgeDirection direction, IPlantable plant) {
 		return false;
 	}
 
-	public void velocityToAddToEntity(World par1World, int x, int y, int z, Entity par5Entity, Vec3 par6Vec3) {}
+	public void modifyEntityVelocity(World par1World, int x, int y, int z, Entity par5Entity, Vec3 par6Vec3) {}
 
-	public boolean isLadder(World world, int x, int y, int z, EntityLivingBase entity) {
+	public boolean isLadder(IBlockAccess world, int x, int y, int z, EntityLivingBase entity) {
 		return false;
 	}
 
@@ -148,19 +149,19 @@ public class DelegateBlock {
 		return false;
 	}
 
-	public boolean isAirBlock(World world, int x, int y, int z) {
+	public boolean isAir(IBlockAccess world, int x, int y, int z) {
 		return false;
 	}
 
-	public boolean isFlammable(IBlockAccess world, int x, int y, int z, int subMeta, ForgeDirection face) {
+	public boolean isFlammable(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
 		return false;
 	}
 
-	public boolean isBlockBurning(World world, int x, int y, int z) {
+	public boolean isBurning(IBlockAccess world, int x, int y, int z) {
 		return false;
 	}
 	
-	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side) {
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side) {
 		return isOpaqueCube();
 	}
 
@@ -171,7 +172,7 @@ public class DelegateBlock {
 	public void fillWithRain(World par1World, int x, int y, int z) {}
 
 	public boolean canPlaceTorchOnTop(World world, int x, int y, int z) {
-		return isBlockSolidOnSide(world, x, y, z, ForgeDirection.UP);
+		return isSideSolid(world, x, y, z, ForgeDirection.UP);
 	}
 
 	/* ---------------------------- Events ---------------------------- */
@@ -184,15 +185,11 @@ public class DelegateBlock {
 
 	public void onBlockPreDestroy(World par1World, int x, int y, int z, int subMeta) {}
 
-	public void breakBlock(World par1World, int x, int y, int z, int id, int subMeta) {
+	public void breakBlock(World par1World, int x, int y, int z, Block id, int subMeta) {
 		if (hasTileEntity(subMeta)) par1World.removeTileEntity(x, y, z);
 	}
 
-	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z) {
-		return world.setBlockToAir(x, y, z);
-	}
-
-	public void onNeighborBlockChange(World par1World, int x, int y, int z, int id) {}
+	public void onNeighborBlockChange(World par1World, int x, int y, int z, Block neighbor) {}
 
 	public void onBlockClicked(World par1World, int x, int y, int z, EntityPlayer par5EntityPlayer) {}
 
@@ -226,13 +223,13 @@ public class DelegateBlock {
 
 	public TileEntity createTileEntity(World world, int subMeta) {
 		if (hasTileEntity(subMeta))
-			return ((ITileEntityProvider)this).createNewTileEntity(world);
+			return ((ITileEntityProvider)this).createNewTileEntity(world, subMeta);
 		return null;
 	}
 
 	/* ---------------------------- Mining ---------------------------- */
 
-	public boolean canEntityDestroy(World world, int x, int y, int z, Entity entity) {
+	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
 		return true;
 	}
 
@@ -240,14 +237,14 @@ public class DelegateBlock {
 		return ForgeHooks.canHarvestBlock(this.parent(), player, subMeta);
 	}
 
-	public boolean canPlaceBlockOnSide(World par1World, int x, int y, int z, int side, ItemStack par6ItemStack) {
+	public boolean canPlaceBlockOnSide(World par1World, int x, int y, int z, int side) {
 		return parent().canPlaceBlockAt(par1World, x, y, z);
 	}
 
 	/**
 	 * Note that meta is not subMeta in this case.
 	 */
-	public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int meta, int fortune) {
+	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int meta, int fortune) {
 		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
 		ret.add(new ItemStack(parent(), 1, meta));
 		return ret;
@@ -257,7 +254,7 @@ public class DelegateBlock {
 		return new ItemStack(parent(), 1, world.getBlockMetadata(x, y, z));
 	}
 
-	public int getExpDrop(World world, int data, int enchantmentLevel) {
+	public int getExpDrop(IBlockAccess world, int data, int enchantmentLevel) {
 		return 0;
 	}
 
@@ -269,7 +266,7 @@ public class DelegateBlock {
 
 	@SideOnly(Side.CLIENT)
 	public float getBlockBrightness(IBlockAccess world, int x, int y, int z) {
-		return world.getBrightness(x, y, z, getLightValue(world, x, y, z));
+		return world.getLightBrightnessForSkyBlocks(x, y, z, getLightValue(world, x, y, z));
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -288,7 +285,7 @@ public class DelegateBlock {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public IIcon getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
+	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
 		return this.getIcon(side, getSubMeta(world, x, y, z));
 	}
 
@@ -303,12 +300,12 @@ public class DelegateBlock {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public boolean addBlockDestroyEffects(World world, int x, int y, int z, int subMeta, EffectRenderer effectRenderer) {
+	public boolean addDestroyEffects(World world, int x, int y, int z, int subMeta, EffectRenderer effectRenderer) {
 		return false;
 	}
 
 	@SideOnly(Side.CLIENT)
-	public boolean addBlockHitEffects(World worldObj, MovingObjectPosition target, EffectRenderer effectRenderer) {
+	public boolean addHitEffects(World worldObj, MovingObjectPosition target, EffectRenderer effectRenderer) {
 		return false;
 	}
 

@@ -8,7 +8,6 @@ import java.util.TreeMap;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
@@ -18,6 +17,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -26,8 +26,8 @@ import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  * Partially inspired by OpenComputers.
@@ -42,8 +42,8 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	
 	protected DCls nullDelegate;
 
-	public BlockDelegator(int blockId, Material xMaterial, DCls nullDelegate) {
-		super(blockId, xMaterial);
+	public BlockDelegator(Material xMaterial, DCls nullDelegate) {
+		super(xMaterial);
 		this.nullDelegate = nullDelegate;
 		this.nullDelegate.parent = this;
 	}
@@ -70,16 +70,16 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	public DCls subBlock(ItemStack is) {
 		if (is != null && is.getItem() instanceof ItemBlock) {
 			ItemBlock ib = (ItemBlock)is.getItem();
-			Block blk = Block.blocksList[ib.getBlockID()]; 
+			Block blk = ib.blockInstance; 
 			if (blk == this) {
-				return subBlock(is.getItemDamage());
+				return subBlock(is.getMetadata());
 			}
 		}
 		return nullDelegate;
 	}
 	
 	public DCls subBlock(IBlockAccess world, int x, int y, int z) {
-		Block blk = Block.blocksList[world.getBlockId(x, y, z)];
+		Block blk = world.getBlock(x, y, z);
 		if (blk == this) {
 			return subBlock(world.getBlockMetadata(x, y, z));
 		}
@@ -89,16 +89,16 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	public static DelegateBlock findSubBlock(ItemStack is) {
 		if (is != null && is.getItem() instanceof ItemBlock) {
 			ItemBlock ib = (ItemBlock)is.getItem();
-			Block blk = Block.blocksList[ib.getBlockID()]; 
+			Block blk = ib.blockInstance; 
 			if (blk instanceof BlockDelegator<?>) {
-				return ((BlockDelegator<?>)blk).subBlock(is.getItemDamage());
+				return ((BlockDelegator<?>)blk).subBlock(is.getMetadata());
 			}
 		}
 		return null;
 	}
 	
 	public static DelegateBlock findSubBlock(IBlockAccess world, int x, int y, int z) {
-		Block blk = Block.blocksList[world.getBlockId(x, y, z)];
+		Block blk = world.getBlock(x, y, z);
 		if (blk instanceof BlockDelegator<?>) {
 			return ((BlockDelegator<?>)blk).subBlock(world.getBlockMetadata(x, y, z));
 		}
@@ -116,7 +116,7 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	}
 	
 	@Override
-	public void getSubBlocks(int par1, CreativeTabs par2CreativeTabs, List par3List) {
+	public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List par3List) {
 		for (Integer i : subBlocks.keySet()) {
 			DCls sub = subBlocks.get(i);
 			for (int a=0; a<sub.getMetaLength(); a++) {
@@ -158,17 +158,17 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	}
 	
 	@Override
-	public int getLightOpacity(World world, int x, int y, int z) {
+	public int getLightOpacity(IBlockAccess world, int x, int y, int z) {
 		return subBlock(world, x, y, z).getLightOpacity(world, x, y, z);
 	}
 	
 	@Override
-	public boolean canBeReplacedByLeaves(World world, int x, int y, int z) {
+	public boolean canBeReplacedByLeaves(IBlockAccess world, int x, int y, int z) {
 		return subBlock(world, x, y, z).canBeReplacedByLeaves(world, x, y, z);
 	}
 	
 	@Override
-	public boolean canCreatureSpawn(EnumCreatureType type, World world, int x, int y, int z) {
+	public boolean canCreatureSpawn(EnumCreatureType type, IBlockAccess world, int x, int y, int z) {
 		return subBlock(world, x, y, z).canCreatureSpawn(type, world, x, y, z);
 	}
 	
@@ -185,22 +185,22 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	}
 	
 	@Override
-	public boolean canSustainLeaves(World world, int x, int y, int z) {
+	public boolean canSustainLeaves(IBlockAccess world, int x, int y, int z) {
 		return subBlock(world, x, y, z).canSustainLeaves(world, x, y, z);
 	}
 	
 	@Override
-	public boolean canSustainPlant(World world, int x, int y, int z, ForgeDirection direction, IPlantable plant) {
+	public boolean canSustainPlant(IBlockAccess world, int x, int y, int z, ForgeDirection direction, IPlantable plant) {
 		return subBlock(world, x, y, z).canSustainPlant(world, x, y, z, direction, plant);
 	}
 	
 	@Override
-	public void velocityToAddToEntity(World world, int x, int y, int z, Entity par5Entity, Vec3 par6Vec3) {
-		subBlock(world, x, y, z).velocityToAddToEntity(world, x, y, z, par5Entity, par6Vec3);
+	public void modifyEntityVelocity(World world, int x, int y, int z, Entity par5Entity, Vec3 par6Vec3) {
+		subBlock(world, x, y, z).modifyEntityVelocity(world, x, y, z, par5Entity, par6Vec3);
 	}
 	
 	@Override
-	public boolean isLadder(World world, int x, int y, int z, EntityLivingBase entity) {
+	public boolean isLadder(IBlockAccess world, int x, int y, int z, EntityLivingBase entity) {
 		return subBlock(world, x, y, z).isLadder(world, x, y, z, entity);
 	}
 	
@@ -210,24 +210,24 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	}
 	
 	@Override
-	public boolean isAirBlock(World world, int x, int y, int z) {
-		return subBlock(world, x, y, z).isAirBlock(world, x, y, z);
+	public boolean isAir(IBlockAccess world, int x, int y, int z) {
+		return subBlock(world, x, y, z).isAir(world, x, y, z);
 	}
 	
 	@Override
-	public boolean isFlammable(IBlockAccess world, int x, int y, int z, int meta, ForgeDirection face) {
+	public boolean isFlammable(IBlockAccess world, int x, int y, int z, ForgeDirection face) {
 		DCls sub = subBlock(world, x, y, z);
-		return sub.isFlammable(world, x, y, z, meta-sub.metaId, face);
+		return sub.isFlammable(world, x, y, z, face);
 	}
 	
 	@Override
-	public boolean isBlockBurning(World world, int x, int y, int z) {
-		return subBlock(world, x, y, z).isBlockBurning(world, x, y, z);
+	public boolean isBurning(IBlockAccess world, int x, int y, int z) {
+		return subBlock(world, x, y, z).isBurning(world, x, y, z);
 	}
 	
 	@Override
-	public boolean isBlockSolidOnSide(World world, int x, int y, int z, ForgeDirection side) {
-		return subBlock(world, x, y, z).isBlockSolidOnSide(world, x, y, z, side);
+	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side) {
+		return subBlock(world, x, y, z).isSideSolid(world, x, y, z, side);
 	}
 	
 	@Override
@@ -269,19 +269,14 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	}
 	
 	@Override
-	public void breakBlock(World world, int x, int y, int z, int id, int meta) {
+	public void breakBlock(World world, int x, int y, int z, Block id, int meta) {
 		DCls sub = subBlock(world, x, y, z);
 		sub.breakBlock(world, x, y, z, id, meta-sub.metaId);
 	}
 	
 	@Override
-	public boolean removeBlockByPlayer(World world, EntityPlayer player, int x, int y, int z) {
-		return subBlock(world, x, y, z).removeBlockByPlayer(world, player, x, y, z);
-	}
-	
-	@Override
-	public void onNeighborBlockChange(World world, int x, int y, int z, int id) {
-		subBlock(world, x, y, z).onNeighborBlockChange(world, x, y, z, id);
+	public void onNeighborBlockChange(World world, int x, int y, int z, Block neighbor) {
+		subBlock(world, x, y, z).onNeighborBlockChange(world, x, y, z, neighbor);
 	}
 	
 	@Override
@@ -338,7 +333,7 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	/* ---------------------------- Mining ---------------------------- */
 	
 	@Override
-	public boolean canEntityDestroy(World world, int x, int y, int z, Entity entity) {
+	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) {
 		return subBlock(world, x, y, z).canEntityDestroy(world, x, y, z, entity);
 	}
 	
@@ -349,13 +344,13 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	}
 	
 	@Override
-	public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side, ItemStack par6ItemStack) {
-		return subBlock(world, x, y, z).canPlaceBlockOnSide(world, x, y, z, side, par6ItemStack);
+	public boolean canPlaceBlockOnSide(World world, int x, int y, int z, int side) {
+		return subBlock(world, x, y, z).canPlaceBlockOnSide(world, x, y, z, side);
 	}
 	
 	@Override
-	public ArrayList<ItemStack> getBlockDropped(World world, int x, int y, int z, int meta, int fortune) {
-		return subBlock(meta).getBlockDropped(world, x, y, z, meta, fortune);
+	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int meta, int fortune) {
+		return subBlock(meta).getDrops(world, x, y, z, meta, fortune);
 	}
 	
 	@Override
@@ -364,7 +359,7 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	}
 	
 	@Override
-	public int getExpDrop(World world, int meta, int enchantmentLevel) {
+	public int getExpDrop(IBlockAccess world, int meta, int enchantmentLevel) {
 		return subBlock(meta).getExpDrop(world, meta, enchantmentLevel);
 	}
 	
@@ -375,11 +370,11 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	
 	/* ---------------------------- ClientSide ---------------------------- */
 	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public float getBlockBrightness(IBlockAccess world, int x, int y, int z) {
-		return subBlock(world, x, y, z).getBlockBrightness(world, x, y, z);
-	}
+//	@Override
+//	@SideOnly(Side.CLIENT)
+//	public float getBlockBrightness(IBlockAccess world, int x, int y, int z) {
+//		return subBlock(world, x, y, z).getBlockBrightness(world, x, y, z);
+//	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
@@ -403,8 +398,8 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public IIcon getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
-		return subBlock(world, x, y, z).getBlockTexture(world, x, y, z, side);
+	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
+		return subBlock(world, x, y, z).getIcon(world, x, y, z, side);
 	}
 	
 	@Override
@@ -422,15 +417,15 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean addBlockDestroyEffects(World world, int x, int y, int z, int meta, EffectRenderer effectRenderer) {
+	public boolean addDestroyEffects(World world, int x, int y, int z, int meta, EffectRenderer effectRenderer) {
 		DCls sub = subBlock(meta);
-		return sub.addBlockDestroyEffects(world, x, y, z, meta - sub.metaId, effectRenderer);
+		return sub.addDestroyEffects(world, x, y, z, meta - sub.metaId, effectRenderer);
 	}
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean addBlockHitEffects(World world, MovingObjectPosition target, EffectRenderer effectRenderer) {
-		return subBlock(world, target.blockX, target.blockY, target.blockZ).addBlockHitEffects(world, target, effectRenderer);
+	public boolean addHitEffects(World world, MovingObjectPosition target, EffectRenderer effectRenderer) {
+		return subBlock(world, target.blockX, target.blockY, target.blockZ).addHitEffects(world, target, effectRenderer);
 	}
 	
 	@Override

@@ -23,6 +23,7 @@ import net.minecraft.nbt.NBTTagString;
  */
 public class NBTUtils {
 
+	@SuppressWarnings("unchecked")
 	public static <T> T getTagValue(NBTBase tag) {
 		if(tag instanceof NBTTagFloat){
 			return (T)(Object)((NBTTagFloat)tag).getFloat();
@@ -59,34 +60,34 @@ public class NBTUtils {
 	
 	public static NBTBase createTag(String name, Object value) {
 		if(value instanceof Float) {
-			return new NBTTagFloat(name, (Float)value);
+			return new NBTTagFloat((Float)value);
 		}
 		else if(value instanceof Integer) {
-			return new NBTTagInt(name, (Integer)value);
+			return new NBTTagInt((Integer)value);
 		}
 		else if(value instanceof Short) {
-			return new NBTTagShort(name, (Short)value);
+			return new NBTTagShort((Short)value);
 		}
 		else if(value instanceof Long) {
-			return new NBTTagLong(name, (Long)value);
+			return new NBTTagLong((Long)value);
 		}
 		else if(value instanceof Double) {
-			return new NBTTagDouble(name, (Double)value);
+			return new NBTTagDouble((Double)value);
 		}
 		else if(value instanceof Byte) {
-			return new NBTTagByte(name, (Byte)value);
+			return new NBTTagByte((Byte)value);
 		}
 		else if(value instanceof String) {
-			return new NBTTagString(name, (String)value);
+			return new NBTTagString((String)value);
 		}
 		else if(value instanceof Boolean) {
-			return new NBTTagByte(name, (byte)((Boolean)value ? 1 : 0));
+			return new NBTTagByte((byte)((Boolean)value ? 1 : 0));
 		}
 		else if(value instanceof int[]) {
-			return new NBTTagIntArray(name, (int[])value);
+			return new NBTTagIntArray((int[])value);
 		}
 		else if(value instanceof byte[]) {
-			return new NBTTagByteArray(name, (byte[])value);
+			return new NBTTagByteArray((byte[])value);
 		}
 		else if(value instanceof NBTBase) {
 			return (NBTBase)value;
@@ -105,6 +106,7 @@ public class NBTUtils {
 	/**
 	 * You CAN get a string from any NBTTag type with this method - if the defaultVal is a String, toString() will be called on the returning Object.
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T getTagValue(NBTTagCompound parent, T defaultVal, String...tagPath) {
 		try {
 			tagPath = splitPath(tagPath);
@@ -134,7 +136,7 @@ public class NBTUtils {
 			tagName = tagPath[i];
 			if (i == tagPath.length-1) break;
 			if (!parent.hasKey(tagName))
-				parent.setCompoundTag(tagName, new NBTTagCompound(tagName));
+				parent.setTag(tagName, new NBTTagCompound());
 			parent = parent.getCompoundTag(tagName);
 		}
 		NBTBase ntag = createTag(tagName, value);

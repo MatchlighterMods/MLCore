@@ -80,7 +80,7 @@ public class MLShapedRecipeHandler extends ShapedRecipeHandler {
 				CRecipeShapedBase crsb = (CRecipeShapedBase)irecipe;
 				CachedMLShapedRecipe recipe = new CachedMLShapedRecipe(crsb);
 				
-				if(recipe == null || !recipe.contains(recipe.ingredients, ingredient.itemID))
+				if(recipe == null || !recipe.contains(recipe.ingredients, ingredient))
 					continue;
 
 				recipe.computeVisuals();

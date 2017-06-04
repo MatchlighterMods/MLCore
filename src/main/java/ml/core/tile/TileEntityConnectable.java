@@ -1,10 +1,10 @@
 package ml.core.tile;
 
+import ml.core.MLCore;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.Packet;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
-import cpw.mods.fml.common.network.PacketDispatcher;
 
 public abstract class TileEntityConnectable extends TileEntity {
 
@@ -55,7 +55,7 @@ public abstract class TileEntityConnectable extends TileEntity {
 	public abstract Packet getDescriptionPacket();
 	
 	private void sendPacket() {
-		PacketDispatcher.sendPacketToAllInDimension(getDescriptionPacket(), worldObj.provider.dimensionId);
+		MLCore.instance.pkh.sendToDimension(getDescriptionPacket(), worldObj.provider.dimensionId);
 	}
 	
 	public void onConnect(boolean isMaster, TileEntityConnectable remote) {}

@@ -25,7 +25,6 @@ public class PacketContainerData extends MLPacket {
 	}
 	
 	public PacketContainerData(int windowId, NBTTagCompound payload) {
-		super("MLCore");
 		this.winId = windowId;
 		this.payload = payload;
 	}

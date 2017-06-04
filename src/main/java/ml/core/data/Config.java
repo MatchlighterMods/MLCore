@@ -9,7 +9,8 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
+
+import org.apache.logging.log4j.Level;
 
 import ml.core.data.Config.Prop.Renamed;
 import ml.core.internal.CoreLogger;
@@ -73,7 +74,7 @@ public abstract class Config {
 		fcfg = cfg;
 	}
 	
-	public static Property.Type getForgeType(Class cls) {
+	public static Property.Type getForgeType(Class<?> cls) {
 		if (cls.isArray()) cls = cls.getComponentType();
 		if (cls == int.class || cls == Integer.class)
 			return Property.Type.INTEGER;
@@ -120,8 +121,8 @@ public abstract class Config {
 		return last;
 	}
 	
-	protected void loadModule(Object modInst, Class modCls) throws IllegalAccessException {
-		String lastCategory = fcfg.CATEGORY_GENERAL;
+	protected void loadModule(Object modInst, Class<?> modCls) throws IllegalAccessException {
+		String lastCategory = Configuration.CATEGORY_GENERAL;
 		
 		for (Field fld : modCls.getFields()){
 			if (modInst != null || Modifier.isStatic(fld.getModifiers())) {
@@ -153,7 +154,7 @@ public abstract class Config {
 						}
 					}
 					
-					Class type = fld.getType();
+					Class<?> type = fld.getType();
 					Property.Type forgeTyp = getForgeType(type);
 					Object fldValue = null;
 					if (type.isArray()) {
@@ -174,6 +175,8 @@ public abstract class Config {
 							cProp = fcfg.get(propCategory, propName, cProp!=null ? cProp.getStringList() : (String[])fld.get(modInst), null);
 							fldValue = cProp.getStringList();
 							break;
+						default:
+							break;
 						}
 					} else {
 						cProp = fcfg.get(propCategory, propName, cProp!=null ? cProp.getString() : fld.get(modInst).toString(), null, forgeTyp);
@@ -189,6 +192,8 @@ public abstract class Config {
 							break;
 						case STRING:
 							fldValue = cProp.getString();
+							break;
+						default:
 							break;
 						}
 					}
@@ -225,18 +230,18 @@ public abstract class Config {
 			loadModule(this, this.getClass());
 			for (Object mod : mods)
 				if (mod instanceof Class)
-					loadModule(null, (Class)mod);
+					loadModule(null, (Class<?>)mod);
 				else loadModule(mod, mod.getClass());
 		} catch(Exception e) {
-			CoreLogger.log(Level.SEVERE, "Failed to load the configuration properly", e);
+			CoreLogger.log(Level.ERROR, "Failed to load the configuration properly", e);
 		} finally {
 			fcfg.save();
 		}
 		return this;
 	}
 	
-	protected void saveModule(Object modInst, Class modCls) throws IllegalAccessException {
-		String lastCategory = fcfg.CATEGORY_GENERAL;
+	protected void saveModule(Object modInst, Class<?> modCls) throws IllegalAccessException {
+		String lastCategory = Configuration.CATEGORY_GENERAL;
 		
 		for (Field fld : modCls.getFields()){
 			if (modInst != null || Modifier.isStatic(fld.getModifiers())) {
@@ -250,7 +255,7 @@ public abstract class Config {
 					
 					Property cProp = null;
 					
-					Class type = fld.getType();
+					Class<?> type = fld.getType();
 					Property.Type forgeTyp = getForgeType(type);
 					if (type.isArray()) {
 						cProp = fcfg.get(propCategory, propName, (String[])fld.get(modInst), null, forgeTyp);
@@ -275,11 +280,11 @@ public abstract class Config {
 			saveModule(this, this.getClass());
 			for (Object mod : mods)
 				if (mod instanceof Class)
-					saveModule(null, (Class)mod);
+					saveModule(null, (Class<?>)mod);
 				else saveModule(mod, mod.getClass());
 			
 		} catch(Exception e) {
-			CoreLogger.log(Level.SEVERE, "Failed to save all of the configuration", e);
+			CoreLogger.log(Level.ERROR, "Failed to save all of the configuration", e);
 		} finally {
 			fcfg.save();
 		}

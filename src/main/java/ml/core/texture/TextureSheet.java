@@ -53,7 +53,7 @@ public class TextureSheet {
 			}
 			SimpleResource res = new SimpleResource(location, new ByteArrayInputStream(ot.toByteArray()), null, null);
 			
-			super.loadSprite(res);
+//			super.loadSprite(res); // TODO
 			return true;
 		}
 		
