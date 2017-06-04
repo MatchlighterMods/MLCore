@@ -37,7 +37,7 @@ public class MLCore implements IFMLLoadingPlugin {
 		
 		MinecraftForge.EVENT_BUS.register(WorldGenHandler.instance);
 		TickRegistry.registerTickHandler(WorldGenHandler.instance, Side.SERVER);
-		GameRegistry.registerWorldGenerator(WorldGenHandler.instance, 10);
+		GameRegistry.registerWorldGenerator(WorldGenHandler.instance, 1); //TODO figure out weighting
 	}
 	
 	@EventHandler
@@ -45,14 +45,8 @@ public class MLCore implements IFMLLoadingPlugin {
 		proxy.load();
 	}
 	
-	@Override
 	public String[] getASMTransformerClass() {
-		return new String[]{};
-	}
-	
-	@Override
-	public String getAccessTransformerClass() {
-		return "ml.core.asm.MLCAccesTransformer";
+		return new String[]{"ml.core.asm.MLCAccessTransformer"};
 	}
 
 	@Override
@@ -69,6 +63,4 @@ public class MLCore implements IFMLLoadingPlugin {
 	public void injectData(Map<String, Object> data) {
 		
 	}
-
-
 }

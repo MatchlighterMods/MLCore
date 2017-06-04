@@ -42,25 +42,25 @@ public class WorldRenderUtils {
 		renderEnt.hoverStart = 0F;
 	}
 	
-	public static void renderItemIntoWorldCenteredAt(ItemStack is, boolean renderIn3D, boolean spreadItems) {
+	public static void renderItemIntoWorldCenteredAt(ItemStack stack, boolean renderIn3D, boolean spreadItems) {
 		shouldSpreadItems = spreadItems;
-		if (is != null) {
-			boolean isBlock = is.getItem() instanceof ItemBlock;
+		if (stack != null) {
+			boolean isBlock = stack.getItem() instanceof ItemBlock;
 			if (!renderIn3D){
 				GL11.glPushMatrix();
 				GL11.glScalef(0.03125F, 0.03125F, -0.0004F);
 				GL11.glTranslatef(8, 8, 0);
 				GL11.glRotatef(180F, 0, 0, 1.0F);
 	
-				if (!ForgeHooksClient.renderInventoryItem(renderBlocks, RenderManager.instance.renderEngine, is, true, 0, 0F, 0F)) {
-					renderItem.renderItemIntoGUI(null, RenderManager.instance.renderEngine, is, 0, 0);
+				if (!ForgeHooksClient.renderInventoryItem(renderBlocks, RenderManager.instance.renderEngine, stack, true, 0, 0F, 0F)) {
+					renderItem.renderItemIntoGUI(null, RenderManager.instance.renderEngine, stack, 0, 0);
 				}
 				GL11.glPopMatrix();
 			} else {
-				IItemRenderer cstm = MinecraftForgeClient.getItemRenderer(is, ItemRenderType.ENTITY);
-				boolean renderAs3DBlock = cstm != null && cstm.shouldUseRenderHelper(ItemRenderType.ENTITY, is, ItemRendererHelper.BLOCK_3D);
+				IItemRenderer cstm = MinecraftForgeClient.getItemRenderer(stack, ItemRenderType.ENTITY);
+				boolean renderAs3DBlock = cstm != null && cstm.shouldUseRenderHelper(ItemRenderType.ENTITY, stack, ItemRendererHelper.BLOCK_3D);
 				if (isBlock || renderAs3DBlock){
-					if (renderAs3DBlock || RenderBlocks.renderItemIn3d(Block.blocksList[is.itemID].getRenderType())) {
+					if (renderAs3DBlock || RenderBlocks.renderItemIn3d(Block.getBlockFromItem(stack.getItem()).getRenderType())) {
 						GL11.glScalef(1.5F, 1.5F, 1.5F);
 						GL11.glRotatef(90F, 0, 1F, 0);
 					} else {
@@ -71,7 +71,7 @@ public class WorldRenderUtils {
 				}
 				//This may happen when used from within an ItemRenderer. It should fix itself after one render loop.
 				if (RenderManager.instance.renderEngine != null) {
-					renderEnt.setEntityItemStack(is);
+					renderEnt.setEntityItemStack(stack);
 					renderItem.doRender(renderEnt, 0, 0, 0, 0, 0);
 				}
 			}

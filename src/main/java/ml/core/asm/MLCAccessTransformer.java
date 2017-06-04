@@ -4,9 +4,9 @@ import java.io.IOException;
 
 import cpw.mods.fml.common.asm.transformers.AccessTransformer;
 
-public class MLCAccesTransformer extends AccessTransformer {
+public class MLCAccessTransformer extends AccessTransformer {
 
-	public MLCAccesTransformer() throws IOException {
+	public MLCAccessTransformer() throws IOException {
 		super("mlcore_at.cfg");
 	}
 
