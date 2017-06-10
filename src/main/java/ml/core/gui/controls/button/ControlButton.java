@@ -24,7 +24,7 @@ public class ControlButton extends GuiControl {
 		int p = enabled ? (hasHover() ? 40 : 20) : 0;
 		GuiRenderUtils.drawSlicedRect(0, 0, getSize().x, getSize().y, 0, p, 200, 20, 2, 2, 2, 2, 200, 80);
 
-		FontRenderer fr = getGui().getMinecraft().fontRendererObj;
+		FontRenderer fr = getGui().getMinecraft().fontRenderer;
 		int l = getStyle().getColorValue(enabled ? (hasHover() ? "button.text.hover" : "button.text.normal") : "button.text.disabled");
 
 		fr.drawStringWithShadow(text, (getSize().x - fr.getStringWidth(text)) / 2, (getSize().y - 8) / 2, l);

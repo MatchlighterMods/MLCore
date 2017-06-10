@@ -22,7 +22,7 @@ public class MLSlot extends Slot {
 
 	// Disable MC hover effect; leave that to the ControlSlot
 	@Override
-	public boolean canBeHovered() {
+	public boolean func_111238_b() {
 		return false;
 	}
 }

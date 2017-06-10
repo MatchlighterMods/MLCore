@@ -25,17 +25,17 @@ public class ChapterHeaderPage extends Page {
 	@Override
 	public void drawPage(Minecraft mc, int x, int y, int w, int h, float partialTick) {
 		
-		y = y + (int)(h*0.25F) - (title.size()*mc.fontRendererObj.FONT_HEIGHT)/2;
+		y = y + (int)(h*0.25F) - (title.size()*mc.fontRenderer.FONT_HEIGHT)/2;
 		
 		for (String ln : title) {
-			mc.fontRendererObj.drawString(ln, x+(w-mc.fontRendererObj.getStringWidth(ln))/2, y, 0x000000);
-			y += mc.fontRendererObj.FONT_HEIGHT;
+			mc.fontRenderer.drawString(ln, x+(w-mc.fontRenderer.getStringWidth(ln))/2, y, 0x000000);
+			y += mc.fontRenderer.FONT_HEIGHT;
 		}
 		
-		y += mc.fontRendererObj.FONT_HEIGHT;
+		y += mc.fontRenderer.FONT_HEIGHT;
 		for (String ln : text) {
-			mc.fontRendererObj.drawString(ln, x, y, 0x000000);
-			y += mc.fontRendererObj.FONT_HEIGHT;
+			mc.fontRenderer.drawString(ln, x, y, 0x000000);
+			y += mc.fontRenderer.FONT_HEIGHT;
 		}
 	}
 

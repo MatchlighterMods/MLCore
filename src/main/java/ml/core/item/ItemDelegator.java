@@ -52,7 +52,7 @@ public class ItemDelegator <DCls extends DelegateItem> extends Item {
 	
 	public DCls subItem(ItemStack is) {
 		if (is != null && is.getItem() == this) {
-			return subItem(is.getCurrentDurability());
+			return subItem(is.getItemDamage());
 		}
 		return nullDelegate;
 	}
@@ -60,7 +60,7 @@ public class ItemDelegator <DCls extends DelegateItem> extends Item {
 	public static DelegateItem findSubItem(ItemStack is) {
 		if (is != null && is.getItem() instanceof ItemDelegator<?>) {
 			ItemDelegator<?> idg = (ItemDelegator<?>) is.getItem();
-			return idg.subItem(is.getCurrentDurability());
+			return idg.subItem(is.getItemDamage());
 		}
 		return null;
 	}

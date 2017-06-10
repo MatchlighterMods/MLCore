@@ -19,6 +19,6 @@ public abstract class Page {
 	
 	@SideOnly(Side.CLIENT)
 	public FontRenderer getFontRenderer() {
-		return FMLClientHandler.instance().getClient().fontRendererObj;
+		return FMLClientHandler.instance().getClient().fontRenderer;
 	}
 }

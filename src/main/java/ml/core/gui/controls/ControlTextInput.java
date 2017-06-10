@@ -23,7 +23,7 @@ public class ControlTextInput extends GuiControl {
 	public ControlTextInput(GuiElement parent, Vector2i pos, Vector2i size) {
 		super(parent, pos, size);
 		if (getSide() == Side.CLIENT) {
-			textBox = new GuiTextField(getTopParent().getGui().getMinecraft().fontRendererObj, 0, 0, size.x, size.y);
+			textBox = new GuiTextField(getTopParent().getGui().getMinecraft().fontRenderer, 0, 0, size.x, size.y);
 			textBox.setEnableBackgroundDrawing(false);
 		}
 	}

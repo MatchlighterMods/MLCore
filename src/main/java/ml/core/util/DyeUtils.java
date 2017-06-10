@@ -28,7 +28,7 @@ public class DyeUtils {
 	public static int getDyeColor(ItemStack dyeStack) {
 		int dyeId = getVanillaColorId(dyeStack);
 		if (dyeId > -1) {
-			return ItemDye.dyeColors[dyeId];
+			return ItemDye.field_150922_c[dyeId];
 		}
 		return -1;
 	}

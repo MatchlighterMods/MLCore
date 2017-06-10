@@ -26,31 +26,31 @@ public class NBTUtils {
 	@SuppressWarnings("unchecked")
 	public static <T> T getTagValue(NBTBase tag) {
 		if(tag instanceof NBTTagFloat){
-			return (T)(Object)((NBTTagFloat)tag).getFloat();
+			return (T)(Object)((NBTTagFloat)tag).func_150288_h();
 		}
 		else if(tag instanceof NBTTagInt) {
-			return (T)(Object)((NBTTagInt)tag).getInt();
+			return (T)(Object)((NBTTagInt)tag).func_150287_d();
 		}
 		else if(tag instanceof NBTTagShort) {
-			return (T)(Object)((NBTTagShort)tag).getShort();
+			return (T)(Object)((NBTTagShort)tag).func_150289_e();
 		}
 		else if(tag instanceof NBTTagLong) {
-			return (T)(Object)((NBTTagLong)tag).getLong();
+			return (T)(Object)((NBTTagLong)tag).func_150291_c();
 		}
 		else if(tag instanceof NBTTagDouble) {
-			return (T)(Object)((NBTTagDouble)tag).getDouble();
+			return (T)(Object)((NBTTagDouble)tag).func_150286_g();
 		}
 		else if(tag instanceof NBTTagByte) {
-			return (T)(Object)((NBTTagByte)tag).getByte();
+			return (T)(Object)((NBTTagByte)tag).func_150290_f();
 		}
 		else if(tag instanceof NBTTagString) {
-			return (T)((NBTTagString)tag).getString();
+			return (T)((NBTTagString)tag).func_150285_a_();
 		}
 		else if(tag instanceof NBTTagIntArray) {
-			return (T)((NBTTagIntArray)tag).getIntArray();
+			return (T)((NBTTagIntArray)tag).func_150302_c();
 		}
 		else if(tag instanceof NBTTagByteArray) {
-			return (T)((NBTTagByteArray)tag).getByteArray();
+			return (T)((NBTTagByteArray)tag).func_150292_c();
 		}
 		else if(tag instanceof NBTTagCompound) {
 			return (T)tag;

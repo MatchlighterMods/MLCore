@@ -17,12 +17,13 @@ public abstract class StructureGeneratorBase extends MapGenStructure implements 
 
 	public void generate(IChunkProvider par1iChunkProvider, World world, int chunkX, int chunkZ, Block[] par5ArrayOfByte) {
 		if (canGenerateInWorld(world))
-			super.generate(par1iChunkProvider, world, chunkX, chunkZ, par5ArrayOfByte);
+//			super.generate(par1iChunkProvider, world, chunkX, chunkZ, par5ArrayOfByte);
+			super.func_151538_a(world, chunkX, chunkZ, chunkX, chunkZ, par5ArrayOfByte);
 	}
 	
 	@Override
 	public String getGenIdentifier() {
-		return getStructureName();
+		return func_143025_a();
 	}
 
 }

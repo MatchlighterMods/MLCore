@@ -41,7 +41,7 @@ public class SNBTTagCompound implements IDataSerializer {
 		} else {
 			byte[] var2 = new byte[var1];
 			dataIn.readFully(var2);
-			return CompressedStreamTools.decompress(var2, NBTSizeTracker.field_152451_a);
+			return CompressedStreamTools.func_152457_a(var2, NBTSizeTracker.field_152451_a);
 		}
 	}
 

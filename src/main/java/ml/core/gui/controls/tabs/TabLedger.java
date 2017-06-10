@@ -61,7 +61,7 @@ public abstract class TabLedger extends GuiTab {
 		super.drawForeground(partialTick);
 		getLocalPosition().glTranslate();
 		if (isFullyOpen()) {
-			FontRenderer fr = getMC().fontRendererObj;
+			FontRenderer fr = getMC().fontRenderer;
 			fr.drawString(getTitle(), 24, (24-fr.FONT_HEIGHT)/2+1, 0xFFFFFF, true);
 		}
 	}
@@ -71,7 +71,7 @@ public abstract class TabLedger extends GuiTab {
 		if (openState) return;
 		List<String> lines = new ArrayList<String>();
 		lines.add(getTitle());
-		getGui().drawHoveringText(lines, mX, mY, getMC().fontRendererObj);
+		getGui().drawHoveringText(lines, mX, mY, getMC().fontRenderer);
 	}
 	
 	@Override

@@ -101,7 +101,7 @@ public class StackUtils {
 			for (Slot slot : targets) {
 				stackOn = slot.getStack();
 				
-				if (stackOn != null && stackOn.getItem() == is.getItem() && (!is.getHasSubtypes() || is.getMetadata() == stackOn.getMetadata()) && ItemStack.areItemStackTagsEqual(is, stackOn)) {
+				if (stackOn != null && stackOn.getItem() == is.getItem() && (!is.getHasSubtypes() || is.getItemDamage() == stackOn.getItemDamage()) && ItemStack.areItemStackTagsEqual(is, stackOn)) {
 					int var9 = stackOn.stackSize + is.stackSize;
 
 					int mSize = Math.min(is.getMaxStackSize(), slot.getSlotStackLimit());
@@ -172,7 +172,7 @@ public class StackUtils {
 			}
 		} else if (target instanceof ItemStack) {
 			ItemStack trgIS = (ItemStack)target;
-			return (trgIS.getItem() == input.getItem() && (trgIS.getMetadata() == OreDictionary.WILDCARD_VALUE || trgIS.getMetadata() == input.getMetadata()));
+			return (trgIS.getItem() == input.getItem() && (trgIS.getItemDamage() == OreDictionary.WILDCARD_VALUE || trgIS.getItemDamage() == input.getItemDamage()));
 		} else if (target instanceof Item) {
 			return (((Item)target) == input.getItem());
 		}

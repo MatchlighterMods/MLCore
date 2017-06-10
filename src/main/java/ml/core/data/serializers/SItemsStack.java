@@ -41,7 +41,7 @@ public class SItemsStack implements IDataSerializer {
 		} else {
 			dOut.writeShort(Item.getIdFromItem(is.getItem()));
 			dOut.writeByte(is.stackSize);
-			dOut.writeShort(is.getMetadata());
+			dOut.writeShort(is.getItemDamage());
 			NBTTagCompound var2 = null;
 
 			if (is.getItem().isDamageable() || is.getItem().getShareTag()) {

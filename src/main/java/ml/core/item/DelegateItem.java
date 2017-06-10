@@ -116,7 +116,7 @@ public class DelegateItem {
 	
 	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(ItemStack stack, int pass) {
-		return getIcon(stack.getCurrentDurability());
+		return getIcon(stack.getItemDamage());
 	}
 	
 	@SideOnly(Side.CLIENT)

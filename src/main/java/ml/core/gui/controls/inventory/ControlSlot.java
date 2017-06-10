@@ -55,7 +55,7 @@ public class ControlSlot extends GuiControl implements IStackMergeTarget {
 		getGui().drawSpecialSlotInventory(this);
 		GL11.glDisable(GL11.GL_LIGHTING);
 
-		if (hasHover() && !slot.canBeHovered() && renderHover) {
+		if (hasHover() && !slot.func_111238_b() && renderHover) {
 			GL11.glDisable(GL11.GL_DEPTH_TEST);
 			int hoverColor = getStyle().getColorValue("slot.hover");
 			GuiRenderUtils.drawGradientRect(1, 1, 1 + 16, 1 + 16, hoverColor, hoverColor);

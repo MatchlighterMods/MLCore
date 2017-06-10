@@ -2,6 +2,7 @@ package ml.core;
 
 import java.util.Map;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
@@ -36,6 +37,8 @@ public class MLCore implements IFMLLoadingPlugin {
 		proxy.prInit();
 		
 		MinecraftForge.EVENT_BUS.register(WorldGenHandler.instance);
+		FMLCommonHandler.instance().bus().register(WorldGenHandler.instance);
+		
 		GameRegistry.registerWorldGenerator(WorldGenHandler.instance, 1); //TODO figure out weighting
 	}
 	

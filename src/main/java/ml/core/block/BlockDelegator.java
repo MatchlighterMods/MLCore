@@ -70,9 +70,9 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	public DCls subBlock(ItemStack is) {
 		if (is != null && is.getItem() instanceof ItemBlock) {
 			ItemBlock ib = (ItemBlock)is.getItem();
-			Block blk = ib.blockInstance; 
+			Block blk = ib.field_150939_a; 
 			if (blk == this) {
-				return subBlock(is.getMetadata());
+				return subBlock(is.getItemDamage());
 			}
 		}
 		return nullDelegate;
@@ -89,9 +89,9 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	public static DelegateBlock findSubBlock(ItemStack is) {
 		if (is != null && is.getItem() instanceof ItemBlock) {
 			ItemBlock ib = (ItemBlock)is.getItem();
-			Block blk = ib.blockInstance; 
+			Block blk = ib.field_150939_a; 
 			if (blk instanceof BlockDelegator<?>) {
-				return ((BlockDelegator<?>)blk).subBlock(is.getMetadata());
+				return ((BlockDelegator<?>)blk).subBlock(is.getItemDamage());
 			}
 		}
 		return null;
@@ -195,7 +195,7 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	}
 	
 	@Override
-	public void modifyEntityVelocity(World world, int x, int y, int z, Entity par5Entity, Vec3 par6Vec3) {
+	public void velocityToAddToEntity(World world, int x, int y, int z, Entity par5Entity, Vec3 par6Vec3) {
 		subBlock(world, x, y, z).modifyEntityVelocity(world, x, y, z, par5Entity, par6Vec3);
 	}
 	
@@ -411,7 +411,7 @@ public class BlockDelegator <DCls extends DelegateBlock> extends Block {
 	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IIconRegister par1IconRegister) {
+	public void registerBlockIcons(IIconRegister par1IconRegister) {
 		for (DCls sub : subBlocks.values()) sub.registerIcons(par1IconRegister);
 	}
 

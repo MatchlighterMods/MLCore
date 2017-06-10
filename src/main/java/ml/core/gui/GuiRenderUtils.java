@@ -67,8 +67,8 @@ public class GuiRenderUtils {
 	public static void drawStackAt(Minecraft mc, int x, int y, ItemStack is){
 		GL11.glEnable(GL11.GL_LIGHTING);
 		renderItem.zLevel = 100F;
-		renderItem.renderItemAndEffectIntoGUI(mc.fontRendererObj, mc.renderEngine, is, x, y);
-		renderItem.renderItemOverlayIntoGUI(mc.fontRendererObj, mc.renderEngine, is, x, y);
+		renderItem.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, is, x, y);
+		renderItem.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, is, x, y);
 		renderItem.zLevel = 0F;
 		GL11.glDisable(GL11.GL_LIGHTING);
 	}
@@ -78,13 +78,13 @@ public class GuiRenderUtils {
 		ItemStack tis = is.copy();
 		tis.stackSize = 1;
 		renderItem.zLevel = 100F;
-		renderItem.renderItemAndEffectIntoGUI(mc.fontRendererObj, mc.renderEngine, tis, x, y);
-		renderItem.renderItemOverlayIntoGUI(mc.fontRendererObj, mc.renderEngine, tis, x, y);
+		renderItem.renderItemAndEffectIntoGUI(mc.fontRenderer, mc.renderEngine, tis, x, y);
+		renderItem.renderItemOverlayIntoGUI(mc.fontRenderer, mc.renderEngine, tis, x, y);
 		renderItem.zLevel = 0F;
 
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glDisable(GL11.GL_DEPTH_TEST);
-		mc.fontRendererObj.drawStringWithShadow(str, x + 19 - 2 - mc.fontRendererObj.getStringWidth(str), y + 6 + 3, 16777215);
+		mc.fontRenderer.drawStringWithShadow(str, x + 19 - 2 - mc.fontRenderer.getStringWidth(str), y + 6 + 3, 16777215);
 		GL11.glEnable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 
